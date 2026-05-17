@@ -1,0 +1,44 @@
+// swift-tools-version: 5.9
+import PackageDescription
+
+let package = Package(
+    name: "XQSecureWorkspaces",
+    platforms: [.iOS(.v17), .macOS(.v14)],
+    products: [
+        .library(name: "XQCore",       targets: ["XQCore"]),
+        .library(name: "XQSecurity",   targets: ["XQSecurity"]),
+        .library(name: "XQNetworking", targets: ["XQNetworking"]),
+        .library(name: "XQRepository", targets: ["XQRepository"]),
+        .library(name: "XQAI",         targets: ["XQAI"]),
+        .library(name: "XQPolicy",     targets: ["XQPolicy"]),
+        .library(name: "XQSync",       targets: ["XQSync"]),
+    ],
+    targets: [
+        .target(name: "XQCore",
+                path: "XQSecureWorkspaces/Modules/Core"),
+        .target(name: "XQSecurity",
+                dependencies: ["XQCore"],
+                path: "XQSecureWorkspaces/Modules/Security"),
+        .target(name: "XQNetworking",
+                dependencies: ["XQCore", "XQSecurity"],
+                path: "XQSecureWorkspaces/Modules/Networking"),
+        .target(name: "XQRepository",
+                dependencies: ["XQCore", "XQNetworking"],
+                path: "XQSecureWorkspaces/Modules/Repository"),
+        .target(name: "XQPolicy",
+                dependencies: ["XQCore"],
+                path: "XQSecureWorkspaces/Modules/Policy"),
+        .target(name: "XQAI",
+                dependencies: ["XQCore", "XQPolicy"],
+                path: "XQSecureWorkspaces/Modules/AI"),
+        .target(name: "XQSync",
+                dependencies: ["XQCore", "XQRepository"],
+                path: "XQSecureWorkspaces/Modules/Sync"),
+        .testTarget(name: "XQCoreTests",
+                    dependencies: ["XQCore"],
+                    path: "Tests/Unit"),
+        .testTarget(name: "XQIntegrationTests",
+                    dependencies: ["XQCore", "XQNetworking", "XQSecurity"],
+                    path: "Tests/Integration"),
+    ]
+)

@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XQ Secure Workspaces — Interactive Prototype</title>
+<style>
+  :root {
+    --brand: #3D5AFE; --brand-dark: #6979F8; --brand-light: #E8EAFD;
+    --bg: #F2F2F7; --card: #FFFFFF; --nav: rgba(248,248,248,0.94); --tab: rgba(255,255,255,0.94);
+    --t1: #1C1C1E; --t2: #6C6C70; --t3: #AEAEB2;
+    --sep: #E5E5EA;
+    --ok: #34C759; --warn: #FF9500; --danger: #FF3B30;
+    --pub-bg: #E8F5E9; --pub-t: #1B5E20; --pub-d: #2E7D32;
+    --int-bg: #E3F2FD; --int-t: #0D47A1; --int-d: #1565C0;
+    --con-bg: #FFF8E1; --con-t: #6D4C00; --con-d: #F57F17;
+    --res-bg: #FCE4EC; --res-t: #7B0033; --res-d: #C62828;
+    --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r20:20px;--rfull:999px;
+    --sh1: 0 1px 3px rgba(0,0,0,.10); --sh2: 0 4px 12px rgba(0,0,0,.10);
+    --ease: cubic-bezier(.25,.46,.45,.94);
+  }
+  .dm {
+    --bg:#000;--card:#1C1C1E;--nav:rgba(28,28,30,.94);--tab:rgba(28,28,30,.94);
+    --t1:#FFF;--t2:rgba(235,235,245,.8);--t3:rgba(235,235,245,.38);
+    --sep:#38383A;--brand:#6979F8;--brand-light:#1C205C;
+    --pub-bg:#0D2210;--pub-t:#67C97A;
+    --int-bg:#0A1C38;--int-t:#6AABFF;
+    --con-bg:#2A1F00;--con-t:#FFD54F;
+    --res-bg:#2A0012;--res-t:#FF6E9E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;background:#1A1A2E;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;gap:16px;}
+  /* header */
+  .hdr{color:#fff;text-align:center;}
+  .hdr h1{font-size:20px;font-weight:700;}
+  .hdr p{font-size:12px;opacity:.5;margin-top:2px;}
+  /* controls */
+  .ctrl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:520px;}
+  .fbtn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .fbtn:hover{background:rgba(255,255,255,.22);}
+  .fbtn.on{background:var(--brand);border-color:var(--brand);}
+  /* phone */
+  .phone{position:relative;width:393px;height:852px;background:#000;border-radius:50px;box-shadow:0 0 0 2px #3A3A3C,0 30px 80px rgba(0,0,0,.6);overflow:hidden;flex-shrink:0;}
+  .phone::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#000;border-radius:20px;z-index:200;}
+  /* screens */
+  .scr{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);overflow:hidden;animation:sIn .28s var(--ease);}
+  .scr.on{display:flex;}
+  @keyframes sIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  /* status bar */
+  .sb{height:54px;padding:14px 24px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .sb .t{font-size:15px;font-weight:600;color:var(--t1);}
+  .sb .ic{font-size:13px;color:var(--t1);}
+  /* nav bar */
+  .nb{background:var(--nav);backdrop-filter:blur(20px);border-bottom:.5px solid var(--sep);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .nb-title{font-size:17px;font-weight:600;color:var(--t1);}
+  .nb-back{color:var(--brand);font-size:15px;cursor:pointer;}
+  .nb-act{color:var(--brand);font-size:15px;font-weight:600;cursor:pointer;}
+  /* large title */
+  .lt{padding:2px 20px 0;display:flex;align-items:flex-end;justify-content:space-between;}
+  .lt-text{font-size:33px;font-weight:700;letter-spacing:-.5px;color:var(--t1);padding-bottom:8px;line-height:1;}
+  /* scroll */
+  .sc{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .sc::-webkit-scrollbar{display:none;}
+  /* tab bar */
+  .tabs{background:var(--tab);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:8px 0 28px;display:flex;align-items:center;flex-shrink:0;}
+  .ti{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;}
+  .ti-ic{font-size:21px;}
+  .ti-lb{font-size:10px;font-weight:500;color:var(--t3);}
+  .ti.on .ti-lb{color:var(--brand);}
+  /* card */
+  .card{background:var(--card);border-radius:var(--r16);box-shadow:var(--sh1);overflow:hidden;}
+  .cr{padding:13px 16px;display:flex;align-items:center;gap:12px;border-bottom:.5px solid var(--sep);}
+  .cr:last-child{border-bottom:none;}
+  /* badge */
+  .bg{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:var(--rfull);font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+  .bg-dot{width:5px;height:5px;border-radius:50%;}
+  .pub{background:var(--pub-bg);color:var(--pub-t);}.pub .bg-dot{background:var(--pub-d);}
+  .int{background:var(--int-bg);color:var(--int-t);}.int .bg-dot{background:var(--int-d);}
+  .con{background:var(--con-bg);color:var(--con-t);}.con .bg-dot{background:var(--con-d);}
+  .res{background:var(--res-bg);color:var(--res-t);}.res .bg-dot{background:var(--res-d);}
+  /* file icon */
+  .fi{width:40px;height:48px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;}
+  .fi.pdf{background:linear-gradient(135deg,#FF3B30,#FF6B6B);}
+  .fi.doc{background:linear-gradient(135deg,#2B5CE6,#4A7CF7);}
+  .fi.xls{background:linear-gradient(135deg,#1B8A4E,#34C759);}
+  .fi.ppt{background:linear-gradient(135deg,#E84E1B,#FF7043);}
+  .fi.img{background:linear-gradient(135deg,#8E44AD,#BB6BD9);}
+  /* risk alert */
+  .ra{background:linear-gradient(135deg,#FCE4EC,#FFEBEE);border:1px solid #FFCDD2;border-radius:var(--r16);padding:14px 16px;display:flex;gap:12px;}
+  .dm .ra{background:linear-gradient(135deg,#2A0012,#1A000A);border-color:#7B0033;}
+  .ra-t{font-size:13px;font-weight:700;color:#B71C1C;margin-bottom:2px;}
+  .dm .ra-t{color:#FF6E9E;}
+  .ra-d{font-size:12px;color:var(--t2);line-height:1.4;}
+  .ra-a{font-size:12px;font-weight:600;color:var(--brand);margin-top:5px;cursor:pointer;}
+  /* buttons */
+  .btn{width:100%;padding:15px;border-radius:var(--r16);font-size:16px;font-weight:600;border:none;cursor:pointer;transition:transform .1s,opacity .1s;}
+  .btn:active{transform:scale(.97);}
+  .bp{background:var(--brand);color:#fff;}
+  .bs{background:var(--brand-light);color:var(--brand);}
+  .bo{background:transparent;color:var(--brand);border:1.5px solid var(--brand);}
+  /* section header */
+  .sh{font-size:13px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;padding:18px 20px 8px;}
+  /* input */
+  .inp{background:var(--card);border:1px solid var(--sep);border-radius:var(--r12);padding:13px 15px;font-size:15px;color:var(--t1);width:100%;outline:none;}
+  .inp:focus{border-color:var(--brand);}
+  .inp::placeholder{color:var(--t3);}
+  .dm .inp{background:#2C2C2E;}
+  /* bottom sheet */
+  .ov{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;z-index:100;animation:fIn .2s ease;}
+  .ov.hide{display:none;}
+  @keyframes fIn{from{opacity:0}to{opacity:1}}
+  .bs-panel{background:var(--card);border-radius:24px 24px 0 0;width:100%;padding:12px 20px 44px;animation:slUp .32s var(--ease);}
+  @keyframes slUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .bsh{width:36px;height:4px;background:var(--sep);border-radius:2px;margin:0 auto 14px;}
+  .bs-title{font-size:19px;font-weight:700;color:var(--t1);margin-bottom:3px;}
+  .bs-sub{font-size:13px;color:var(--t2);margin-bottom:18px;}
+  /* steps */
+  .steps{display:flex;gap:7px;justify-content:center;margin-bottom:18px;}
+  .sdot{width:8px;height:8px;border-radius:50%;background:var(--sep);transition:all .2s;}
+  .sdot.on{width:24px;border-radius:4px;background:var(--brand);}
+  /* scan */
+  .scan-box{position:relative;background:#000;border-radius:var(--r12);height:180px;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;}
+  .scan-grid{position:absolute;inset:0;opacity:.15;background-image:linear-gradient(rgba(61,90,254,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(61,90,254,.5) 1px,transparent 1px);background-size:20px 20px;}
+  .scan-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--brand),transparent);animation:scanM 1.4s ease-in-out infinite;}
+  @keyframes scanM{0%{transform:translateY(0)}100%{transform:translateY(180px)}}
+  /* watermark */
+  .wm{position:absolute;inset:0;pointer-events:none;z-index:5;display:flex;align-items:center;justify-content:center;opacity:.07;}
+  .wm-t{font-size:26px;font-weight:900;color:#7B0033;transform:rotate(-30deg);letter-spacing:2px;white-space:nowrap;}
+  /* avatar */
+  .av{width:36px;height:36px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+  /* toggle */
+  .tog{width:44px;height:26px;border-radius:13px;position:relative;flex-shrink:0;}
+  .tog-k{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .tog.on{background:var(--ok);}.tog.on .tog-k{right:3px;}
+  .tog.off{background:var(--sep);}.tog.off .tog-k{left:3px;}
+  /* icon btn */
+  .ibtn{width:34px;height:34px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;border:none;}
+  /* utils */
+  .row{display:flex;align-items:center;gap:10px;}
+  .rjb{display:flex;align-items:center;justify-content:space-between;}
+  .col{display:flex;flex-direction:column;flex:1;min-width:0;}
+  .p16{padding:16px;}
+  .ph16{padding:0 16px;}
+  .mb8{margin-bottom:8px;}
+  .mb12{margin-bottom:12px;}
+  .mb16{margin-bottom:16px;}
+  .mb20{margin-bottom:20px;}
+  .t1c{font-size:15px;font-weight:500;color:var(--t1);}
+  .t2c{font-size:13px;color:var(--t2);}
+  .t3c{font-size:11px;color:var(--t3);}
+  .tc{text-align:center;}
+  .bold{font-weight:700;}
+  .semi{font-weight:600;}
+  .tr{color:var(--res-t);}
+  .tg{color:var(--ok);}
+  .tb{color:var(--brand);}
+  .chip{background:var(--bg);border-radius:var(--rfull);padding:5px 12px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;white-space:nowrap;}
+  .chip.on{background:var(--brand-light);color:var(--brand);}
+  @keyframes xspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .etbtn{padding:5px 9px;border-radius:var(--r4);font-size:14px;color:var(--t2);cursor:pointer;transition:background .12s;border:none;background:transparent;flex-shrink:0;}
+  .etbtn:hover,.etbtn.on{background:var(--brand-light);color:var(--brand);}
+  .wgroup-card{background:var(--card);border-radius:var(--r16);padding:16px;display:flex;gap:12px;align-items:center;cursor:pointer;}
+  .wgroup-card.active{border:2px solid var(--brand);background:linear-gradient(135deg,rgba(61,90,254,.07),rgba(105,121,248,.03));}
+</style>
+</head>
+<body>
+
+<div class="hdr"><h1>XQ Secure Workspaces</h1><p>Interactive UX Prototype — Phase 2</p></div>
+
+<div class="ctrl">
+  <button class="fbtn on" onclick="flow(1)">① Onboarding</button>
+  <button class="fbtn" onclick="flow(2)">② File Discovery</button>
+  <button class="fbtn" onclick="flow(3)">③ AI Import</button>
+  <button class="fbtn" onclick="flow(4)">④ Secure Email</button>
+  <button class="fbtn" onclick="flow(5)">⑤ Admin Policy</button>
+  <button class="fbtn" onclick="flow(6)">⑥ Enterprise Auth</button>
+  <button class="fbtn" onclick="flow(7)">⑦ Notifications</button>
+  <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleDark()">🌙 Dark</button>
+</div>
+
+<div class="phone" id="phone">
+
+<!-- ══ S1 SPLASH ══ -->
+<div class="scr on" id="s-splash" style="background:#000;align-items:center;justify-content:center;">
+  <div style="width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;margin-bottom:22px;box-shadow:0 8px 32px rgba(61,90,254,.5);font-size:38px;">🔐</div>
+  <div style="color:#fff;text-align:center;margin-bottom:36px;">
+    <div style="font-size:26px;font-weight:800;letter-spacing:-.5px;">XQ Secure</div>
+    <div style="font-size:15px;opacity:.5;margin-top:4px;">Workspaces</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-bottom:40px;">
+    <div id="c1" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ Secure Enclave active</div>
+    <div id="c2" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ Integrity verified</div>
+    <div id="c3" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ Policy loaded</div>
+  </div>
+  <div style="width:60%;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;">
+    <div id="sp" style="height:100%;width:0%;background:linear-gradient(90deg,#3D5AFE,#6979F8);border-radius:2px;transition:width .35s ease;"></div>
+  </div>
+</div>
+
+<!-- ══ S2 WELCOME ══ -->
+<div class="scr" id="s-welcome" style="background:#000;align-items:center;justify-content:center;">
+  <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div style="width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;margin-bottom:26px;box-shadow:0 8px 32px rgba(61,90,254,.4);font-size:34px;">🔐</div>
+    <div style="font-size:27px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:10px;">Zero Trust. Every File.</div>
+    <p style="font-size:14px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;margin-bottom:40px;">Encryption follows your data across every device, cloud, and collaboration.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+      <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="go('s-permissions')">Start for Free</button>
+      <button class="btn" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);" onclick="go('s-enterprise-auth')">Connect Enterprise Workspace</button>
+    </div>
+  </div>
+  <div style="padding:0 28px 44px;"><p style="font-size:10px;color:rgba(255,255,255,.25);text-align:center;line-height:1.5;">By continuing you agree to Terms of Service. Your keys never leave your device.</p></div>
+</div>
+
+<!-- ══ S3 REPO SETUP ══ -->
+<div class="scr" id="s-repo-setup" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-welcome')">← Back</span><span class="nb-title">Connect Workspace</span><span></span></div>
+  <div class="sc p16">
+    <p class="t2c mb20" style="line-height:1.5;">Choose your enterprise file repository. All data stays encrypted end-to-end.</p>
+    <div style="display:flex;flex-direction:column;gap:11px;">
+      <div class="card cr" style="cursor:pointer;border:2px solid var(--brand);border-radius:var(--r16);" onclick="go('s-permissions')">
+        <span style="font-size:26px;">☁️</span><div class="col"><div class="t1c semi">SharePoint / OneDrive</div><div class="t3c">Microsoft 365 · OAuth PKCE</div></div><span style="color:var(--brand);font-size:18px;">›</span>
+      </div>
+      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-permissions')">
+        <span style="font-size:26px;">🖥️</span><div class="col"><div class="t1c semi">SMB Network Drive</div><div class="t3c">Corporate LAN / VPN</div></div><span style="color:var(--t3);font-size:18px;">›</span>
+      </div>
+      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-permissions')">
+        <span style="font-size:26px;">📁</span><div class="col"><div class="t1c semi">Google Drive</div><div class="t3c">Google Workspace · OAuth 2.0</div></div><span style="color:var(--t3);font-size:18px;">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S4 PERMISSIONS ══ -->
+<div class="scr" id="s-permissions" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span></span><span class="nb-title">Allow Access</span><span></span></div>
+  <div class="sc p16" style="padding-top:20px;">
+    <div class="tc mb20">
+      <div style="font-size:52px;">🛡️</div>
+      <div style="font-size:20px;font-weight:700;color:var(--t1);margin-top:10px;">Secure Your Workspace</div>
+      <p class="t2c" style="margin-top:6px;line-height:1.5;padding:0 12px;">These permissions enable zero-trust features. No data leaves your device without your key.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+      <div class="card p16 row" style="gap:13px;">
+        <div style="width:42px;height:42px;background:#F0F4FF;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔒</div>
+        <div class="col"><div class="t1c semi">Face ID / Touch ID</div><div class="t3c" style="margin-top:2px;">Required for Secure Enclave key access</div></div>
+        <div class="tog on"><div class="tog-k"></div></div>
+      </div>
+      <div class="card p16 row" style="gap:13px;">
+        <div style="width:42px;height:42px;background:#FFF3E0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔔</div>
+        <div class="col"><div class="t1c semi">Notifications</div><div class="t3c" style="margin-top:2px;">Policy alerts and security events</div></div>
+        <div class="tog on"><div class="tog-k"></div></div>
+      </div>
+      <div class="card p16 row" style="gap:13px;">
+        <div style="width:42px;height:42px;background:#E8F5E9;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📂</div>
+        <div class="col"><div class="t1c semi">Files Access</div><div class="t3c" style="margin-top:2px;">Import from Files app and iCloud</div></div>
+        <div class="tog on"><div class="tog-k"></div></div>
+      </div>
+    </div>
+    <button class="btn bp mb8" onclick="go('s-home')">Continue</button>
+    <p class="t3c tc">You can change these anytime in Settings</p>
+  </div>
+</div>
+
+<!-- ══ S5 HOME ══ -->
+<div class="scr" id="s-home" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt">
+    <div class="lt-text">Home</div>
+    <div class="row" style="gap:8px;padding-bottom:8px;">
+      <button class="ibtn" onclick="go('s-notifications')">🔔</button>
+      <div class="av">BW</div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="p16" style="display:flex;flex-direction:column;gap:13px;">
+      <div class="ra" onclick="go('s-file-viewer')" style="cursor:pointer;">
+        <span style="font-size:22px;flex-shrink:0;">⚠️</span>
+        <div><div class="ra-t">Policy Alert — Restricted File</div><div class="ra-d">Q4-Financial-Report.pdf contains PHI detected by AI scanner. External share blocked.</div><div class="ra-a">Review file →</div></div>
+      </div>
+      <div>
+        <div class="sh" style="padding:0 0 9px;">Quick Actions</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px;">
+          <div class="card" style="padding:13px 8px;text-align:center;cursor:pointer;" onclick="go('s-file-browser')"><div style="font-size:24px;">📁</div><div style="font-size:11px;font-weight:600;color:var(--t1);margin-top:4px;">Files</div></div>
+          <div class="card" style="padding:13px 8px;text-align:center;cursor:pointer;" onclick="go('s-ai-import')"><div style="font-size:24px;">🤖</div><div style="font-size:11px;font-weight:600;color:var(--t1);margin-top:4px;">AI Import</div></div>
+          <div class="card" style="padding:13px 8px;text-align:center;cursor:pointer;" onclick="go('s-email-inbox')"><div style="font-size:24px;">✉️</div><div style="font-size:11px;font-weight:600;color:var(--t1);margin-top:4px;">Email</div></div>
+          <div class="card" style="padding:13px 8px;text-align:center;cursor:pointer;" onclick="go('s-sharing')"><div style="font-size:24px;">🔗</div><div style="font-size:11px;font-weight:600;color:var(--t1);margin-top:4px;">Sharing</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="sh" style="padding:0 0 9px;">Recent Files</div>
+        <div class="card">
+          <div class="cr" style="cursor:pointer;" onclick="go('s-file-viewer')">
+            <div class="fi pdf">PDF</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Q4-Financial-Report.pdf</div><div class="t3c">2.4 MB · Today</div></div>
+            <span class="bg res"><span class="bg-dot"></span>Restricted</span>
+          </div>
+          <div class="cr" style="cursor:pointer;" onclick="go('s-file-browser')">
+            <div class="fi doc">DOC</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Employee-Handbook-2026.docx</div><div class="t3c">847 KB · Yesterday</div></div>
+            <span class="bg int"><span class="bg-dot"></span>Internal</span>
+          </div>
+          <div class="cr" style="cursor:pointer;" onclick="go('s-file-browser')">
+            <div class="fi xls">XLS</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Budget-Planning-FY26.xlsx</div><div class="t3c">1.1 MB · 2 days ago</div></div>
+            <span class="bg con"><span class="bg-dot"></span>Confidential</span>
+          </div>
+          <div class="cr" style="cursor:pointer;" onclick="go('s-file-browser')">
+            <div class="fi ppt">PPT</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Product-Roadmap-Public.pptx</div><div class="t3c">3.8 MB · 3 days ago</div></div>
+            <span class="bg pub"><span class="bg-dot"></span>Public</span>
+          </div>
+        </div>
+      </div>
+      <div class="card p16">
+        <div class="rjb mb8"><div class="semi" style="font-size:13px;color:var(--t1);">Vault Status</div><span style="font-size:11px;color:var(--ok);font-weight:600;">● SECURED</span></div>
+        <div style="display:flex;gap:16px;">
+          <div class="tc" style="flex:1;"><div style="font-size:19px;font-weight:700;color:var(--brand);">247</div><div class="t3c">Files</div></div>
+          <div class="tc" style="flex:1;"><div style="font-size:19px;font-weight:700;color:var(--con-d);">12</div><div class="t3c">Confidential</div></div>
+          <div class="tc" style="flex:1;"><div style="font-size:19px;font-weight:700;color:var(--res-d);">3</div><div class="t3c">Restricted</div></div>
+        </div>
+      </div>
+      <div style="height:12px;"></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="ti on" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb" style="color:var(--brand);">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S6 FILE BROWSER ══ -->
+<div class="scr" id="s-file-browser" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt"><div class="lt-text">Files</div><div class="row" style="gap:8px;padding-bottom:8px;"><button class="ibtn" onclick="go('s-ai-import')">➕</button><button class="ibtn">⋯</button></div></div>
+  <div style="padding:6px 16px 4px;"><div style="background:var(--card);border-radius:var(--r12);padding:8px 14px;display:flex;gap:8px;align-items:center;color:var(--t3);font-size:14px;">🔍 Search files…</div></div>
+  <div style="padding:5px 16px;display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;">
+    <div class="chip on">All</div><div class="chip">🔴 Restricted</div><div class="chip">🟠 Confidential</div><div class="chip">🔵 Internal</div><div class="chip">🟢 Public</div>
+  </div>
+  <div class="sc">
+    <div class="sh">SharePoint — Acme Corp</div>
+    <div class="card ph16 mb16">
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-file-viewer')">
+        <div class="fi pdf">PDF</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Q4-Financial-Report.pdf</div><div class="t3c">2.4 MB · XQ Encrypted</div></div>
+        <span class="bg res"><span class="bg-dot"></span>Restricted</span>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-doc-editor')">
+        <div class="fi doc">DOC</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Employee-Handbook-2026.docx</div><div class="t3c">847 KB · XQ Encrypted</div></div>
+        <span class="bg int"><span class="bg-dot"></span>Internal</span>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-file-viewer')">
+        <div class="fi xls">XLS</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Budget-Planning-FY26.xlsx</div><div class="t3c">1.1 MB · XQ Encrypted</div></div>
+        <span class="bg con"><span class="bg-dot"></span>Confidential</span>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-file-viewer')">
+        <div class="fi ppt">PPT</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Product-Roadmap-Public.pptx</div><div class="t3c">3.8 MB · XQ Encrypted</div></div>
+        <span class="bg pub"><span class="bg-dot"></span>Public</span>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-file-viewer')">
+        <div class="fi img">IMG</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Patient-Records-Scan.jpg</div><div class="t3c">4.2 MB · XQ Encrypted</div></div>
+        <span class="bg res"><span class="bg-dot"></span>Restricted</span>
+      </div>
+    </div>
+    <div class="sh">Local Vault</div>
+    <div class="card ph16 mb16">
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-file-viewer')">
+        <div class="fi doc">DOC</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);">Contract-NDA-2026.docx</div><div class="t3c">320 KB · Imported today</div></div>
+        <span class="bg con"><span class="bg-dot"></span>Confidential</span>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S7 FILE VIEWER ══ -->
+<div class="scr" id="s-file-viewer" style="background:#000;">
+  <div class="sb" style="background:#1A1A1A;"><span class="t" style="color:#fff;">9:41</span><span class="ic" style="color:#fff;">⚡ 📶</span></div>
+  <div class="nb" style="background:rgba(26,26,26,.95);border-color:#333;">
+    <span class="nb-back" onclick="go('s-file-browser')">← Files</span>
+    <span class="nb-title" style="color:#fff;font-size:14px;">Q4-Financial-Report.pdf</span>
+    <span class="nb-act" style="font-size:18px;" onclick="showSheet()">⤴</span>
+  </div>
+  <div style="background:#7B0033;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:8px;"><span>🚫</span><div style="color:#fff;font-size:11px;font-weight:700;letter-spacing:.4px;">RESTRICTED — PHI DETECTED</div></div>
+    <span class="bg res" style="font-size:8px;">AI Classified</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;position:relative;background:#1E1E1E;">
+    <div class="wm"><div class="wm-t">RESTRICTED • brian@xqmsg.com</div></div>
+    <div style="padding:20px;color:#E0E0E0;">
+      <div style="font-size:18px;font-weight:800;margin-bottom:18px;text-align:center;color:#fff;">Acme Corp — Q4 Financial Report</div>
+      <div style="background:#2A2A2A;border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="height:7px;background:#3A3A3A;border-radius:4px;margin-bottom:7px;"></div>
+        <div style="height:7px;background:#3A3A3A;border-radius:4px;width:75%;margin-bottom:7px;"></div>
+        <div style="height:7px;background:#3A3A3A;border-radius:4px;width:90%;"></div>
+      </div>
+      <div style="background:#2A2A2A;border-radius:8px;padding:14px;margin-bottom:10px;border-left:3px solid #C62828;">
+        <div style="font-size:10px;color:#FF6E9E;font-weight:700;margin-bottom:7px;">⚠ PHI DETECTED — 12 patient identifiers</div>
+        <div style="height:7px;background:#4A1010;border-radius:4px;margin-bottom:7px;"></div>
+        <div style="height:7px;background:#4A1010;border-radius:4px;width:60%;"></div>
+      </div>
+      <div style="background:#2A2A2A;border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="height:7px;background:#3A3A3A;border-radius:4px;margin-bottom:7px;"></div>
+        <div style="height:7px;background:#3A3A3A;border-radius:4px;width:85%;"></div>
+      </div>
+      <!-- Cited Controls Panel -->
+      <div style="margin-top:18px;border-top:1px solid #333;padding-top:14px;">
+        <div style="font-size:10px;font-weight:700;color:#FF6E9E;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px;">⚖ Cited Controls Triggered</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#1A0A00;border:1px solid #5A2000;border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:#C62828;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">HIPAA</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#FFB3B3;">§164.502 — Use &amp; Disclosure of PHI</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">External disclosure of protected health information without patient authorization is prohibited. 12 identifiers detected.</div>
+            </div>
+          </div>
+          <div style="background:#0A0A1A;border:1px solid #1E2A5A;border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:#1565C0;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">NIST</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#90CAF9;">SP 800-53 AC-3 — Access Enforcement</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">Policy engine enforces approved authorizations. External share to partner@external.com blocked pending approval.</div>
+            </div>
+          </div>
+          <div style="background:#0A0A1A;border:1px solid #1E2A5A;border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:#1565C0;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">NIST</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#90CAF9;">SP 800-53 SI-12 — Info Management &amp; Retention</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">Handling and retention of PHI must comply with policy. Audit record created. Watermark applied.</div>
+            </div>
+          </div>
+          <div style="background:#1A0A00;border:1px solid #5A2000;border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:#FF6D00;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">GDPR</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#FFCC80;">Art. 9 — Special Category Personal Data</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">Health data requires explicit consent or a legal basis before processing or transfer. No consent record found.</div>
+            </div>
+          </div>
+          <div style="background:#0D1A0D;border:1px solid #1A4A1A;border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:#2E7D32;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">XQ</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#A5D6A7;">Policy: EXTERNAL_SHARE_BLOCKED</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">Enterprise rule: Restricted files require VP-level approval before sharing outside org domain. Request approval →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#1A1A1A;border-top:1px solid #333;padding:11px 16px;flex-shrink:0;">
+    <div style="display:flex;gap:9px;">
+      <div style="flex:1;display:flex;gap:8px;">
+        <div style="background:#2A0012;border-radius:8px;padding:7px 10px;flex:1;text-align:center;">
+          <div style="font-size:9px;color:#FF6E9E;font-weight:700;margin-bottom:1px;">RISK</div>
+          <div style="font-size:20px;font-weight:800;color:#FF6E9E;">94</div>
+        </div>
+        <div style="background:#1A2A1A;border-radius:8px;padding:7px 10px;flex:1;text-align:center;">
+          <div style="font-size:9px;color:#67C97A;font-weight:700;margin-bottom:1px;">ENTITIES</div>
+          <div style="font-size:20px;font-weight:800;color:#67C97A;">12</div>
+        </div>
+        <div style="background:#1A1A2A;border-radius:8px;padding:7px 10px;flex:1;text-align:center;">
+          <div style="font-size:9px;color:#6AABFF;font-weight:700;margin-bottom:1px;">POLICY</div>
+          <div style="font-size:12px;font-weight:700;color:#FF6B6B;margin-top:3px;">BLOCK</div>
+        </div>
+      </div>
+      <button style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;" onclick="showSheet()">Share ⤴</button>
+    </div>
+  </div>
+  <!-- Share sheet -->
+  <div class="ov hide" id="ssheet">
+    <div class="bs-panel">
+      <div class="bsh"></div>
+      <div class="steps" id="sdots">
+        <div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div>
+      </div>
+      <div id="ss1">
+        <div class="bs-title">Share Securely</div>
+        <div class="bs-sub">Recipients need XQ to decrypt</div>
+        <!-- People / Groups tab switch -->
+        <div style="display:flex;background:var(--bg);border-radius:var(--r8);padding:2px;margin-bottom:14px;">
+          <div id="ss-tab-people" style="flex:1;padding:7px;border-radius:6px;font-size:13px;font-weight:600;color:var(--t1);text-align:center;cursor:pointer;background:var(--card);box-shadow:var(--sh1);" onclick="ssTab('people')">👤 People</div>
+          <div id="ss-tab-groups" style="flex:1;padding:7px;border-radius:6px;font-size:13px;font-weight:600;color:var(--t2);text-align:center;cursor:pointer;" onclick="ssTab('groups')">👥 Groups</div>
+        </div>
+        <!-- People tab -->
+        <div id="ss-people-tab">
+          <input class="inp mb12" placeholder="Add recipient email…" value="partner@external.com">
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;">
+            <div style="background:var(--brand-light);border-radius:var(--rfull);padding:4px 11px;font-size:12px;color:var(--brand);">alice@acme.com ×</div>
+            <div style="background:var(--brand-light);border-radius:var(--rfull);padding:4px 11px;font-size:12px;color:var(--brand);">bob@acme.com ×</div>
+          </div>
+          <div class="ra mb14" style="padding:11px 13px;"><span style="font-size:16px;flex-shrink:0;">⚠️</span><div><div class="ra-t" style="font-size:11px;">External Recipient</div><div class="ra-d" style="font-size:11px;">PHI sharing to external domain requires VP approval per policy.</div></div></div>
+        </div>
+        <!-- Groups tab -->
+        <div id="ss-groups-tab" style="display:none;">
+          <div class="t2c mb12" style="font-size:12px;">Share with your workspaces. All members gain access per their individual policy.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+            <div id="sg1" style="background:var(--brand-light);border:1.5px solid var(--brand);border-radius:var(--r12);padding:11px 14px;display:flex;gap:10px;align-items:center;cursor:pointer;" onclick="toggleGroup('sg1')">
+              <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">⚕️</div>
+              <div class="col"><div style="font-size:13px;font-weight:600;color:var(--t1);">Acme Health — Clinical</div><div class="t3c">24 members · Restricted policy</div></div>
+              <span style="color:var(--brand);font-size:16px;font-weight:700;flex-shrink:0;">✓</span>
+            </div>
+            <div id="sg2" style="background:var(--card);border:1px solid var(--sep);border-radius:var(--r12);padding:11px 14px;display:flex;gap:10px;align-items:center;cursor:pointer;" onclick="toggleGroup('sg2')">
+              <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#1565C0,#4A7CF7);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">⚖️</div>
+              <div class="col"><div style="font-size:13px;font-weight:600;color:var(--t1);">Acme Legal</div><div class="t3c">8 members · Confidential policy</div></div>
+              <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+            </div>
+            <div id="sg3" style="background:var(--card);border:1px solid var(--sep);border-radius:var(--r12);padding:11px 14px;display:flex;gap:10px;align-items:center;cursor:pointer;" onclick="toggleGroup('sg3')">
+              <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#2E7D32,#43A047);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📊</div>
+              <div class="col"><div style="font-size:13px;font-weight:600;color:var(--t1);">Acme Finance</div><div class="t3c">12 members · Confidential policy</div></div>
+              <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+            </div>
+          </div>
+          <div style="background:var(--con-bg);border-radius:var(--r8);padding:10px 12px;font-size:11px;color:var(--con-t);margin-bottom:14px;">⚠️ All 24 Clinical members will gain access. Each member's policy rules still apply individually.</div>
+        </div>
+        <button class="btn bp" onclick="sStep(2)">AI Risk Check →</button>
+      </div>
+      <div id="ss2" style="display:none;">
+        <div class="bs-title">AI Risk Analysis</div>
+        <div class="bs-sub">On-device CoreML scan complete</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+          <div style="background:var(--res-bg);border-radius:var(--r12);padding:11px;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--res-t);font-weight:600;">PHI Detected</span><span style="font-size:12px;font-weight:700;color:var(--res-t);">12 entities</span></div>
+          <div style="background:var(--con-bg);border-radius:var(--r12);padding:11px;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--con-t);font-weight:600;">Financial Data</span><span style="font-size:12px;font-weight:700;color:var(--con-t);">$4.2M figures</span></div>
+          <div style="background:var(--res-bg);border-radius:var(--r12);padding:11px;display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--res-t);font-weight:600;">External Share Risk</span><span style="font-size:12px;font-weight:700;color:var(--res-t);">CRITICAL</span></div>
+        </div>
+        <button class="btn bp" onclick="sStep(3)">Configure Settings →</button>
+      </div>
+      <div id="ss3" style="display:none;">
+        <div class="bs-title">Share Settings</div>
+        <div class="bs-sub">Encryption enforced by policy</div>
+        <div class="card mb16">
+          <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Expiry</div><div class="t3c">File access expires</div></div><div style="color:var(--brand);font-size:13px;font-weight:600;">7 days</div></div>
+          <div class="cr rjb"><div class="t1c" style="font-size:13px;">Screenshot Detection</div><div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div></div>
+          <div class="cr rjb"><div class="t1c" style="font-size:13px;">Require XQ App</div><div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div></div>
+          <div class="cr rjb"><div class="t1c" style="font-size:13px;">Audit Log</div><div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div></div>
+        </div>
+        <button class="btn bp" onclick="sStep(4)">Send Securely →</button>
+      </div>
+      <div id="ss4" style="display:none;text-align:center;padding:10px 0;">
+        <div style="font-size:52px;margin-bottom:14px;">✅</div>
+        <div class="bs-title" style="text-align:center;">Shared Securely</div>
+        <div class="bs-sub" style="text-align:center;margin-bottom:20px;">Encrypted link sent · Expires 7 days · Audit active</div>
+        <button class="btn bs mb8" onclick="hideSheet()">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S8 AI IMPORT ══ -->
+<div class="scr" id="s-ai-import" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-file-browser')">← Cancel</span><span class="nb-title">Import & Classify</span><span></span></div>
+  <div class="sc p16">
+    <p class="t2c mb16" style="line-height:1.5;">Select a source. XQ AI scans and classifies on-device before encrypting to your vault.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px;">
+      <div class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="startScan()"><div style="font-size:30px;">📄</div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-top:6px;">Files App</div></div>
+      <div class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="startScan()"><div style="font-size:30px;">📸</div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-top:6px;">Camera</div></div>
+      <div class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="startScan()"><div style="font-size:30px;">☁️</div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-top:6px;">iCloud Drive</div></div>
+      <div class="card" style="padding:16px;text-align:center;cursor:pointer;" onclick="startScan()"><div style="font-size:30px;">📎</div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-top:6px;">AirDrop</div></div>
+    </div>
+    <div id="scan-box" style="display:none;">
+      <div class="scan-box mb12">
+        <div class="scan-grid"></div>
+        <div class="scan-bar"></div>
+        <div style="z-index:2;text-align:center;"><div style="font-size:26px;margin-bottom:6px;">🤖</div><div style="color:#fff;font-size:12px;font-weight:600;">AI Scanning…</div><div style="color:rgba(255,255,255,.5);font-size:10px;margin-top:3px;">On-device CoreML · No cloud</div></div>
+      </div>
+      <div class="card p16" id="scan-steps-card">
+        <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:10px;">AI Classification</div>
+        <div id="scan-steps" style="display:flex;flex-direction:column;gap:7px;"></div>
+      </div>
+    </div>
+    <div id="result-box" style="display:none;">
+      <div style="background:var(--con-bg);border:1px solid var(--con-d);border-radius:var(--r16);padding:15px;margin-bottom:14px;">
+        <div class="row mb12"><div class="fi doc" style="width:34px;height:42px;font-size:8px;">DOC</div><div><div style="font-size:13px;font-weight:600;color:var(--t1);">Contract-NDA-2026.docx</div><div class="t3c">320 KB · Scanned in 1.4s</div></div></div>
+        <div class="rjb mb8"><div class="t2c" style="font-size:12px;">Classification</div><span class="bg con"><span class="bg-dot"></span>Confidential</span></div>
+        <div class="rjb mb8"><div class="t2c" style="font-size:12px;">Risk Score</div><div style="font-size:12px;font-weight:700;color:var(--con-t);">67 / 100</div></div>
+        <div class="rjb"><div class="t2c" style="font-size:12px;">Entities Found</div><div style="font-size:12px;font-weight:600;color:var(--t1);">PII ×4, Contract ×12</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--t2);margin-bottom:12px;line-height:1.5;padding:11px;background:var(--card);border-radius:var(--r12);">🔒 AES-256-GCM encrypted with your Secure Enclave key before vault write.</div>
+      <button class="btn bp mb8" onclick="go('s-file-browser')">Encrypt & Save to Vault</button>
+      <button class="btn bo" onclick="resetScan()">Reclassify Manually</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S9 EMAIL INBOX ══ -->
+<div class="scr" id="s-email-inbox" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt"><div class="lt-text">Secure Email</div><div style="padding-bottom:8px;"><button style="background:var(--brand);color:#fff;border:none;border-radius:var(--rfull);padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;" onclick="go('s-email-compose')">✏️ Compose</button></div></div>
+  <div style="padding:5px 16px 7px;display:flex;gap:6px;"><div class="chip on">Inbox (4)</div><div class="chip">Sent</div><div class="chip">Drafts</div></div>
+  <div class="sc">
+    <div class="card ph16">
+      <div class="cr" style="cursor:pointer;background:linear-gradient(135deg,rgba(198,40,40,.05),transparent);padding:13px 0;" onclick="go('s-email-compose')">
+        <div style="position:relative;flex-shrink:0;"><div class="av" style="background:#C62828;">CT</div><div style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#FF3B30;border-radius:50%;border:2px solid var(--card);"></div></div>
+        <div class="col"><div class="rjb"><span class="t1c semi" style="font-size:13px;">Carol Thomas</span><span class="t3c">9:14 AM</span></div><div style="font-size:12px;color:var(--t1);margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Re: Patient discharge summary — URGENT</div><div style="display:flex;gap:6px;margin-top:3px;"><span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span><span style="font-size:10px;color:var(--danger);">⚠ PHI</span></div></div>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-email-compose')">
+        <div class="av" style="background:#1565C0;">JS</div>
+        <div class="col"><div class="rjb"><span class="t1c" style="font-size:13px;">John Smith</span><span class="t3c">8:30 AM</span></div><div style="font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Q4 budget review — see attached</div><div style="margin-top:3px;"><span class="bg con" style="font-size:8px;"><span class="bg-dot"></span>Confidential</span></div></div>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-email-compose')">
+        <div class="av" style="background:#2E7D32;">AM</div>
+        <div class="col"><div class="rjb"><span class="t1c" style="font-size:13px;">Alice Martinez</span><span class="t3c">Yesterday</span></div><div style="font-size:12px;color:var(--t2);">Team all-hands agenda</div><div style="margin-top:3px;"><span class="bg int" style="font-size:8px;"><span class="bg-dot"></span>Internal</span></div></div>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-email-compose')">
+        <div class="av" style="background:#3D5AFE;font-size:11px;">XQ</div>
+        <div class="col"><div class="rjb"><span class="t1c" style="font-size:13px;">XQ Security</span><span class="t3c">Yesterday</span></div><div style="font-size:12px;color:var(--t2);">Policy update — new PHI handling rules</div><div style="margin-top:3px;"><span class="bg pub" style="font-size:8px;"><span class="bg-dot"></span>Public</span></div></div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
+    <div class="ti on" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb" style="color:var(--brand);">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S10 COMPOSE ══ -->
+<div class="scr" id="s-email-compose" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-email-inbox')">← Cancel</span><span class="nb-title">New Secure Message</span><span class="nb-act">Send</span></div>
+  <div style="background:#FFF8E1;border-bottom:1px solid #FFD54F;padding:9px 16px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
+    <span>⚠️</span><div style="font-size:11px;color:#6D4C00;line-height:1.4;">External recipient. XQ encrypts end-to-end. Recipient must have XQ.</div>
+  </div>
+  <div class="sc">
+    <div style="background:var(--card);border-bottom:.5px solid var(--sep);">
+      <!-- To -->
+      <div style="display:flex;gap:8px;align-items:center;padding:9px 16px;border-bottom:.5px solid var(--sep);">
+        <span style="font-size:12px;color:var(--t2);width:32px;flex-shrink:0;">To:</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;flex:1;align-items:center;">
+          <div style="background:var(--brand-light);border-radius:var(--rfull);padding:3px 10px;font-size:12px;color:var(--brand);">carol.thomas@hospital.org ×</div>
+          <span style="font-size:13px;color:var(--t3);">+</span>
+        </div>
+        <span id="cc-toggle" style="font-size:12px;color:var(--brand);font-weight:600;cursor:pointer;flex-shrink:0;" onclick="toggleCC()">Cc/Bcc</span>
+      </div>
+      <!-- CC/BCC (hidden by default) -->
+      <div id="cc-fields" style="display:none;">
+        <div style="display:flex;gap:8px;align-items:center;padding:9px 16px;border-bottom:.5px solid var(--sep);">
+          <span style="font-size:12px;color:var(--t2);width:32px;flex-shrink:0;">Cc:</span>
+          <div style="flex:1;font-size:14px;color:var(--t3);" contenteditable="true">john.smith@acme.com</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:9px 16px;border-bottom:.5px solid var(--sep);">
+          <span style="font-size:12px;color:var(--t2);width:32px;flex-shrink:0;">Bcc:</span>
+          <div style="flex:1;font-size:14px;color:var(--t3);outline:none;" contenteditable="true"></div>
+        </div>
+      </div>
+      <!-- Subject -->
+      <div style="display:flex;gap:8px;align-items:center;padding:9px 16px;border-bottom:.5px solid var(--sep);">
+        <span style="font-size:12px;color:var(--t2);width:32px;flex-shrink:0;">Subj:</span>
+        <div style="flex:1;font-size:14px;color:var(--t1);outline:none;" contenteditable="true">Patient discharge summary — URGENT</div>
+      </div>
+      <!-- Encryption + From -->
+      <div style="display:flex;gap:8px;align-items:center;padding:8px 16px;">
+        <span style="font-size:12px;color:var(--t2);width:32px;flex-shrink:0;">Enc:</span>
+        <div style="display:flex;align-items:center;gap:5px;flex:1;"><span>🔒</span><span style="font-size:12px;color:var(--ok);font-weight:600;">AES-256-GCM · E2E</span></div>
+        <span style="font-size:11px;color:var(--t3);">brian@xqmsg.com ▾</span>
+      </div>
+    </div>
+    <!-- Email formatting toolbar -->
+    <div style="display:flex;gap:1px;padding:6px 10px;background:var(--card);border-bottom:.5px solid var(--sep);overflow-x:auto;flex-shrink:0;align-items:center;">
+      <button class="etbtn" onclick="this.classList.toggle('on');"><b>B</b></button>
+      <button class="etbtn" onclick="this.classList.toggle('on');"><i>I</i></button>
+      <button class="etbtn" onclick="this.classList.toggle('on');"><u>U</u></button>
+      <div style="width:.5px;height:18px;background:var(--sep);margin:0 3px;"></div>
+      <button class="etbtn" style="font-size:12px;">≡</button>
+      <button class="etbtn" style="font-size:12px;">⊞</button>
+      <button class="etbtn" style="font-size:12px;">🔗</button>
+      <div style="flex:1;"></div>
+      <button style="background:var(--bg);border:none;border-radius:var(--r8);padding:5px 9px;font-size:11px;color:var(--t2);cursor:pointer;font-weight:600;">📎 Attach</button>
+    </div>
+    <div style="background:var(--res-bg);border-bottom:1px solid var(--res-d);padding:9px 16px;flex-shrink:0;">
+      <div class="rjb mb8"><span style="font-size:11px;font-weight:700;color:var(--res-t);">AI Risk Score: 78 / 100</span><span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span></div>
+      <div style="background:rgba(198,40,40,.2);border-radius:4px;height:5px;overflow:hidden;margin-bottom:6px;"><div style="width:78%;height:100%;background:linear-gradient(90deg,#C62828,#FF6E9E);border-radius:4px;"></div></div>
+      <div style="font-size:10px;color:var(--res-t);">PHI detected: 8 patient identifiers. External share requires compliance review.</div>
+    </div>
+    <div style="background:var(--card);padding:15px;min-height:160px;">
+      <p style="font-size:14px;color:var(--t1);line-height:1.6;">Hi Carol,</p>
+      <p style="font-size:14px;color:var(--t1);line-height:1.6;margin-top:7px;">Please find attached the discharge summary for patient <span style="background:#FCE4EC;color:#7B0033;border-radius:3px;padding:1px 4px;">MR-28491</span>. All vitals have been reviewed and approved for release.</p>
+      <p style="font-size:14px;color:var(--t1);line-height:1.6;margin-top:7px;">The attached file is XQ-encrypted. You need the XQ app to decrypt.</p>
+    </div>
+    <div style="background:var(--card);border-top:.5px solid var(--sep);padding:11px 16px;display:flex;gap:10px;align-items:center;">
+      <div class="fi pdf" style="width:30px;height:36px;font-size:8px;">PDF</div>
+      <div class="col"><div style="font-size:12px;font-weight:500;color:var(--t1);">Discharge-Summary-MR28491.pdf</div><div class="t3c">1.2 MB · XQ Encrypted · Restricted</div></div>
+      <span style="color:var(--t3);cursor:pointer;">×</span>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div style="background:var(--tab);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:11px 20px 36px;flex-shrink:0;">
+    <button class="btn bp" onclick="go('s-email-inbox')">Send Encrypted Message 🔒</button>
+  </div>
+</div>
+
+<!-- ══ S11 SHARING CENTER ══ -->
+<div class="scr" id="s-sharing" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt"><div class="lt-text">Sharing</div></div>
+  <div class="sc p16">
+    <div style="display:flex;gap:11px;margin-bottom:18px;">
+      <div class="card tc" style="flex:1;padding:14px;"><div style="font-size:21px;font-weight:800;color:var(--brand);">8</div><div class="t3c">Active</div></div>
+      <div class="card tc" style="flex:1;padding:14px;"><div style="font-size:21px;font-weight:800;color:var(--warn);">3</div><div class="t3c">Expiring</div></div>
+      <div class="card tc" style="flex:1;padding:14px;"><div style="font-size:21px;font-weight:800;color:var(--ok);">24</div><div class="t3c">Views</div></div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Active Shares</div>
+    <div class="card mb16">
+      <div class="cr"><div class="fi pdf" style="width:32px;height:38px;font-size:8px;">PDF</div><div class="col"><div style="font-size:12px;font-weight:500;color:var(--t1);">Q4-Financial-Report.pdf</div><div class="t3c">3 recipients · Expires 2 days</div></div><span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span></div>
+      <div class="cr"><div class="fi doc" style="width:32px;height:38px;font-size:8px;">DOC</div><div class="col"><div style="font-size:12px;font-weight:500;color:var(--t1);">Employee-Handbook-2026.docx</div><div class="t3c">12 recipients · No expiry</div></div><span class="bg int" style="font-size:8px;"><span class="bg-dot"></span>Internal</span></div>
+      <div class="cr"><div class="fi ppt" style="width:32px;height:38px;font-size:8px;">PPT</div><div class="col"><div style="font-size:12px;font-weight:500;color:var(--t1);">Product-Roadmap-Public.pptx</div><div class="t3c">Open · Expires 30 days</div></div><span class="bg pub" style="font-size:8px;"><span class="bg-dot"></span>Public</span></div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Recent Activity</div>
+    <div class="card">
+      <div class="cr"><span style="font-size:17px;">👁️</span><div class="col"><div style="font-size:12px;color:var(--t1);">alice@partner.com viewed Q4 Report</div><div class="t3c">2 min ago</div></div></div>
+      <div class="cr"><span style="font-size:17px;">📥</span><div class="col"><div style="font-size:12px;color:var(--t1);">bob@acme.com downloaded Handbook</div><div class="t3c">1 hour ago</div></div></div>
+      <div class="cr"><span style="font-size:17px;">🚫</span><div class="col"><div style="font-size:12px;color:var(--danger);">Screenshot attempt blocked on Restricted file</div><div class="t3c" style="color:var(--danger);">3 hours ago</div></div></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti on" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb" style="color:var(--brand);">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S12 SETTINGS ══ -->
+<div class="scr" id="s-settings" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt"><div class="lt-text">Settings</div></div>
+  <div class="sc">
+    <div class="sh">Account</div>
+    <div class="card ph16 mb16">
+      <div class="cr" style="padding:13px 0;"><div class="av" style="width:46px;height:46px;font-size:15px;">BW</div><div class="col"><div style="font-size:15px;font-weight:600;color:var(--t1);">Brian Wane</div><div class="t2c">brian@xqmsg.com</div><div style="margin-top:4px;"><span style="background:#E8EAFD;color:var(--brand);font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rfull);">ENTERPRISE ADMIN</span></div></div></div>
+    </div>
+    <div class="sh">Security</div>
+    <div class="card ph16 mb16">
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">🔒</span><div class="t1c">Biometric Lock</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">⏱️</span><div class="t1c">Auto-lock</div></div><div style="color:var(--brand);font-size:13px;font-weight:500;">2 min</div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">📜</span><div class="t1c">Certificate Pinning</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">Active</div></div>
+    </div>
+    <div class="sh">Enterprise Admin</div>
+    <div class="card ph16 mb16" style="border:1.5px solid var(--brand);">
+      <div class="cr rjb" style="padding:13px 0;cursor:pointer;" onclick="go('s-policy')">
+        <div class="row" style="gap:11px;"><div style="width:38px;height:38px;background:var(--brand-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🏛️</div><div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Policy Management</div><div class="t3c">PHI rules · Share controls · AI gates</div></div></div>
+        <span style="color:var(--brand);font-size:17px;">›</span>
+      </div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);">Cloud AI (globally off)</div><div class="t3c">CUI/PHI always local-only</div></div><div class="tog off"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Tenant Users</div><div style="font-size:13px;font-weight:600;color:var(--t1);">142</div></div>
+    </div>
+    <div class="sh">About</div>
+    <div class="card ph16 mb20">
+      <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Version</div><div class="t2c">1.0.0 (Build 1)</div></div>
+      <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">XQ API</div><div style="color:var(--ok);font-size:12px;font-weight:600;">v3 · Connected</div></div>
+      <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Secure Enclave</div><div style="color:var(--ok);font-size:12px;font-weight:600;">Active</div></div>
+      <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">CoreML Models</div><div class="t2c">3 loaded · 80 MB</div></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti on" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb" style="color:var(--brand);">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S13 POLICY ══ -->
+<div class="scr" id="s-policy" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-settings')">← Settings</span><span class="nb-title">Policy Management</span><span class="nb-act">Save</span></div>
+  <div class="sc p16">
+    <div class="ra mb16" style="padding:11px 13px;"><span style="font-size:18px;flex-shrink:0;">🔏</span><div><div class="ra-t" style="font-size:11px;">Policy Bundle Signed</div><div class="ra-d" style="font-size:11px;">Last sync 4 min ago · HSM signature verified · v2.1.4</div></div></div>
+    <div class="sh" style="padding:0 0 9px;">Classification Rules</div>
+    <div class="card mb16">
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">PHI Auto-detection</div><div class="t3c">AI flags patient health info</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">PII Auto-detection</div><div class="t3c">Names, SSN, DOB, addresses</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Financial Data</div><div class="t3c">Account numbers, transactions</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Share Enforcement</div>
+    <div class="card mb16">
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Block External PHI Shares</div><div class="t3c" style="color:var(--res-t);">CRITICAL policy</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Max Share Expiry (Restricted)</div></div><div style="color:var(--brand);font-size:13px;font-weight:600;">7 days</div></div>
+      <div class="cr rjb"><div class="t1c" style="font-size:13px;">Require XQ for Recipients</div><div class="tog on"><div class="tog-k"></div></div></div>
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Screenshot Detection</div><div class="t3c">Watermark + audit log</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">AI Policy Gates</div>
+    <div class="card mb16">
+      <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Cloud AI Processing</div><div class="t3c">Enterprise opt-in (currently OFF)</div></div><div class="tog off"><div class="tog-k"></div></div></div>
+      <div class="cr"><span style="font-size:15px;">⚠️</span><div class="col"><div style="font-size:12px;color:var(--res-t);font-weight:600;">CUI / PHI = Local Only Always</div><div class="t3c">Hardcoded. Cannot be overridden by any policy.</div></div></div>
+    </div>
+    <button class="btn bp mb8" onclick="go('s-settings')">Publish Policy Update</button>
+    <button class="btn bo mb20" onclick="go('s-settings')">Discard Changes</button>
+  </div>
+</div>
+
+<!-- ══ S14 ENTERPRISE AUTH ══ -->
+<div class="scr" id="s-enterprise-auth" style="background:#000;align-items:center;justify-content:center;">
+  <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div style="width:64px;height:64px;border-radius:17px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 32px rgba(61,90,254,.4);font-size:32px;">🏢</div>
+    <div style="font-size:24px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:8px;">Enterprise Sign-In</div>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);text-align:center;line-height:1.5;margin-bottom:28px;">Enter your work email to auto-detect your identity provider.</p>
+    <div style="width:100%;margin-bottom:16px;">
+      <input id="ent-email" class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;" placeholder="work@yourcompany.com" value="" oninput="detectIDP(this.value)">
+    </div>
+    <div id="idp-badge" style="display:none;width:100%;margin-bottom:16px;">
+      <div id="idp-card" style="background:#1C1C1E;border-radius:var(--r12);padding:13px 16px;display:flex;align-items:center;gap:11px;border:1px solid #38383A;">
+        <div id="idp-icon" style="font-size:26px;flex-shrink:0;">🔷</div>
+        <div class="col">
+          <div id="idp-name" style="font-size:13px;font-weight:600;color:#fff;">Microsoft Entra ID</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Detected via domain MX record</div>
+        </div>
+        <div style="background:rgba(61,90,254,.3);border-radius:var(--rfull);padding:3px 8px;font-size:9px;color:#6979F8;font-weight:700;">AUTO</div>
+      </div>
+    </div>
+    <button id="ent-btn" class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);width:100%;opacity:.4;" onclick="simulateIDPAuth()">Continue with SSO</button>
+    <div id="auth-loading" style="display:none;width:100%;padding:20px 0;text-align:center;">
+      <div style="font-size:28px;margin-bottom:14px;animation:xspin 1s linear infinite;display:inline-block;">⟳</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:16px;">Authenticating with identity provider…</div>
+      <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-start;width:100%;">
+        <div id="at1" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ Identity provider authenticated</div>
+        <div id="at2" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ App Attest assertion valid</div>
+        <div id="at3" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ Secure Enclave key bound</div>
+        <div id="at4" style="font-size:11px;color:#6979F8;opacity:0;transition:opacity .3s;">✓ Policy bundle loaded</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 28px 44px;width:100%;">
+    <button class="btn" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);" onclick="go('s-welcome')">← Back</button>
+  </div>
+</div>
+
+<!-- ══ S15 WORKGROUP SELECT ══ -->
+<div class="scr" id="s-workgroup-select" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span></span><span class="nb-title">Select Workspace</span><span class="nb-act" onclick="go('s-home')">Skip</span></div>
+  <div class="sc p16">
+    <p class="t2c mb16" style="line-height:1.5;">You belong to multiple workspaces. Choose your active workspace or work across all of them.</p>
+    <div class="sh" style="padding:0 0 9px;">Personal</div>
+    <div id="wg-personal" class="wgroup-card active mb12" onclick="selectWorkgroup('wg-personal')">
+      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🔐</div>
+      <div class="col">
+        <div style="font-size:15px;font-weight:700;color:var(--t1);">Personal Vault</div>
+        <div class="t3c">Your private encrypted space</div>
+        <div style="margin-top:4px;"><span class="bg pub"><span class="bg-dot"></span>Personal</span></div>
+      </div>
+      <span class="wg-check" style="color:var(--brand);font-size:18px;font-weight:700;flex-shrink:0;">✓</span>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Enterprise Workspaces</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+      <div id="wg-clinical" class="wgroup-card" onclick="selectWorkgroup('wg-clinical')">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#C62828,#E53935);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⚕️</div>
+        <div class="col">
+          <div style="font-size:15px;font-weight:700;color:var(--t1);">Acme Health — Clinical</div>
+          <div class="t3c">24 members · Admin</div>
+          <div style="margin-top:4px;"><span class="bg res"><span class="bg-dot"></span>Restricted default</span></div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+      </div>
+      <div id="wg-legal" class="wgroup-card" onclick="selectWorkgroup('wg-legal')">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1565C0,#1E88E5);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⚖️</div>
+        <div class="col">
+          <div style="font-size:15px;font-weight:700;color:var(--t1);">Acme Legal</div>
+          <div class="t3c">8 members · Member</div>
+          <div style="margin-top:4px;"><span class="bg con"><span class="bg-dot"></span>Confidential default</span></div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+      </div>
+      <div id="wg-finance" class="wgroup-card" onclick="selectWorkgroup('wg-finance')">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#2E7D32,#43A047);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📊</div>
+        <div class="col">
+          <div style="font-size:15px;font-weight:700;color:var(--t1);">Acme Finance</div>
+          <div class="t3c">12 members · Member</div>
+          <div style="margin-top:4px;"><span class="bg con"><span class="bg-dot"></span>Confidential default</span></div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+      </div>
+    </div>
+    <button class="btn bp mb8" onclick="go('s-home')">Open Selected Workspace</button>
+    <button class="btn bs" onclick="go('s-home')">Access All Workspaces</button>
+  </div>
+</div>
+
+<!-- ══ S16 DOCUMENT EDITOR ══ -->
+<div class="scr" id="s-doc-editor" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb">
+    <span class="nb-back" onclick="go('s-file-browser')">← Files</span>
+    <span id="autosave-indicator" style="font-size:12px;color:var(--t3);"></span>
+    <span class="nb-act" onclick="go('s-file-browser')">Done</span>
+  </div>
+  <div style="background:#1565C0;padding:7px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:13px;">🔵</span><div style="color:#fff;font-size:11px;font-weight:700;letter-spacing:.4px;">INTERNAL — AI CLASSIFIED</div></div>
+    <span style="font-size:11px;color:rgba(255,255,255,.7);cursor:pointer;" onclick="go('s-ai-import')">Rescan</span>
+  </div>
+  <div style="display:flex;gap:1px;padding:7px 10px;background:var(--card);border-bottom:.5px solid var(--sep);overflow-x:auto;flex-shrink:0;align-items:center;">
+    <button class="etbtn" onclick="this.classList.toggle('on');triggerAutosave();"><b>B</b></button>
+    <button class="etbtn" onclick="this.classList.toggle('on');triggerAutosave();"><i>I</i></button>
+    <button class="etbtn" onclick="this.classList.toggle('on');triggerAutosave();"><u>U</u></button>
+    <div style="width:.5px;height:18px;background:var(--sep);margin:0 3px;"></div>
+    <button class="etbtn" style="font-size:11px;font-weight:700;" onclick="triggerAutosave();">H1</button>
+    <button class="etbtn" style="font-size:11px;font-weight:700;" onclick="triggerAutosave();">H2</button>
+    <button class="etbtn" style="font-size:12px;" onclick="triggerAutosave();">" "</button>
+    <button class="etbtn" style="font-size:12px;" onclick="triggerAutosave();">≡</button>
+    <div style="flex:1;"></div>
+    <button class="etbtn" style="background:var(--brand-light);color:var(--brand);" onclick="go('s-ai-import')">🤖 AI Scan</button>
+  </div>
+  <div class="sc">
+    <div style="padding:16px 16px 8px;background:var(--card);border-bottom:.5px solid var(--sep);">
+      <div style="font-size:22px;font-weight:700;color:var(--t1);outline:none;" contenteditable="true" oninput="triggerAutosave()">Employee-Handbook-2026</div>
+      <div class="t3c" style="margin-top:4px;">Internal · 847 KB · Editing</div>
+    </div>
+    <div style="padding:16px;background:var(--card);min-height:280px;" contenteditable="true" oninput="triggerAutosave()">
+      <p style="font-size:15px;line-height:1.7;color:var(--t1);margin-bottom:12px;"><b>1. Introduction</b><br>Welcome to Acme Corporation. This handbook describes our policies, procedures, and workplace standards effective January 2026.</p>
+      <p style="font-size:15px;line-height:1.7;color:var(--t1);margin-bottom:12px;"><b>2. Code of Conduct</b><br>All employees are expected to act with integrity, respect colleagues and customers, and safeguard company information.</p>
+      <p style="font-size:15px;line-height:1.7;color:var(--t1);">All document edits are encrypted in-place. Changes sync to SharePoint via delta protocol after each autosave.</p>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ══ S17 MY WORKSPACES / GROUPS ══ -->
+<div class="scr" id="s-groups" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt"><div class="lt-text">Workspaces</div><div style="padding-bottom:8px;"><button class="ibtn">➕</button></div></div>
+  <div class="sc p16">
+    <div class="sh" style="padding:0 0 9px;">Active Workspace</div>
+    <div class="card mb16" style="border:1.5px solid #C62828;">
+      <div style="padding:16px;">
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;">
+          <div style="width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#C62828,#E53935);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">⚕️</div>
+          <div class="col">
+            <div style="font-size:16px;font-weight:700;color:var(--t1);">Acme Health — Clinical</div>
+            <div style="display:flex;gap:5px;margin-top:3px;align-items:center;">
+              <span style="background:#C62828;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">ADMIN</span>
+              <span class="bg res"><span class="bg-dot"></span>Restricted</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div class="tc" style="flex:1;background:rgba(0,0,0,.05);border-radius:var(--r8);padding:9px;"><div style="font-size:17px;font-weight:800;color:var(--t1);">24</div><div class="t3c">Members</div></div>
+          <div class="tc" style="flex:1;background:rgba(0,0,0,.05);border-radius:var(--r8);padding:9px;"><div style="font-size:17px;font-weight:800;color:var(--t1);">87</div><div class="t3c">Files</div></div>
+          <div class="tc" style="flex:1;background:rgba(0,0,0,.05);border-radius:var(--r8);padding:9px;"><div style="font-size:17px;font-weight:800;color:var(--res-d);">3</div><div class="t3c">Restricted</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Other Workspaces</div>
+    <div class="card mb16">
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#1565C0,#1E88E5);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">⚖️</div>
+        <div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Acme Legal</div><div class="t3c">8 members · Member</div></div>
+        <button style="background:var(--brand-light);color:var(--brand);border:none;border-radius:var(--rfull);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;" onclick="go('s-workgroup-select')">Switch</button>
+      </div>
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#2E7D32,#43A047);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📊</div>
+        <div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Acme Finance</div><div class="t3c">12 members · Member</div></div>
+        <button style="background:var(--brand-light);color:var(--brand);border:none;border-radius:var(--rfull);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;" onclick="go('s-workgroup-select')">Switch</button>
+      </div>
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔐</div>
+        <div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Personal Vault</div><div class="t3c">Private</div></div>
+        <button style="background:var(--brand-light);color:var(--brand);border:none;border-radius:var(--rfull);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;" onclick="go('s-workgroup-select')">Switch</button>
+      </div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Pending Invites (1)</div>
+    <div class="card mb16" style="border:1.5px solid var(--warn);">
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#E65100,#FF7043);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔬</div>
+        <div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Acme Research</div><div class="t3c">Invited by dr.chen@acme.com · 32 members</div></div>
+        <button style="background:var(--brand);color:#fff;border:none;border-radius:var(--rfull);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;" onclick="go('s-group-invite')">View</button>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti on"><div class="ti-ic">🔗</div><div class="ti-lb" style="color:var(--brand);">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S18 NOTIFICATIONS ══ -->
+<div class="scr" id="s-notifications" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt"><div class="lt-text">Notifications</div><div style="padding-bottom:8px;"><button class="ibtn">✓✓</button></div></div>
+  <div style="padding:5px 16px 7px;display:flex;gap:6px;overflow-x:auto;">
+    <div class="chip on">All (5)</div><div class="chip">📤 Shares (2)</div><div class="chip">👥 Groups (2)</div><div class="chip">🛡 Security (1)</div>
+  </div>
+  <div class="sc">
+    <div class="card ph16 mb12">
+      <div class="cr" style="cursor:pointer;padding:13px 0;background:linear-gradient(135deg,rgba(61,90,254,.04),transparent);" onclick="go('s-received-share')">
+        <div style="position:relative;flex-shrink:0;"><div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#1565C0,#1E88E5);display:flex;align-items:center;justify-content:center;font-size:18px;">📥</div><div style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#FF3B30;border-radius:50%;border:2px solid var(--card);"></div></div>
+        <div class="col"><div class="rjb"><span style="font-size:13px;font-weight:600;color:var(--t1);">File Shared With You</span><span class="t3c">9:14 AM</span></div><div class="t2c" style="font-size:12px;margin-top:2px;">carol.thomas@hospital.org shared "Patient-Discharge-Summary.pdf"</div><div style="margin-top:4px;"><span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span></div></div>
+      </div>
+      <div class="cr" style="cursor:pointer;padding:13px 0;background:linear-gradient(135deg,rgba(61,90,254,.04),transparent);" onclick="go('s-group-invite')">
+        <div style="position:relative;flex-shrink:0;"><div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#E65100,#FF7043);display:flex;align-items:center;justify-content:center;font-size:18px;">👥</div><div style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#FF3B30;border-radius:50%;border:2px solid var(--card);"></div></div>
+        <div class="col"><div class="rjb"><span style="font-size:13px;font-weight:600;color:var(--t1);">Workspace Invitation</span><span class="t3c">8:55 AM</span></div><div class="t2c" style="font-size:12px;margin-top:2px;">dr.chen@acme.com invited you to Acme Research</div></div>
+      </div>
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#C62828,#E53935);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🛡</div>
+        <div class="col"><div class="rjb"><span style="font-size:13px;font-weight:600;color:var(--t1);">Screenshot Detected</span><span class="t3c">7:30 AM</span></div><div class="t2c" style="font-size:12px;margin-top:2px;">Q4-Financial-Report.pdf — screenshot attempt watermarked & logged</div></div>
+      </div>
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#2E7D32,#43A047);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👁️</div>
+        <div class="col"><div class="rjb"><span style="font-size:13px;font-weight:500;color:var(--t1);">File Accessed</span><span class="t3c">Yesterday</span></div><div class="t2c" style="font-size:12px;margin-top:2px;">alice@partner.com viewed Employee-Handbook-2026.docx</div></div>
+      </div>
+      <div class="cr" style="padding:13px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏛️</div>
+        <div class="col"><div class="rjb"><span style="font-size:13px;font-weight:500;color:var(--t1);">Policy Updated</span><span class="t3c">Yesterday</span></div><div class="t2c" style="font-size:12px;margin-top:2px;">New PHI handling rules published. Bundle v2.1.4 signed.</div></div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S19 RECEIVED SHARE ══ -->
+<div class="scr" id="s-received-share" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-notifications')">← Back</span><span class="nb-title">Shared With You</span><span></span></div>
+  <div class="sc p16">
+    <div class="card mb14" style="padding:16px;">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <div class="av" style="width:46px;height:46px;font-size:16px;background:#1565C0;">CT</div>
+        <div class="col">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Carol Thomas</div>
+          <div class="t3c">carol.thomas@hospital.org</div>
+          <div style="margin-top:3px;font-size:11px;color:var(--ok);">✓ XQ verified sender</div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);">9:14 AM</div>
+      </div>
+      <div style="background:var(--bg);border-radius:var(--r8);padding:11px;font-size:13px;color:var(--t1);line-height:1.5;font-style:italic;">"Please review the attached discharge summary and confirm receipt. This is encrypted and expires in 48 hours."</div>
+    </div>
+    <div class="card mb14" style="padding:16px;border:1.5px solid var(--res-d);">
+      <div style="display:flex;gap:11px;align-items:center;margin-bottom:12px;">
+        <div class="fi pdf" style="width:38px;height:46px;font-size:8px;">PDF</div>
+        <div class="col">
+          <div style="font-size:14px;font-weight:600;color:var(--t1);">Patient-Discharge-Summary.pdf</div>
+          <div class="t3c">1.8 MB · Expires in 48h</div>
+        </div>
+        <span class="bg res"><span class="bg-dot"></span>Restricted</span>
+      </div>
+      <div style="background:var(--int-bg);border-radius:var(--r8);padding:10px 12px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;"><span>🔒</span><span style="font-size:12px;font-weight:700;color:var(--int-t);">XQ Security Verified</span></div>
+        <div class="t3c" style="line-height:1.5;">End-to-end encrypted · AES-256-GCM · Sender identity verified · App Attest confirmed</div>
+      </div>
+      <div style="background:#1A0A00;border:1px solid #5A2000;border-radius:var(--r8);padding:10px 12px;display:flex;gap:9px;align-items:flex-start;">
+        <div style="background:#C62828;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">HIPAA</div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#FFB3B3;">§164.502 — PHI Handling Required</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">This file contains protected health information. Access is logged. Do not forward outside XQ.</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn bp mb8" onclick="go('s-file-viewer')">Open Securely</button>
+    <button class="btn bs mb8" onclick="go('s-file-browser')">Save to Vault</button>
+    <button class="btn bo mb16" onclick="go('s-notifications')" style="color:var(--danger);border-color:var(--danger);">Decline</button>
+  </div>
+</div>
+
+<!-- ══ S20 GROUP INVITE ══ -->
+<div class="scr" id="s-group-invite" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-notifications')">← Back</span><span class="nb-title">Workspace Invitation</span><span></span></div>
+  <div class="sc p16">
+    <div style="border-radius:var(--r16);background:linear-gradient(135deg,#E65100,#FF7043);padding:20px;margin-bottom:16px;display:flex;gap:13px;align-items:center;">
+      <div style="font-size:36px;">🔬</div>
+      <div>
+        <div style="font-size:20px;font-weight:800;color:#fff;">Acme Research</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:2px;">Enterprise Workspace</div>
+        <div style="margin-top:6px;"><span style="background:rgba(0,0,0,.25);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--rfull);">INTERNAL default</span></div>
+      </div>
+    </div>
+    <div class="card mb14" style="padding:14px;">
+      <div style="display:flex;align-items:center;gap:11px;">
+        <div class="av" style="background:#E65100;">DC</div>
+        <div class="col">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Invited by Dr. Emily Chen</div>
+          <div class="t3c">dr.chen@acme.com · 8 hours ago</div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb14">
+      <div class="cr" style="padding:11px 16px;"><span style="font-size:17px;">👥</span><div class="col"><div class="t1c">Members</div></div><div style="font-size:14px;font-weight:700;color:var(--t1);">32</div></div>
+      <div class="cr" style="padding:11px 16px;"><span style="font-size:17px;">📁</span><div class="col"><div class="t1c">Shared Files</div></div><div style="font-size:14px;font-weight:700;color:var(--t1);">218</div></div>
+      <div class="cr" style="padding:11px 16px;"><span style="font-size:17px;">🏛️</span><div class="col"><div class="t1c">Policy</div></div><div style="font-size:13px;font-weight:600;color:var(--int-t);">Internal / Confidential</div></div>
+    </div>
+    <div class="sh" style="padding:0 0 9px;">Members</div>
+    <div class="card mb14">
+      <div class="cr" style="padding:10px 0;"><div class="av" style="background:#1565C0;font-size:11px;">DC</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);">Dr. Emily Chen</div><div class="t3c">Admin</div></div></div>
+      <div class="cr" style="padding:10px 0;"><div class="av" style="background:#C62828;font-size:11px;">JL</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);">Dr. James Lee</div><div class="t3c">Member</div></div></div>
+      <div class="cr" style="padding:10px 0;"><div class="av" style="background:#2E7D32;font-size:11px;">SM</div><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);">Sarah Mitchell</div><div class="t3c">Member</div></div></div>
+      <div class="cr" style="padding:10px 0;"><span style="font-size:13px;color:var(--t3);">+29 more members</span></div>
+    </div>
+    <div style="background:var(--int-bg);border-radius:var(--r12);padding:13px 14px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--int-t);margin-bottom:8px;letter-spacing:.3px;">WORKSPACE POLICY</div>
+      <div class="t2c" style="font-size:12px;line-height:1.6;">Files classified Internal or below. External sharing requires approval. AI scanning enabled (local only). Audit log: all access.</div>
+    </div>
+    <button class="btn bp mb8" onclick="go('s-groups')">Join Workspace</button>
+    <button class="btn bo mb16" onclick="go('s-notifications')" style="color:var(--danger);border-color:var(--danger);">Decline Invitation</button>
+  </div>
+</div>
+
+</div><!-- /phone -->
+
+<script>
+function go(id) {
+  document.querySelectorAll('.scr').forEach(s => { s.classList.remove('on'); s.style.display = 'none'; });
+  const t = document.getElementById(id);
+  if (!t) return;
+  t.style.display = 'flex';
+  requestAnimationFrame(() => t.classList.add('on'));
+}
+
+function flow(n) {
+  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications'};
+  go(map[n]);
+  document.querySelectorAll('.fbtn').forEach((b,i) => b.classList.toggle('on', i+1===n));
+  if (n===1) splash();
+}
+
+function splash() {
+  ['c1','c2','c3'].forEach(id => { const e=document.getElementById(id); if(e) e.style.opacity='0'; });
+  const bar = document.getElementById('sp');
+  if (bar) bar.style.width='0%';
+  let p = 0;
+  const t = setInterval(() => {
+    p += 3;
+    if (bar) bar.style.width = Math.min(p,100)+'%';
+    if (p===30) { const e=document.getElementById('c1'); if(e) e.style.opacity='1'; }
+    if (p===62) { const e=document.getElementById('c2'); if(e) e.style.opacity='1'; }
+    if (p===87) { const e=document.getElementById('c3'); if(e) e.style.opacity='1'; }
+    if (p>=100) { clearInterval(t); setTimeout(()=>go('s-welcome'),380); }
+  }, 38);
+}
+
+function showSheet() {
+  const s = document.getElementById('ssheet');
+  if (s) { s.classList.remove('hide'); sStep(1); }
+}
+function hideSheet() {
+  const s = document.getElementById('ssheet');
+  if (s) s.classList.add('hide');
+}
+function sStep(n) {
+  [1,2,3,4].forEach(i => {
+    const e = document.getElementById('ss'+i);
+    if (e) e.style.display = i===n ? 'block' : 'none';
+  });
+  document.querySelectorAll('#sdots .sdot').forEach((d,i) => d.classList.toggle('on', i<n));
+}
+document.getElementById('ssheet')?.addEventListener('click', e => { if(e.target===e.currentTarget) hideSheet(); });
+
+let scanTid = null;
+function startScan() {
+  document.getElementById('scan-box').style.display = 'block';
+  document.getElementById('result-box').style.display = 'none';
+  const steps = document.getElementById('scan-steps');
+  steps.innerHTML = '';
+  const msgs = [
+    ['⏳','Loading document (320 KB)…'],
+    ['🔍','Running SensitiveEntityClassifier…'],
+    ['🔍','Running DocumentClassifier…'],
+    ['📊','Scoring with RiskScoringModel…'],
+    ['✅','Classification complete'],
+  ];
+  let i = 0;
+  clearInterval(scanTid);
+  scanTid = setInterval(() => {
+    if (i >= msgs.length) {
+      clearInterval(scanTid);
+      setTimeout(() => {
+        document.getElementById('scan-box').style.display = 'none';
+        document.getElementById('result-box').style.display = 'block';
+      }, 350);
+      return;
+    }
+    const d = document.createElement('div');
+    d.style.cssText = 'display:flex;align-items:center;gap:7px;animation:sIn .2s ease;';
+    d.innerHTML = `<span>${msgs[i][0]}</span><span style="font-size:12px;color:var(--t2);">${msgs[i][1]}</span>`;
+    steps.appendChild(d);
+    i++;
+  }, 680);
+}
+function resetScan() {
+  clearInterval(scanTid);
+  document.getElementById('scan-box').style.display = 'none';
+  document.getElementById('result-box').style.display = 'none';
+}
+
+function toggleDark() {
+  document.getElementById('phone').classList.toggle('dm');
+  document.querySelector('[onclick="toggleDark()"]').textContent =
+    document.getElementById('phone').classList.contains('dm') ? '☀️ Light' : '🌙 Dark';
+}
+
+function ssTab(tab) {
+  const people = document.getElementById('ss-people-tab');
+  const groups = document.getElementById('ss-groups-tab');
+  const tP = document.getElementById('ss-tab-people');
+  const tG = document.getElementById('ss-tab-groups');
+  if (tab === 'people') {
+    if (people) people.style.display = 'block';
+    if (groups) groups.style.display = 'none';
+    if (tP) { tP.style.background='var(--card)'; tP.style.color='var(--t1)'; tP.style.boxShadow='var(--sh1)'; }
+    if (tG) { tG.style.background='transparent'; tG.style.color='var(--t2)'; tG.style.boxShadow='none'; }
+  } else {
+    if (people) people.style.display = 'none';
+    if (groups) groups.style.display = 'block';
+    if (tG) { tG.style.background='var(--card)'; tG.style.color='var(--t1)'; tG.style.boxShadow='var(--sh1)'; }
+    if (tP) { tP.style.background='transparent'; tP.style.color='var(--t2)'; tP.style.boxShadow='none'; }
+  }
+}
+
+function toggleGroup(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isOn = el.style.border && el.style.border.includes('brand') || el.querySelector('span[style*="brand"]');
+  if (isOn) {
+    el.style.cssText = 'background:var(--card);border:1px solid var(--sep);border-radius:var(--r12);padding:11px 14px;display:flex;gap:10px;align-items:center;cursor:pointer;';
+    const last = el.lastElementChild;
+    if (last && last.tagName === 'SPAN') last.remove();
+    const circle = document.createElement('div');
+    circle.style.cssText = 'width:20px;height:20px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;';
+    el.appendChild(circle);
+  } else {
+    el.style.cssText = 'background:var(--brand-light);border:1.5px solid var(--brand);border-radius:var(--r12);padding:11px 14px;display:flex;gap:10px;align-items:center;cursor:pointer;';
+    const last = el.lastElementChild;
+    if (last && last.tagName === 'DIV') last.remove();
+    const check = document.createElement('span');
+    check.style.cssText = 'color:var(--brand);font-size:16px;font-weight:700;flex-shrink:0;';
+    check.textContent = '✓';
+    el.appendChild(check);
+  }
+}
+
+function detectIDP(email) {
+  const btn = document.getElementById('ent-btn');
+  const badge = document.getElementById('idp-badge');
+  const icon = document.getElementById('idp-icon');
+  const name = document.getElementById('idp-name');
+  const domain = (email.split('@')[1] || '').toLowerCase();
+  if (!domain || !domain.includes('.')) {
+    if (badge) badge.style.display = 'none';
+    if (btn) btn.style.opacity = '.4';
+    return;
+  }
+  if (btn) btn.style.opacity = '1';
+  if (badge) badge.style.display = 'block';
+  if (domain.includes('google') || domain.endsWith('.edu')) {
+    if (icon) icon.textContent = '🔵'; if (name) name.textContent = 'Google Workspace';
+  } else if (domain.includes('okta')) {
+    if (icon) icon.textContent = '🟦'; if (name) name.textContent = 'Okta';
+  } else {
+    if (icon) icon.textContent = '🔷'; if (name) name.textContent = 'Microsoft Entra ID';
+  }
+}
+
+function simulateIDPAuth() {
+  const email = document.getElementById('ent-email');
+  if (!email || !email.value.includes('@')) return;
+  document.getElementById('ent-btn').style.display = 'none';
+  document.getElementById('auth-loading').style.display = 'block';
+  const checks = ['at1','at2','at3','at4'];
+  checks.forEach(id => { const e=document.getElementById(id); if(e) e.style.opacity='0'; });
+  let i = 0;
+  const t = setInterval(() => {
+    if (i < checks.length) { const e=document.getElementById(checks[i]); if(e) e.style.opacity='1'; i++; }
+    else { clearInterval(t); setTimeout(() => { document.getElementById('ent-btn').style.display=''; document.getElementById('auth-loading').style.display='none'; go('s-workgroup-select'); }, 400); }
+  }, 520);
+}
+
+let autosaveTid = null;
+function triggerAutosave() {
+  const ind = document.getElementById('autosave-indicator');
+  if (!ind) return;
+  ind.textContent = 'Saving…'; ind.style.color = 'var(--brand)';
+  clearTimeout(autosaveTid);
+  autosaveTid = setTimeout(() => {
+    ind.textContent = 'Saved ✓'; ind.style.color = 'var(--ok)';
+    setTimeout(() => { ind.textContent = ''; }, 2200);
+  }, 900);
+}
+
+function toggleCC() {
+  const fields = document.getElementById('cc-fields');
+  const toggle = document.getElementById('cc-toggle');
+  if (!fields) return;
+  const shown = fields.style.display !== 'none';
+  fields.style.display = shown ? 'none' : 'block';
+  if (toggle) toggle.style.opacity = shown ? '1' : '.55';
+}
+
+function selectWorkgroup(id) {
+  const ids = ['wg-personal','wg-clinical','wg-legal','wg-finance'];
+  ids.forEach(wid => {
+    const el = document.getElementById(wid);
+    if (!el) return;
+    if (wid === id) {
+      el.classList.add('active');
+      if (!el.querySelector('.wg-check')) {
+        const c = document.createElement('span');
+        c.className = 'wg-check';
+        c.style.cssText = 'color:var(--brand);font-size:18px;font-weight:700;flex-shrink:0;';
+        c.textContent = '✓';
+        const circle = el.querySelector('div[style*="border-radius:50%"]');
+        if (circle) circle.replaceWith(c); else el.appendChild(c);
+      }
+    } else {
+      el.classList.remove('active');
+      const c = el.querySelector('.wg-check');
+      if (c) {
+        const circle = document.createElement('div');
+        circle.style.cssText = 'width:22px;height:22px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;';
+        c.replaceWith(circle);
+      }
+    }
+  });
+}
+
+window.addEventListener('load', () => splash());
+</script>
+</body>
+</html>

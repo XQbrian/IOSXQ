@@ -1,0 +1,4408 @@
+​Vision​
+
+​XQ Secure Workspaces (iOS) —​
+​Executive Summary​
+
+​AI-Guided Governance​
+​Phased Scope:​​File Vault + Secure Email + Secure Chat​
+​Core Addition:​​AI-driven, on-device governance and​​policy automation (“at the edge”)​
+​Design Principle:​​Security and compliance happen automatically,​​without user effort​
+​Platform​: iPAD & iPhone​
+​XQ​​Secure Workspaces is a privacy-first mobile security​​platform for iOS that combines secure​
+​file storage, protected email, private chat and AI-driven governance into a single, frictionless​
+​user experience. Built for both consumers and enterprises, the product automatically classifies,​
+​protects, and governs sensitive information directly on the device without requiring user training,​
+​complex setup, or constant IT oversight.​
+​The platform extends XQ’s Zero Trust Data architecture to mobile environments, enabling​
+​organizations to secure documents, communications, and workflows while maintaining​
+​consumer-grade simplicity.​
+​XQ Secure Workspaces is an iOS app that combines:​
+​1.​ ​Phase 1 : Secure File Vault​
+​2.​ ​Phase 2 : Secure Email with protected attachments​
+​3.​ ​Phase 3: Secure Chat​
+
+​Core Value Proposition​
+​XQ uniquely delivers a converged model of:​
+​●​ ​Immediate consumer adoption​​with zero setup friction​
+​●​ ​Enterprise-grade governance​​with policy-as-code and​​centralized control​
+​●​ ​Data-centric security enforcement​, where encryption,​​access control, and auditability​
+​are intrinsic properties of the data itself​
+​This eliminates the traditional tradeoff between usability and security, enabling organizations to​
+​scale from individual usage to full enterprise deployment within a unified platform.​
+
+​xqmsg.co | XQ Message​
+
+​1​
+
+​Overview​
+​The app functions as a secure container: files, emails and chats can be accessed within it, but​
+​cannot be exfiltrated from it. XQ holds no customer data at any point, and no content can be​
+​moved outside the app to third parties.​
+​Enhanced with​​AI-guided experience and governance​​at the edge​, the app automatically:​
+​●​
+​●​
+​●​
+​●​
+
+​Enable secure collaboration​
+​Prevents sensitive data leaving​
+​Enable secure collaboration​
+​Applies encryption, labeling, and access policies in real time​
+
+​All enforcement remains aligned with XQ’s​​Zero Trust​​Data model​, ensuring compatibility​
+​across the XQ platform.​
+
+​Strategic Outcome + Market Opportunity​
+​The XQ iOS Secure Workspace establishes a new category of mobile-first AI-driven, Zero Trust​
+​Data platforms by transforming the mobile device into a governed, encrypted data endpoint.​
+​The app enables secure data creation, sharing, and collaboration across consumer and​
+​enterprise environments while maintaining consistent enforcement of sovereignty, compliance,​
+​and access control policies.​
+​The result is a unified system where data remains protected, portable, and policy-bound at all​
+​times, supporting both organic user adoption and mission-critical enterprise deployment at​
+​global scale.​
+
+​Market Opportunity​
+​The convergence of AI adoption, mobile-first workflows, escalating cyber threats, and tightening​
+​global data sovereignty regulations has created a significant market gap between consumer​
+​productivity tools and enterprise-grade secure collaboration platforms. Organizations​
+i​ncreasingly require solutions that can protect sensitive data beyond traditional network​
+​perimeters while enabling seamless user experiences across personal and corporate devices.​
+​XQ is positioned to capture this emerging market by delivering a platform that combines Zero​
+​Trust security, AI-native workflows, encrypted collaboration, and policy-enforced data​
+​governance in a single mobile-centric architecture. The opportunity spans regulated industries,​
+​government and defense, critical infrastructure, global enterprises, and privacy-conscious​
+​consumers seeking secure digital workspaces that operate across distributed environments.​
+​As enterprises transition toward AI-enabled operations and decentralized work models, the​
+​demand for persistent data protection and sovereign control at the endpoint level is expected to​
+​accelerate, creating a scalable platform opportunity for XQ to become foundational​
+i​nfrastructure for secure mobile collaboration and intelligent data exchange.​
+
+​xqmsg.co | XQ Message​
+
+​2​
+
+​CORE CAPABILITIES​
+​File & Email and Chat Connectivity​
+​Native connections to SharePoint and network drives. Files are streamed and accessed in-app​
+​— never stored on XQ infrastructure.​
+​Secure Viewing & Containment​
+​In-app file viewing with active screenshot blocking and prevention of local download or export.​
+​Content cannot be moved outside the app or shared to third-party applications on the device.​
+​AI enabled/supported Onboarding & Account Setup​
+​Streamlined first-run experience with automatic account creation. AI guides users through​
+​connecting to SharePoint or a network drive — detecting configuration, resolving common​
+​errors, and minimising IT involvement.​
+​Offline Mode​
+​Users can designate files or folders for offline availability. Locally cached copies remain​
+​viewable and editable without a connection, with changes syncing back to source when​
+​connectivity is restored. Offline cache remains within the secure app container.​
+​Sharing​
+​Sharing via SharePoint (leveraging its existing permissions and link model) and email. All​
+​sharing is controlled and auditable — files always resolve from the customer’s own​
+i​nfrastructure.​
+​Local File Import​
+​Users can bring in files from iOS local storage (Files app, camera roll, etc.). AI assists by​
+​suggesting destination folders, tagging content, and surfacing related files already in connected​
+​drives.​
+​AI powered Document scanning​
+​Contextual analysis of file contents runs entirely on-device. No file data leaves the user’s device​
+​— satisfying enterprise data residency requirements by design.​
+​AI-Driven Policy Engine​
+​The platform applies configurable policies based on what the on-device AI identifies within files​
+​— restricting actions, triggering alerts, or enforcing access rules based on content classification.​
+​Light Editing​
+​Scoped editing for text files, Word documents, and Excel spreadsheets. Changes save directly​
+​back to the source location — SharePoint or network drive.​
+
+​xqmsg.co | XQ Message​
+
+​3​
+
+​Product Definition​
+
+​Product Definition​
+​XQ Secure Workspaces delivers effortless security through on-device intelligence.​
+​Users work naturally with files and email while AI continuously:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Detects sensitive information​
+​Applies protection policies​
+​Prevents data leakage​
+​Guides secure sharing​
+​Enforces governance automatically​
+
+​Security becomes ambient, invisible, and continuous rather than manual and disruptive.​
+
+​Deployment Model Strategy​
+​The architecture supports three distinct deployment modes:​
+​●​ ​Free Tier (Consumer / Local-First):​​On-device encryption​​using Secure Enclave, no​
+​account required, zero infrastructure dependency​
+​●​ ​Enterprise SaaS:​​XQ-managed platform with customer-controlled​​keys, policy engine​
+​enforcement, and full auditability​
+
+​This structure enables bottom-up adoption while supporting top-down enterprise standardization​
+​without architectural change.​
+
+​xqmsg.co | XQ Message​
+
+​1​
+
+​Deployment Model Strategy​
+​The platform supports three deployment models through a unified architecture.​
+
+​Free Tier — Consumer / Local-First​
+​A privacy-first standalone deployment designed for individuals and small teams.​
+
+​Characteristics​
+​●​ ​No account required​
+​○​ ​Sharing / connected services​
+​●​ ​Local-only operation​
+​●​ ​On-device encryption using Apple Secure Enclave​
+​●​ ​Zero infrastructure dependency​
+​●​ ​AI governance fully local​
+​●​ ​No cloud data exposure​
+
+​Primary Value​
+​Consumer-grade simplicity with automatic protection for sensitive files and communications.​
+
+​Enterprise SaaS​
+​A managed enterprise deployment operated by XQ with customer-controlled governance.​
+
+​Characteristics​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​XQ-managed infrastructure​
+​Customer-controlled encryption keys​
+​Enterprise policy engine enforcement​
+​Full auditability and compliance visibility​
+​Passive enterprise identity integration​
+​Centralized administration​
+
+​Primary Value​
+​Enterprise-scale Zero Trust security with minimal operational friction.​
+
+​xqmsg.co | XQ Message​
+
+​2​
+
+​Core Product Components​
+
+​Secure File Vault​
+​Phase 1​
+​A protected workspace for storing, viewing, editing, and securely sharing files.​
+
+​Core Capabilities​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Encrypted local file storage​
+​AI-powered content scanning and classification​
+​Automatic policy enforcement​
+​Secure sharing workflows​
+​Protected attachment handling​
+​Dynamic access control​
+​Policy-aware synchronization​
+
+​Editing Experience​
+​The product intentionally focuses on lightweight productivity rather than full office-suite​
+​replacement.​
+​Users can:​
+​●​ ​Open documents​
+​●​ ​Make quick edits​
+​●​ ​Save changes securely​
+​After edits:​
+​●​ ​AI automatically rescans content​
+​●​ ​Policies update dynamically​
+​●​ ​Classification remains current​
+​Supported editing scenarios include:​
+​●​ ​Microsoft Word documents​
+​●​ ​Excel spreadsheets​
+​●​ ​Common mobile productivity workflows​
+
+​xqmsg.co | XQ Message​
+
+​3​
+
+​Secure Email​
+​Phase 2​
+​A secure email experience integrated directly into the protected workspace.​
+
+​Core Capabilities​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Email body scanning​
+​Attachment inspection​
+​Automatic encryption​
+​Secure attachment viewing​
+​AI-assisted risk detection​
+​Policy-driven message controls​
+
+​Intelligent Security Behavior​
+​When sensitive information is detected, the system can:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Recommend secure delivery methods​
+​Encrypt content automatically​
+​Restrict forwarding​
+​Prevent non-compliant sending​
+​Apply enterprise governance policies​
+
+​xqmsg.co | XQ Message​
+
+​4​
+
+​AI-Guided Governance Layer​
+​Phase 1​
+
+​Overview​
+​AI-guided governance is the foundational intelligence layer of XQ Secure Workspaces.​
+​The platform continuously analyzes content and context directly on-device to automate:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Classification​
+​Encryption​
+​Access control​
+​Compliance enforcement​
+​Sharing governance​
+
+​The user is never expected to manually manage security settings or compliance decisions.​
+
+​On-Device AI Architecture​
+​Privacy-First Intelligence​
+​AI models run locally by default.​
+​No raw content leaves the device unless explicitly permitted by enterprise policy.​
+
+​AI Analysis Capabilities​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Document content scanning​
+​Metadata inspection​
+​Email body analysis​
+​Attachment inspection​
+​Pattern detection​
+​Contextual classification​
+​Policy recommendation​
+
+​xqmsg.co | XQ Message​
+
+​5​
+
+​Sensitive Data Detection​
+​The platform identifies:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Personally Identifiable Information (PII)​
+​Protected Health Information (PHI)​
+​Controlled Unclassified Information (CUI)​
+​Financial records​
+​Compliance-sensitive content​
+​NIST​
+
+​Dynamic Classification​
+​AI continuously classifies content using contextual risk analysis.​
+
+​Example Classifications​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Public​
+​Internal​
+​Confidential​
+​Restricted​
+​Custom​
+
+​Classification automatically drives downstream policy enforcement.​
+
+​xqmsg.co | XQ Message​
+
+​6​
+
+​Policy Automation​
+​Consumer Policy Automation​
+​For consumer deployments, governance emphasizes simplicity and passive protection.​
+
+​Automated Behaviors​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Encrypt all files and emails automatically​
+​Warn before risky sharing actions​
+​Recommend secure sharing methods​
+​Apply local protection silently​
+​Support secure editing workflows​
+​Enable file and email revocation​
+
+​The experience remains lightweight and minimally intrusive.​
+
+​Enterprise Policy Automation​
+​Enterprise deployments introduce centralized governance and dynamic enforcement.​
+
+​Automated Behaviors​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Restrict external sharing with individuals and groups​
+​Apply geofencing controls​
+​Enforce view-only access​
+​Trigger audit logging​
+​Apply group-based permissions​
+​Enforce attribute-based access control (ABAC)​
+​Prevent policy violations before transmission​
+​Dynamic policy generation sent to backend​
+
+​Policies adapt dynamically based on:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​User identity​
+​Device posture​
+​Location​
+​Content sensitivity​
+​Organizational policy​
+​xqmsg.co | XQ Message​
+
+​7​
+
+​Real-Time Security Decisioning​
+​Event​
+​File imported​
+
+​Automated Action​
+​AI scans → classifies → encrypts​
+
+​Email composed​ ​AI scans → evaluates risk → applies policy->conditionally​
+​encrypts​
+​File shared​
+
+​AI validates recipient, context, and sensitivity, group​
+
+​Document edited​ ​AI rescans and updates protections​
+​Policy changes​
+
+​Access rules update dynamically​
+
+​Security Model​
+​Secure Container Architecture​
+​XQ Secure Workspaces is fundamentally a secure container platform.​
+​Content enters only through controlled pathways:​
+​●​
+​●​
+​●​
+​●​
+
+​Microsoft SharePoint​
+​Local device storage​
+​Enterprise repositories​
+​Approved integrations​
+
+​Data cannot leave the secure workspace except through explicit, auditable sharing workflows.​
+
+​Data Leakage Prevention​
+​Security protections are foundational rather than optional.​
+
+​xqmsg.co | XQ Message​
+
+​8​
+
+​Built-In Controls​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Screenshot blocking where iOS permits​
+​Sensitive-content watermarking​
+​Copy/export prevention​
+​Share-sheet restrictions​
+​Background blur protection​
+​Secure attachment handling​
+
+​AI-Enhanced Protection​
+​High-risk content can trigger stricter runtime protections automatically.​
+
+​Sharing Experience​
+​Secure Sharing Workflow​
+​The sharing experience is designed to remain simple while enforcing governance automatically.​
+
+​User Flow​
+​1.​ ​User selects “Share Securely”​
+​2.​ ​Chooses recipient​
+​3.​ ​AI evaluates content sensitivity​
+​4.​ ​Appropriate protections apply automatically​
+
+​AI-Assisted Decisions​
+​The system can:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Recommend links vs direct attachments​
+​Warn on external recipients​
+​Detect risky destinations​
+​Suggest stronger controls​
+​Restrict sharing to only authorized parties​
+
+​xqmsg.co | XQ Message​
+
+​9​
+
+​Enterprise Enforcement​
+​Organizations can automatically apply:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Expiration policies​
+​View-only access​
+​Geofencing​
+​Access revocation​
+​Server-side offloading​
+​Audit tracking​
+​Labels and classification​
+​Policy generation​
+
+​Onboarding Experience​
+​Consumer Onboarding​
+​Designed for immediate use with minimal friction.​
+
+​Characteristics​
+​●​ ​Instant access​
+​●​ ​AI guided onboarding and customization​
+​●​ ​No mandatory login​
+​○​ ​Login only required to connect services​
+​○​ ​Optionally User can login to create account​
+​●​ ​No required training​
+​●​ ​Silent AI governance activation​
+​●​ ​Automatic protection on first use​
+​The first imported file automatically triggers:​
+​●​ ​Classification​
+​●​ ​Encryption​
+​●​ ​Governance enforcement​
+
+​xqmsg.co | XQ Message​
+
+​10​
+
+​Enterprise Upgrade Path​
+​Consumer deployments can transition seamlessly into enterprise governance.​
+
+​Upgrade Behaviors​
+​●​
+​●​
+​●​
+​●​
+
+​Existing files are reclassified automatically​
+​Enterprise policies apply retroactively​
+​No workflow disruption​
+​No user retraining required​
+
+​Interoperability​
+​Native Integrations​
+​Supported ecosystem integrations include:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Microsoft SharePoint​
+​Apple Files (Optional)​
+​Outlook​
+​Gmail​
+​External secure file links​
+
+​Potential future integrations:​
+​●​ ​Google Workspace​
+​●​ ​Expanded MIcrosoft suite​
+​●​ ​Additional enterprise repositories​
+
+​xqmsg.co | XQ Message​
+
+​11​
+
+​XQ Ecosystem Integration​
+​AI-generated classifications become reusable policy signals across the broader XQ platform.​
+​This enables:​
+​●​
+​●​
+​●​
+​●​
+
+​Consistent policy enforcement​
+​Shared governance intelligence​
+​Unified Zero Trust workflows​
+​Cross-platform interoperability​
+​○​ ​Works with desktop app​
+
+​User Experience Philosophy​
+​Consumer-Grade Simplicity​
+​The interface is intentionally minimal.​
+
+​UX Principles​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​No policy dashboards for standard users​
+​No manual classification requirements​
+​Minimal prompts​
+​Risk-based intervention only​
+​Native iOS interaction patterns​
+
+​User Signals​
+​Security visibility remains lightweight through:​
+​●​ ​Small sensitivity labels​
+​●​ ​Contextual warnings​
+​●​ ​Subtle policy indicators​
+
+​xqmsg.co | XQ Message​
+
+​12​
+
+​Enterprise Administration​
+​Administrative Controls​
+​Enterprise administrators can:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Define classification schemas​
+​Configure AI sensitivity thresholds​
+​Override AI decisions​
+​Monitor policy violations​
+​Audit data movement​
+​Configure governance models​
+​USer access escalation resolution​
+
+​Risk Management​
+​Risk​
+
+​Mitigation​
+
+​AI false positives​
+
+​User overrides + model refinement​
+
+​Device performance impact​
+
+​Lightweight on-device models​
+
+​Privacy concerns​
+
+​Local processing by default​
+
+​Workflow disruption​
+
+​Progressive enforcement and soft warnings​
+
+​Success Metrics​
+​The platform measures effectiveness through:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Auto-classification accuracy​
+​Risky-share prevention rates​
+​Reduction in data leakage incidents​
+​User effort per workflow​
+​Enterprise compliance adherence​
+​Policy enforcement effectiveness​
+
+​xqmsg.co | XQ Message​
+
+​13​
+
+​Final Positioning​
+​XQ Secure Workspaces​
+​Effortless security powered by AI-driven governance at the edge.​
+​The platform combines:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Secure file storage​
+​Protected communications​
+​Real-time AI governance​
+​Zero Trust enforcement​
+​Consumer-grade usability​
+
+​Users work naturally while AI continuously protects data, enforces policy, and prevents risk —​
+​without introducing friction or operational complexity.​
+
+​Should understand if recipient has XQ account for encrypted to encrypted email and file​
+​sharing?​
+
+​xqmsg.co | XQ Message​
+
+​14​
+
+​Feature Specification​
+
+​XQ Secure Workspaces —​
+​Core Capability & Product Feature​
+​Specification​
+​Product Overview​
+​Secure Workspaces is a secure, AI-governed mobile workspace platform for iOS that combines​
+​secure file access, protected communications, lightweight productivity, and autonomous policy​
+​enforcement.​
+​The product enables users to work naturally with enterprise files and email while on-device AI​
+​continuously:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Detects sensitive information​
+​Applies governance policies​
+​Prevents data leakage​
+​Guides secure sharing​
+​Enforces Zero Trust controls automatically​
+
+​The system is designed around a privacy-first architecture where intelligence operates locally​
+​on-device by default and files remain under customer control at all times.​
+
+​1. Product Objectives​
+
+​Primary Goals​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Deliver consumer-grade simplicity with enterprise-grade security​
+​Eliminate manual security workflows wherever possible​
+​Keep customer data under customer control​
+​Enable Zero Trust Data governance directly at the edge​
+​Support both consumer and classified enterprise deployment models through a unified​
+​architecture​
+
+​xqmsg.co | XQ Message​
+
+​1​
+
+​Key Design Principles​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Security should be ambient and invisible​
+​AI governance should be passive and automatic​
+​Users should not manually classify content​
+​Files should never transit or persist on XQ infrastructure unless explicitly configured​
+​Policy enforcement should follow the data itself​
+
+​2. Platform Scope​
+
+​Supported Platforms​
+​●​ i​Phone​
+​●​ i​Pad​
+
+​Initial Operating System Support​
+​●​ i​OS (latest two major releases minimum)​
+​○​ i​OS/iPadOS 17​
+
+​Future Expansion​
+​●​ ​macOS​
+​●​ ​Android​
+​●​ ​Desktop secure workspace clients​
+
+​xqmsg.co | XQ Message​
+
+​2​
+
+​3. Core Product Components​
+
+​3.1 Secure File Vault​
+​Phase 1​
+​A protected workspace for secure file access, viewing, editing, synchronization, and governed​
+​sharing.​
+
+​Core Responsibilities​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Secure file access​
+​Encrypted local caching​
+​AI classification​
+​Runtime protection​
+​Controlled sharing​
+​Secure synchronization​
+​Policy enforcement​
+
+​3.2 Secure Email Or Secure Chat​
+​Phase 2​
+​Integrated secure email experience operating within the protected workspace.​
+
+​Core Responsibilities​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Secure email composition​
+​Attachment scanning​
+​AI-driven risk analysis​
+​Automatic encryption​
+​Secure attachment rendering​
+​Governance enforcement​
+​Group sharing​
+
+​xqmsg.co | XQ Message​
+
+​3​
+
+​3.3 AI-Guided Governance Layer​
+​Central intelligence layer responsible for:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Content analysis​
+​Classification​
+​Policy automation​
+​Risk detection​
+​Dynamic access enforcement​
+​Encryption enforcement​
+
+​All AI processing occurs locally on-device by default.​
+
+​4. Core Capability Specifications​
+​4.1 File Connectivity​
+
+​Description​
+​The platform provides native connectivity to enterprise repositories while ensuring files remain​
+​under customer ownership and control.​
+
+​Supported Sources​
+​Initial Support​
+​●​ ​Microsoft SharePoint​
+​●​ ​SMB / network drives​
+​●​ ​Apple Files local storage​
+
+​Future Integrations​
+​●​
+​●​
+​●​
+​●​
+
+​Google Workspace​
+​OneDrive​
+​Box​
+​Dropbox​
+
+​xqmsg.co | XQ Message​
+
+​4​
+
+​●​ ​Enterprise ECM systems​
+
+​Functional Requirements​
+​Repository Access​
+​●​
+​●​
+​●​
+​●​
+
+​Authenticate using enterprise credentials​
+​Browse remote directories​
+​Stream files directly into the secure workspace​
+​Maintain source-of-truth at origin repository​
+
+​Security Requirements​
+​●​ ​Files must never persist on XQ-managed infrastructure​
+​●​ ​Remote files stream directly to device​
+​●​ ​Session tokens stored securely in iOS Keychain/Secure Enclave​
+
+​Offline Handling​
+​●​ ​Explicit user-selected offline caching only​
+​●​ ​Cache remains encrypted within app container​
+
+​Sharing​
+​●​ ​Create groups and share files and folders by inviting participants inside and outside your​
+​organization​
+​ScreenShot​
+​●​ ​Prevent in app screen shot or watermark​
+​Secure Viewing / Editing​
+​●​ ​Docs can be opened and edited in app only​
+
+​Enclave​
+​●​ ​Files may not be available to the OS file system. Architecture dependent.​
+
+​xqmsg.co | XQ Message​
+
+​5​
+
+​4.2 Secure Viewing & Containment​
+
+​Description​
+​All files open within a hardened secure container environment.​
+
+​Runtime Protections​
+​Mandatory Protections​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​In-app secure rendering only​
+​Disable “Open In” workflows​
+​Prevent export to third-party applications​
+​Restrict copy/paste operations​
+​Block unapproved share sheet destinations​
+​Blur application during backgrounding​
+​Watermark sensitive content dynamically​
+
+​Screenshot Protection​
+​Where iOS APIs permit:​
+​●​ ​Screenshot blocking / watermarking​
+​●​ ​Screen recording detection​
+​●​ ​Runtime sensitivity escalation​
+
+​Data Containment Rules​
+​Files may only leave the workspace through:​
+​●​ ​Approved secure sharing workflows​
+​●​ ​Policy-approved email delivery​
+​●​ ​Repository-backed sharing links​
+
+​xqmsg.co | XQ Message​
+
+​6​
+
+​4.3 AI-Enabled Onboarding & Account Setup​
+
+​Description​
+​The onboarding flow minimizes user friction through AI-assisted setup and automated​
+​configuration.​
+
+​User Experience Goals​
+​●​ ​Zero-training onboarding​
+​●​ ​Minimal IT involvement​
+​●​ ​Fast first-run activation​
+
+​Functional Capabilities​
+​Automated Setup​
+​AI assists users with:​
+​●​
+​●​
+​●​
+​●​
+
+​Onboarding and user training’​
+​SharePoint connection setup​
+​Network drive discovery​
+​Local file import​
+​○​ ​Scan files on device and import them?​
+​●​ ​Credential validation​
+​●​ ​Common configuration remediation​
+​●​ ​UX PReferences​
+
+​Intelligent Assistance​
+​AI may:​
+​●​
+​●​
+​●​
+​●​
+
+​Detect repository type​
+​Suggest connection settings​
+​Resolve authentication issues​
+​Recommend sync configurations​
+
+​xqmsg.co | XQ Message​
+
+​7​
+
+​Enterprise Identity Support​
+​●​ ​SSO support​
+​●​ ​Passive enterprise identity integration​
+​●​ ​Conditional access compatibility​
+​○​ ​Entra​
+​○​ ​Gmail​
+​○​ ​AD​
+​○​ ​Okta​
+​○​ ​Ping​
+
+​4.4 Offline Mode​
+
+​Description​
+​Users may explicitly designate files or folders for offline access.​
+​OR set all for default offline access?​
+
+​Functional Requirements​
+​Offline Availability​
+​Users can:​
+​●​ ​Mark files/folders offline​
+​●​ ​View cached content offline​
+​●​ ​Edit supported file types offline​
+
+​Synchronization​
+​When connectivity returns:​
+​●​ ​Local changes sync automatically​
+​●​ ​Conflict resolution prompts user only when necessary​
+​●​ ​Policy enforcement re-evaluates modified content​
+
+​xqmsg.co | XQ Message​
+
+​8​
+
+​Security Requirements​
+​●​ ​Offline cache encrypted locally​
+​●​ ​Cache inaccessible outside app container​
+​●​ ​Enterprise policy can disable offline mode​
+
+​4.5 Sharing​
+
+​Description​
+​Sharing workflows maintain governance while remaining user-friendly.​
+
+​Sharing Methods​
+​●​
+​●​
+​●​
+​●​
+
+​SharePoint link sharing​
+​Group peer to peer​
+​Secure email sharing​
+​Governed attachment delivery​
+
+​AI-Assisted Sharing Controls​
+​AI Evaluations​
+​Before sharing:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Analyze content sensitivity​
+​Validate recipient trust level​
+​Detect external recipients​
+​Evaluate policy compliance​
+​Suggest group recipients​
+
+​xqmsg.co | XQ Message​
+
+​9​
+
+​Automated Enforcement​
+​System may:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Suggest policies​
+​Assist sharing​
+​Recommend secure links over attachments​
+​Force encryption​
+​Restrict forwarding​
+​Apply expiration policies​
+​Enforce geofencing​
+​Block non-compliant sharing​
+
+​Auditability​
+​All enterprise sharing events must support:​
+​●​ ​Audit logging​
+​●​ ​User attribution​
+​●​ ​Policy decision traceability​
+
+​xqmsg.co | XQ Message​
+
+​10​
+
+​4.6 Local File Import​
+
+​Description​
+​Users may securely import files from iOS-native sources.​
+
+​Supported Sources​
+​●​
+​●​
+​●​
+​●​
+
+​Apple Files app​
+​Camera roll​
+​Local downloads​
+​Device storage​
+
+​AI-Assisted Import​
+​AI Behaviors​
+​Upon import:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Scan file contents​
+​Suggest repository destinations​
+​Recommend tags/classification​
+​Surface related files​
+​Organize based on content​
+
+​Governance Actions​
+​Imported files automatically:​
+​●​ ​Encrypt locally​
+​●​ ​Receive classification labels​
+​●​ ​Trigger policy enforcement​
+
+​xqmsg.co | XQ Message​
+
+​11​
+
+​4.7 AI-Powered Document Scanning​
+
+​Description​
+​Content analysis executes entirely on-device by default.​
+
+​Privacy Requirements​
+​●​ ​No raw content leaves device unless enterprise policy permits​
+​●​ ​No cloud AI dependency required​
+​●​ ​All scanning local-first​
+
+​Supported Analysis​
+​Content Inspection​
+​●​
+​●​
+​●​
+​●​
+
+​Text extraction​
+​Metadata inspection​
+​Attachment analysis​
+​Phase 3:​
+​○​ ​OCR for scanned documents/images​
+
+​Sensitive Data Detection​
+​System detects:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​PII​
+​PHI​
+​CUI​
+​Financial records​
+​Compliance-sensitive material​
+​NIST​
+​Phase 3:​
+​○​ ​CJIS​
+
+​xqmsg.co | XQ Message​
+
+​12​
+
+​4.8 AI-Driven Policy Engine​
+
+​Description​
+​Policies dynamically adapt based on AI classification and runtime context.​
+
+​Policy Inputs​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Content sensitivity​
+​User identity​
+​Device posture​
+​Geographic location​
+​Enterprise attributes​
+​Sharing destination​
+
+​Automated Actions​
+​Enforcement Examples​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Restrict external sharing​
+​Apply view-only mode​
+​Disable offline access​
+​Trigger alerts​
+​Enforce ABAC/RBAC rules​
+​IDP Attributes​
+​Prevent transmission​
+​Support group sharing​
+
+​Dynamic Re-Evaluation​
+​Policies update automatically when:​
+​●​
+​●​
+​●​
+​●​
+
+​Content changes​
+​User context changes​
+​Device posture changes​
+​Enterprise policies update​
+
+​xqmsg.co | XQ Message​
+
+​13​
+
+​4.9 Light Editing​
+
+​Description​
+​The platform supports lightweight productivity workflows without replacing full desktop office​
+​suites.​
+
+​Supported Editing​
+​●​ ​Text files​
+​●​ ​Microsoft Word documents​
+​●​ ​Excel spreadsheets​
+
+​Functional Requirements​
+​Users can:​
+​●​ ​Open documents​
+​●​ ​Make lightweight edits​
+​●​ ​Save directly to source repository​
+
+​Post-Edit Processing​
+​After save:​
+​●​ ​AI rescans content​
+​●​ ​Classification updates dynamically​
+​●​ ​Policies re-evaluate automatically​
+
+​xqmsg.co | XQ Message​
+
+​14​
+
+​5. AI Governance Architecture​
+​5.1 On-Device AI Model Strategy​
+
+​Requirements​
+​●​
+​●​
+​●​
+​●​
+
+​Local inference by default​
+​Lightweight runtime footprint​
+​Battery-aware processing​
+​Offline-capable governance​
+
+​AI Responsibilities​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Classification​
+​Risk scoring​
+​Policy recommendation​
+​Sensitive data detection​
+​Sharing risk evaluation​
+
+​5.2 Dynamic Classification System​
+
+​Classification Labels​
+​Examples include:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Public​
+​Internal​
+​Confidential​
+​Restricted​
+​*custom​
+
+​Requirements​
+​●​ ​Continuous reclassification​
+​●​ ​Context-aware sensitivity evaluation​
+​●​ ​Multi-label support​
+
+​xqmsg.co | XQ Message​
+
+​15​
+
+​5.3 Real-Time Security Decisioning​
+​Event​
+​File imported​
+
+​Automated Action​
+​Scan → classify → encrypt​
+
+​Email composed​ ​Scan → risk evaluate → enforce policy​
+​File shared​
+
+​Validate recipient/context​
+
+​Document edited​ ​Rescan + update protections​
+​Policy changed​
+
+​Recalculate access rules​
+
+​6. Deployment Models​
+​6.1 Free Tier — Consumer / Local-First​
+
+​Characteristics​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​No account required​
+​Fully local operation​
+​Secure Enclave encryption​
+​No cloud dependency​
+​Local AI governance​
+
+​Primary Use Case​
+​Privacy-focused consumers and small teams.​
+
+​xqmsg.co | XQ Message​
+
+​16​
+
+​6.2 Enterprise SaaS​
+
+​Characteristics​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​XQ-managed infrastructure​
+​Customer-controlled encryption keys​
+​Centralized governance​
+​Auditability​
+​Enterprise policy enforcement​
+
+​Primary Use Case​
+​Enterprise Zero Trust deployments.​
+
+​6.3 Phase 3: Self-Hosted / Ghosted Deployment​
+
+​Characteristics​
+​●​
+​●​
+​●​
+​●​
+
+​Fully customer-operated​
+​No XQ visibility into runtime operations​
+​Air-gapped capable​
+​Classified-environment compatible​
+
+​Primary Use Case​
+​Government, defense, regulated environments.​
+
+​xqmsg.co | XQ Message​
+
+​17​
+
+​7. Security Architecture​
+​7.1 Secure Container Model​
+
+​Data Entry Points​
+​Approved pathways only:​
+​●​
+​●​
+​●​
+​●​
+
+​SharePoint​
+​Enterprise repositories​
+​Local import​
+​Approved integrations​
+
+​Data Egress Controls​
+​Data may only leave through:​
+​●​ ​Governed sharing​
+​●​ ​Policy-approved email​
+​●​ ​Authorized repository synchronization​
+
+​7.2 Data Loss Prevention (DLP)​
+
+​Built-In Protections​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Screenshot mitigation​
+​Watermarking​
+​Export restrictions​
+​Copy/paste restrictions​
+​Share sheet filtering​
+​Background obfuscation​
+
+​xqmsg.co | XQ Message​
+
+​18​
+
+​AI-Enhanced Runtime Controls​
+​High-risk content may dynamically trigger:​
+​●​ ​Stronger viewing restrictions​
+​●​ ​Additional authentication​
+​●​ ​Share prevention​
+
+​8. Enterprise Administration​
+
+​Administrative Capabilities​
+​Administrators can:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Define classifications​
+​Configure sensitivity thresholds​
+​Override AI decisions​
+​Configure governance rules​
+​Audit activity​
+​Manage policy models​
+​Security Groups mapped to policies and labels​
+
+​Governance Models​
+​Support for:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​RBAC​
+​ABAC​
+​Conditional access​
+​Geofencing​
+​Dynamic trust evaluation​
+
+​xqmsg.co | XQ Message​
+
+​19​
+
+​9. User Experience Philosophy​
+
+​UX Principles​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Minimal friction​
+​Native iOS interaction patterns​
+​Silent governance​
+​Contextual warnings only when needed​
+​Agentic first​
+
+​User-Facing Indicators​
+​●​ ​Sensitivity labels​
+​●​ ​Lightweight policy indicators​
+​●​ ​Risk-based prompts​
+
+​10. Interoperability​
+​Native Integrations​
+​●​ ​Microsoft SharePoint​
+​●​ ​Apple Files​
+​●​ ​Outlook​
+
+​Ecosystem Integration​
+​AI-generated classifications become reusable policy signals across the broader XQ ecosystem.​
+​Enables:​
+​●​ ​Unified governance​
+​●​ ​Cross-platform enforcement​
+​●​ ​Shared Zero Trust intelligence​
+
+​xqmsg.co | XQ Message​
+
+​20​
+
+​11. Risk Management​
+​Risk​
+​AI false positives​
+
+​Mitigation​
+​User override + model refinement​
+
+​Performance impact​ ​Lightweight local models​
+​Privacy concerns​
+
+​Local-first processing​
+
+​Workflow disruption​
+
+​Progressive enforcement​
+
+​12. Success Metrics​
+​Product Metrics​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Auto-classification accuracy​
+​Risky-share prevention rate​
+​Reduction in leakage incidents​
+​User friction reduction​
+​Policy enforcement effectiveness​
+​Compliance adherence​
+​Avoiding AI hallucinations​
+
+​xqmsg.co | XQ Message​
+
+​21​
+
+​Application Specification​
+
+​XQ Secure Workspaces — Application​
+​Sitemap & Screen Specification​
+​1. Application Structure Overview​
+​The application is organized around five primary navigation domains:​
+​1.​ ​Home Workspace​
+​2.​ ​Files & Repositories​
+​3.​ ​Secure Email​
+​4.​ ​Sharing & Activity​
+​5.​ ​Settings & Governance​
+​The product prioritizes:​
+​●​
+​●​
+​●​
+​●​
+
+​Minimal navigation complexity​
+​Contextual actions​
+​Ambient AI governance​
+​Native iOS interaction patterns​
+
+​2. High-Level Sitemap​
+​None​
+
+Launch​
+​
+│​
+​
+
+├── Splash / Secure Initialization​
+​
+
+│​
+​
+
+├── Onboarding Flow​
+│
+​
+├── Welcome​
+│
+​
+├── Local-First vs Enterprise Setup​
+│​
+​
+├── Enterprise Only: Repository Connection Setup​
+​
+​
+
+└── Admin overide {Dashboard}​
+​
+
+│
+​
+│
+​
+
+├── AI-Assisted Configuration​
+├── Permissions Setup​
+
+​xqmsg.co | XQ Message​
+
+​1​
+
+│
+​
+
+└── Workspace Ready​
+
+│​
+​
+
+├── Authentication (Enterprise Optional)​
+│
+​
+├── SSO Login​
+│
+​
+├── MFA​
+​
+
+│
+​
+
+└── Device Registration​
+
+│​
+​
+└── Main Application​
+​
+│​
+​
+
+├── Home​
+│
+​
+├── Recent Files​
+│
+​
+├── Offline Files​
+│
+​
+├── Suggested Files​
+│
+​
+├── Risk Notifications​
+​
+
+│
+​
+
+└── Quick Actions​
+
+│​
+​
+
+├── Files​
+│
+​
+├── Connected Repositories​
+│
+​
+│
+├── SharePoint​
+│
+​
+│
+├── Network Drives​
+​
+
+│
+​
+
+│
+
+│
+​
+
+│​
+
+│
+​
+│
+​
+│
+​
+│
+​
+│
+​
+
+└── Local Secure Vault​
+
+├── File Browser​
+├── Search​
+├── Tags & Classification​
+├── Offline Content​
+└── Import Files​
+
+│​
+​
+
+├── File Viewer​
+│
+​
+├── Secure Viewing​
+│
+​
+├── AI Classification Panel​
+│
+​
+├── Share Actions​
+│
+​
+├── Edit Actions​
+│
+​
+├── Version History​
+​
+
+│
+​
+
+└── Activity Log​
+
+│​
+​
+
+​xqmsg.co | XQ Message​
+
+​2​
+
+├── Secure Email​
+│
+​
+├── Inbox​
+│
+​
+├── Compose​
+│
+​
+├── Attachments​
+│
+​
+├── Secure Send Controls​
+​
+
+│
+​
+
+└── Message Viewer​
+
+│​
+​
+
+├── Sharing Center​
+│
+​
+├── Shared Files​
+│
+​
+├── Active Links​
+│
+​
+├── Revocation Controls​
+│
+​
+├── External Recipients​
+​
+
+│
+​
+
+└── Share Audit Log​
+
+│​
+​
+
+├── Notifications​
+│
+​
+├── Risk Alerts​
+│
+​
+├── Policy Events​
+│
+​
+├── Sync Events​
+​
+
+│
+​
+
+└── AI Recommendations​
+
+│​
+​
+
+├── Enterprise Admin (Role Based)​
+│
+​
+├── Policy Management​
+│
+​
+├── Classification Models​
+│
+​
+├── Audit Logs​
+│
+​
+├── User Access​
+│
+​
+├── Device Trust​
+​
+
+│
+​
+
+└── Governance Rules​
+
+│​
+​
+└── Settings​
+​
+
+├── Account​
+├── Security​
+​
+├── Offline Storage​
+​
+├── AI Governance Preferences​
+​
+├── Repository Connections​
+​
+├── Notifications​
+​
+​
+
+└── About​
+​
+
+​xqmsg.co | XQ Message​
+
+​3​
+
+​3. Screen Specifications​
+​3.1 Splash / Secure Initialization Screen​
+
+​Purpose​
+​Initial secure app boot and runtime integrity validation.​
+
+​Functional Components​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​XQ logo animation​
+​Secure environment validation​
+​Device trust checks​
+​Secure enclave initialization​
+​Token restoration​
+​Offline cache verification​
+
+​Background Actions​
+​●​
+​●​
+​●​
+​●​
+
+​Validate app integrity​
+​Restore encrypted session​
+​Verify enterprise policies​
+​Initialize local AI models​
+
+​Failure States​
+​●​
+​●​
+​●​
+​●​
+
+​Jailbreak/root detection​
+​Integrity failure​
+​Expired session​
+​Device non-compliance​
+
+​xqmsg.co | XQ Message​
+
+​4​
+
+​3.2 Welcome / Onboarding Screen​
+
+​Purpose​
+​Introduce the product and establish deployment model.​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+
+​Intro slides​
+​“Continue Local-First”​
+​“Connect Enterprise Workspace”​
+​Privacy-first messaging​
+
+​Functional Actions​
+​●​ ​Select deployment type​
+​●​ ​Begin guided setup​
+​●​ ​Trigger AI onboarding assistant​
+
+​3.3 AI-Assisted Repository Setup Screen​
+
+​Purpose​
+​Configure SharePoint or network drive access.​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Repository type selector​
+​AI setup assistant chat panel​
+​Connection diagnostics​
+​Auto-discovered repositories​
+​Credential forms​
+
+​xqmsg.co | XQ Message​
+
+​5​
+
+​Functional Capabilities​
+​AI Assistance​
+​●​
+​●​
+​●​
+​●​
+
+​Detect SharePoint configuration​
+​Suggest URLs​
+​Resolve authentication errors​
+​Recommend sync scope​
+
+​Connectivity Features​
+​●​
+​●​
+​●​
+​●​
+
+​OAuth/SSO login​
+​SMB configuration​
+​Token validation​
+​Connectivity testing​
+
+​3.4 Permissions Setup Screen​
+
+​Purpose​
+​Request required iOS permissions.​
+
+​Permissions​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Face ID​
+​Notifications​
+​Files access​
+​Camera roll import​
+​Local network access (if needed)​
+
+​AI Guidance​
+​Explain:​
+​●​ ​Why permissions are needed​
+​●​ ​Security/privacy implications​
+​●​ ​Enterprise policy impacts​
+
+​xqmsg.co | XQ Message​
+
+​6​
+
+​3.5 Home Screen​
+
+​Purpose​
+​Primary productivity dashboard.​
+
+​Layout Sections​
+​Recent Files​
+​●​ ​Recently accessed documents​
+​●​ ​Quick resume actions​
+
+​Suggested Files​
+​AI-generated suggestions based on:​
+​●​ ​Recent activity​
+​●​ ​Related projects​
+​●​ ​Sharing behavior​
+
+​Offline Files​
+​●​ ​Cached content​
+​●​ ​Sync status indicators​
+
+​Risk Notifications​
+​Examples:​
+​●​ ​“Sensitive file shared externally”​
+​●​ ​“Unclassified document detected”​
+
+​Quick Actions​
+​●​ ​Import file​
+​●​ ​Compose secure email​
+​●​ ​Share securely​
+
+​xqmsg.co | XQ Message​
+
+​7​
+
+​●​ ​Scan document​
+
+​3.6 Repository Browser Screen​
+
+​Purpose​
+​Unified file access experience.​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Repository switcher​
+​Folder hierarchy​
+​File list/grid​
+​Classification badges​
+​Search bar​
+​Filter controls​
+
+​File Indicators​
+​●​
+​●​
+​●​
+​●​
+
+​Sensitivity labels​
+​Offline availability​
+​Share status​
+​Sync state​
+
+​Functional Capabilities​
+​Navigation​
+​●​ ​Browse repositories​
+​●​ ​Multi-select files​
+​●​ ​Search across repositories​
+
+​AI Features​
+​●​ ​Suggested folders​
+​●​ ​Related content recommendations​
+​●​ ​Smart tagging​
+​xqmsg.co | XQ Message​
+
+​8​
+
+​3.7 Secure File Viewer Screen​
+
+​Purpose​
+​Protected in-app document rendering.​
+
+​Supported Formats​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​PDF​
+​DOCX​
+​XLSX​
+​TXT​
+​Images​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Document canvas​
+​Sensitivity label​
+​Policy indicators​
+​Watermark overlay​
+​Share button​
+​Edit button​
+​Activity button​
+
+​Runtime Protections​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Screenshot blocking​
+​Screen recording detection​
+​Background blur​
+​Copy prevention​
+​Share restriction enforcement​
+
+​AI Features​
+​Contextual Intelligence​
+​xqmsg.co | XQ Message​
+
+​9​
+
+​●​ ​Sensitivity analysis​
+​●​ ​Risk explanation​
+​●​ ​Policy rationale​
+
+​Dynamic Protection​
+​High-risk content may:​
+​●​ ​Disable sharing​
+​●​ ​Enforce view-only​
+​●​ ​Trigger additional authentication​
+
+​3.8 Document Editing Screen​
+
+​Purpose​
+​Lightweight productivity editing.​
+
+​Supported Actions​
+​Word​
+​●​ ​Text edits​
+​●​ ​Formatting​
+​●​ ​Comments​
+
+​Excel​
+​●​ ​Cell editing​
+​●​ ​Formula support​
+​●​ ​Basic formatting​
+
+​Functional Capabilities​
+​●​ ​Auto-save​
+​●​ ​Secure local cache​
+​●​ ​Repository synchronization​
+
+​xqmsg.co | XQ Message​
+
+​10​
+
+​AI Behaviors​
+​After edits:​
+​●​ ​Rescan document​
+​●​ ​Reclassify sensitivity​
+​●​ ​Reapply governance rules​
+
+​3.9 Secure Share Workflow Screen​
+
+​Purpose​
+​Governed secure sharing experience.​
+
+​User Flow​
+​1.​ ​Select recipient​
+​2.​ ​AI evaluates risk​
+​3.​ ​Policies apply automatically​
+​4.​ ​User confirms​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Recipient selector​
+​Share method options​
+​Security settings​
+​AI risk summary​
+​Expiration controls​
+
+​AI Risk Signals​
+​●​ ​External recipient warning​
+​●​ ​Sensitive content alert​
+​●​ ​Compliance risk detection​
+
+​Enterprise Controls​
+​xqmsg.co | XQ Message​
+
+​11​
+
+​Admins may enforce:​
+​●​
+​●​
+​●​
+​●​
+
+​View-only access​
+​Expiration​
+​Geofencing​
+​Download prevention​
+
+​3.10 Local File Import Screen​
+
+​Purpose​
+​Bring external content into secure workspace.​
+
+​Import Sources​
+​●​
+​●​
+​●​
+​●​
+
+​Apple Files​
+​Camera roll​
+​Scan document​
+​Downloads​
+
+​AI Features​
+​Automatic Suggestions​
+​●​ ​Recommended destination folder​
+​●​ ​Classification predictions​
+​●​ ​Related file detection​
+
+​Background Actions​
+​●​ ​Encrypt imported file​
+​●​ ​Scan content​
+​●​ ​Apply policy protections​
+
+​3.11 AI Document Scanner Screen​
+​xqmsg.co | XQ Message​
+
+​12​
+
+​Purpose​
+​Capture and analyze physical documents.​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+
+​Camera interface​
+​OCR preview​
+​Sensitivity detection panel​
+​Classification preview​
+
+​AI Features​
+​Detection​
+​●​
+​●​
+​●​
+​●​
+
+​PII​
+​PHI​
+​Financial information​
+​CUI patterns​
+
+​Actions​
+​●​ ​Encrypt immediately​
+​●​ ​Suggest secure repository​
+​●​ ​Apply governance labels​
+
+​3.12 Secure Email Inbox Screen​
+
+​Purpose​
+​Protected enterprise email experience.​
+
+​UI Components​
+​●​ ​Inbox list​
+​●​ ​Risk indicators​
+​●​ ​Secure attachment badges​
+
+​xqmsg.co | XQ Message​
+
+​13​
+
+​●​ ​Sensitivity labels​
+
+​Functional Capabilities​
+​●​ ​Open messages securely​
+​●​ ​Scan attachments​
+​●​ ​Govern forwarding/sharing​
+
+​AI Behaviors​
+​●​ ​Detect risky messages​
+​●​ ​Flag sensitive attachments​
+​●​ ​Recommend secure response methods​
+
+​3.13 Compose Secure Email Screen​
+
+​Purpose​
+​Governed email composition.​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+
+​Recipient fields​
+​Subject/body editor​
+​Attachment controls​
+​AI security recommendations​
+
+​AI Analysis​
+​Continuously evaluates:​
+​●​
+​●​
+​●​
+​●​
+
+​Message content​
+​Attachments​
+​Recipients​
+​Compliance posture​
+
+​xqmsg.co | XQ Message​
+
+​14​
+
+​Automated Enforcement​
+​May:​
+​●​
+​●​
+​●​
+​●​
+
+​Force encryption​
+​Block send​
+​Warn user​
+​Restrict recipients​
+
+​3.14 Notifications & Security Events Screen​
+
+​Purpose​
+​Centralized awareness and governance visibility.​
+
+​Notification Categories​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Sharing risks​
+​Policy violations​
+​Sync conflicts​
+​Access changes​
+​AI recommendations​
+
+​Functional Capabilities​
+​●​
+​●​
+​●​
+​●​
+
+​Review events​
+​Resolve warnings​
+​Retry failed syncs​
+​Escalate incidents​
+
+​3.15 Sharing Center Screen​
+
+​Purpose​
+​xqmsg.co | XQ Message​
+
+​15​
+
+​Manage active shares and external access.​
+
+​UI Components​
+​●​
+​●​
+​●​
+​●​
+
+​Shared file list​
+​External recipient list​
+​Active secure links​
+​Expiration timers​
+
+​Functional Capabilities​
+​●​
+​●​
+​●​
+​●​
+
+​Revoke access​
+​Extend expiration​
+​View audit activity​
+​Restrict permissions​
+
+​3.16 Enterprise Policy Management Screen​
+
+​Access​
+​Enterprise administrators only.​
+
+​Purpose​
+​Configure governance and security policies.​
+
+​Functional Areas​
+​Classification Management​
+​●​ ​Define labels​
+​●​ ​Configure AI thresholds​
+
+​Sharing Policies​
+​●​ ​External sharing rules​
+
+​xqmsg.co | XQ Message​
+
+​16​
+
+​●​ ​Geofencing​
+​●​ ​Expiration defaults​
+
+​Runtime Protection​
+​●​ ​Screenshot enforcement​
+​●​ ​Offline restrictions​
+​●​ ​Copy/export controls​
+
+​AI Governance Controls​
+​●​ ​Confidence thresholds​
+​●​ ​Override rules​
+​●​ ​Escalation behavior​
+
+​3.17 Audit & Activity Screen​
+​Purpose​
+​Enterprise audit visibility.​
+
+​Event Types​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​File access​
+​Sharing events​
+​Policy violations​
+​Classification changes​
+​Device trust events​
+
+​Features​
+​●​ ​Search/filter logs​
+​●​ ​Export audit reports​
+​●​ ​User activity tracing​
+
+​xqmsg.co | XQ Message​
+
+​17​
+
+​3.18 Settings Screen​
+​Categories​
+​Account​
+​●​ ​Identity​
+​●​ ​SSO status​
+​●​ ​Device registration​
+
+​Security​
+​●​ ​Face ID​
+​●​ ​Session timeout​
+​●​ ​App lock​
+
+​Offline Storage​
+​●​ ​Cache management​
+​●​ ​Offline folder selection​
+
+​AI Governance​
+​●​ ​Consumer-level preferences​
+​●​ ​Privacy settings​
+
+​Repository Connections​
+​●​ ​Add/remove repositories​
+​●​ ​Reauthenticate connections​
+
+​Notifications​
+​●​ ​Alert preferences​
+​●​ ​Risk notification levels​
+
+​4. Navigation Model​
+​xqmsg.co | XQ Message​
+
+​18​
+
+​Primary Navigation (Bottom Tab Bar)​
+​Tab​
+
+​Purpose​
+
+​Home​
+
+​Productivity dashboard​
+
+​Files​
+
+​Repository/file access​
+
+​Email​
+
+​Secure​
+​communications​
+
+​Shares​
+
+​Sharing management​
+
+​Settings​ ​Configuration​
+
+​5. AI Interaction Model​
+
+​Ambient AI​
+​AI should operate silently whenever possible.​
+
+​Explicit AI Interactions​
+​Only surface when:​
+​●​ ​Risk detected​
+​●​ ​User decision needed​
+​●​ ​Policy conflict exists​
+
+​AI Presentation Style​
+​●​
+​●​
+​●​
+​●​
+
+​Minimal prompts​
+​Contextual suggestions​
+​Human-readable reasoning​
+​Non-technical language​
+
+​xqmsg.co | XQ Message​
+
+​19​
+
+​6. Role-Based UX Variants​
+
+​Standard User​
+​●​ ​Minimal controls​
+​●​ ​Guided governance​
+​●​ ​Passive security​
+
+​Enterprise Admin​
+​Additional visibility:​
+​●​
+​●​
+​●​
+​●​
+
+​Policy controls​
+​Audit visibility​
+​Governance analytics​
+​AI tuning controls​
+
+​7. Security UX Requirements​
+
+​Mandatory Runtime Behaviors​
+​●​
+​●​
+​●​
+​●​
+
+​Blur app on multitask switch​
+​Require biometric unlock on return​
+​Restrict screenshots where possible​
+​Prevent external app handoff​
+
+​Sensitive Content Escalation​
+​High-risk content may dynamically:​
+​●​ ​Increase watermark visibility​
+​●​ ​Require reauthentication​
+​●​ ​Restrict sharing actions​
+
+​xqmsg.co | XQ Message​
+
+​20​
+
+​8. Future Screen Expansion Areas​
+
+​Planned Future Modules​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Teams collaboration​
+​Secure chat​
+​AI governance analytics​
+​Workflow automation​
+​Cross-device workspace sync​
+​Secure browser mode​
+​Enterprise DLP dashboard​
+
+​xqmsg.co | XQ Message​
+
+​21​
+
+​Technical considerations​
+
+​1.​ ​Support the Enforcement of policies, groups, labels and IDP attributes​
+​2.​ ​No direct API calls, everything through an interface​
+​3.​ ​Interchangeable AI models​
+​4.​ ​Interface for XQ API that will support multiple versions.​
+​5.​ ​mULTI LANGUAGE SUPPORT​
+​a.​ ​External LANGUAGE file for all UI/US messages to make translation easier​
+​b.​ ​ADAPTABLE ui TEXT FIELD AND BUTTONS​
+​6.​ ​Resource control​
+​7.​ ​AUtom update / force update​
+​8.​ ​INterface for all INtegrations - MSFT, GOOGLE​
+​9.​ ​Every UX element has an animation for entry and exit and click.​
+​10.​​“Fuzzy logic for POlicy implementation”​
+​11.​ ​Encryped files​
+​12.​​Cross platform considerations​
+​13.​​Gmail is group ID​
+​14.​ ​INVITE FOLKS AND IT BECOMES A SHARED FOLDER​
+
+​XQ Secure Workspaces AI​
+​Technical Architecture & Mobile Application Specification​
+​iOS / iPadOS Enterprise Zero Trust Data Platform​
+
+​1. System Overview​
+​Product Objective​
+​XQ Secure Workspaces is an AI-native Zero Trust mobile platform for secure file access, secure​
+​communications, governed collaboration, and persistent data protection across enterprise and​
+​sovereign environments.​
+​The application provides:​
+​●​ ​AI driven UX​
+​●​ ​Secure repository access​
+​●​ ​AI-driven governance​
+
+​xqmsg.co | XQ Message​
+
+​1​
+
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Persistent encryption​
+​Dynamic policy enforcement​
+​Cross-platform extensibility​
+​Modular integration architecture​
+​Offline-first protected workspace capabilities​
+
+​2. Core Architectural Principles​
+​Principle​
+
+​Description​
+
+​Interface-Driven Architecture​
+
+​All services abstracted behind interfaces​
+
+​No Direct API Coupling​
+
+​No business logic directly calls external APIs​
+
+​AI Provider Agnostic​
+
+​Interchangeable AI models/providers​
+
+​Zero Trust Data-Centric Security​ ​Protection follows data​
+​Offline-First​
+
+​Core functions operate without connectivity​
+
+​Policy-Driven Runtime​
+
+​Runtime behavior dynamically controlled​
+
+​Cross-Platform Core​
+
+​Shared architecture for iOS/Android/Desktop​
+
+​Localization-Native​
+
+​All UI text externally managed​
+
+​Adaptive UI​
+
+​Layout auto-adjusts for localization/accessibility​
+
+​Enterprise Extensible​
+
+​Modular enterprise integrations​
+
+​3. High-Level Architecture​
+​None​
+
+┌─────────────────────────────────────┐​
+​
+│
+​
+
+UI Layer
+
+│​
+
+│ SwiftUI + Animation Framework
+​
+
+│​
+
+└─────────────────────────────────────┘​
+​
+
+​xqmsg.co | XQ Message​
+
+​2​
+
+│​
+​
+
+▼​
+​
+
+┌─────────────────────────────────────┐​
+​
+│
+​
+
+Presentation / ViewModels
+
+│ MVVM + State Management
+​
+
+│​
+│​
+
+└─────────────────────────────────────┘​
+​
+│​
+​
+
+▼​
+​
+
+┌─────────────────────────────────────┐​
+​
+│
+​
+
+Application Services
+
+│ Policies / AI / Security / Sharing
+​
+
+│​
+│​
+
+└─────────────────────────────────────┘​
+​
+│​
+​
+
+▼​
+​
+
+┌─────────────────────────────────────┐​
+​
+│
+​
+
+Interface Layer
+
+│​
+
+│ Protocol-based abstraction
+​
+
+│​
+
+└─────────────────────────────────────┘​
+​
+│​
+​
+
+┼
+
+┌───────── ─────────┐​
+​
+
+▼
+​
+
+▼
+
+▼​
+
+┌──────────┐ ┌──────────┐ ┌──────────┐​
+​
+│ XQ API
+​
+
+│ │ AI Model │ │ IDP/Auth │​
+
+│ Adapter
+​
+
+│ │ Adapter
+
+│ │ Adapter
+
+│​
+
+└──────────┘ └──────────┘ └──────────┘​
+​
+│
+​
+
+▼
+​
+
+│
+
+▼
+
+│​
+
+▼​
+
+External APIs / Services / Providers​
+​
+
+​4. Mobile Platform Stack​
+​iOS Technologies​
+
+​xqmsg.co | XQ Message​
+
+​3​
+
+​Layer​
+
+​Technology​
+
+​UI​
+
+​SwiftUI​
+
+​State​
+
+​Combine / Observable​
+
+​Architecture​
+
+​MVVM-C​
+
+​Dependency Injection​ ​Resolver / Factory​
+​Persistence​
+
+​CoreData / SQLite​
+
+​Encryption​
+
+​Secure Enclave + CryptoKit​
+
+​Background Tasks​
+
+​BGTaskScheduler​
+
+​Networking​
+
+​URLSession​
+
+​Offline Sync​
+
+​Custom sync engine​
+
+​Logging​
+
+​Unified logging framework​
+
+​Animations​
+
+​SwiftUI + Core Animation​
+
+​AI Runtime​
+
+​CoreML / ONNX Runtime​
+
+​File Viewer​
+
+​QuickLook + Custom Renderers​
+
+​5. Interface-Based Architecture​
+​Requirement​
+​No direct API calls allowed anywhere in business logic.​
+
+​5.1 Interface Standards​
+​All integrations must use interfaces.​
+​Example:​
+
+​xqmsg.co | XQ Message​
+
+​4​
+
+​Swift​
+
+protocol​​
+​
+RepositoryProvider​​
+{​
+func​​
+​
+authenticate()​
+func​​
+​
+listFiles(path:​​
+String​
+)​
+func​​
+​
+downloadFile(id:​​
+String​
+)​
+func​​
+​
+uploadFile(file:​​
+SecureFile​
+)​
+}​
+​
+​Implementations:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​SharePointProvider​
+​GoogleDriveProvider​
+​SMBProvider​
+​LocalVaultProvider​
+​XQ API​
+​OAUTH​
+
+​Business logic never references provider implementations directly.​
+
+​5.2 Dependency Injection​
+​All providers resolved dynamically.​
+​Swift​
+
+class​​
+​
+RepositoryService​​
+{​
+init​
+​
+(provider:​​
+RepositoryProvider​
+)​
+}​
+​
+​Benefits:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Testability​
+​Mock support​
+​Runtime provider swapping​
+​Version compatibility​
+​Enterprise customization​
+
+​xqmsg.co | XQ Message​
+
+​5​
+
+​6. XQ API Abstraction Layer​
+​Requirement​
+​Support multiple XQ API versions simultaneously.​
+
+​6.1 XQ API Interface​
+​Swift​
+
+protocol​​
+​
+XQSecureAPI​​
+{​
+func​​
+​
+encrypt()​
+func​​
+​
+decrypt()​
+func​​
+​
+applyPolicy()​
+func​​
+​
+revokeAccess()​
+func​​
+​
+validateAccess()​
+}​
+​
+​XQ API -​​https://xq.stoplight.io/​
+​XQ SDK -​​https://github.com/XQ-Message-Inc/​
+
+​6.2 Version Adapters​
+​None​
+
+XQAPIv1Adapter​
+​
+XQAPIv2Adapter​
+​
+XQAPIv3Adapter​
+​
+​Version resolution:​
+​●​ ​Dynamic capability negotiation​
+​●​ ​Backward compatibility support​
+​●​ ​Feature flag mapping​
+
+​xqmsg.co | XQ Message​
+
+​6​
+
+​6.3 API Gateway Layer​
+​All network traffic routed through:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Request normalization​
+​Retry orchestration​
+​Token refresh​
+​Telemetry​
+​Audit logging​
+​Security validation​
+
+​7. AI Architecture​
+​7.1 AI Provider Abstraction​
+​Swift​
+
+protocol​​
+​
+AIProvider​​
+{​
+func​​
+​
+classify(document:​​
+Data​
+)​
+func​​
+​
+generateSummary(text:​​
+String​
+)​
+func​​
+​
+evaluateRisk(context:​​
+RiskContext​
+)​
+}​
+​
+​Supported Providers:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​OpenAI​
+​Anthropic​
+​AWS Bedrock​
+​Azure OpenAI​
+​Local CoreML Models​
+​ONNX Models​
+​Enterprise custom models​
+
+​7.2 AI Model Switching​
+​xqmsg.co | XQ Message​
+
+​7​
+
+​Runtime configurable:​
+​●​
+​●​
+​●​
+​●​
+
+​Per tenant​
+​Per policy​
+​Per data classification​
+​Offline fallback​
+
+​Example:​
+​●​ ​Local model for CUI​
+​●​ ​Cloud model for summarization​
+
+​7.3 AI Governance Engine​
+​Functions:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Classification​
+​Sensitivity scoring​
+​Risk assessment​
+​Policy recommendations​
+​Behavioral analysis​
+​Sharing validation​
+
+​8. Fuzzy Logic Policy Engine​
+​Purpose​
+​Policies are adaptive rather than binary.​
+​Instead of:​
+​None​
+
+ALLOW / DENY​
+​
+​System evaluates:​
+
+​xqmsg.co | XQ Message​
+
+​8​
+
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Risk score​
+​Device trust​
+​User behavior​
+​Location​
+​Sensitivity​
+​Sharing patterns​
+​Time​
+​Session anomalies​
+
+​8.1 Example​
+​None​
+
+IF:​
+​
+External User​
+​
+AND Sensitivity = High​
+​
+AND Device Trust = Medium​
+​
+THEN:​
+​
+Allow View Only​
+​
+Disable Download​
+​
+Require MFA Every 5 Minutes​
+​
+Enable Heavy Watermark​
+​
+
+​8.2 Policy Engine Architecture​
+​None​
+
+Policy Inputs​
+​
+
+↓​
+​
+
+Risk Evaluation Engine​
+​
+
+↓​
+​
+
+Fuzzy Logic Processor​
+​
+
+↓​
+​
+
+Runtime Controls​
+​
+
+​xqmsg.co | XQ Message​
+
+​9​
+
+↓​
+​
+
+XQ Enforcement Layer​
+​
+
+​9. Identity & Group Model​
+​9.1 Identity Providers​
+​Supported:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Microsoft Entra ID​
+​Okta​
+​Google Workspace​
+​Ping​
+​AWS IAM Identity Center​
+
+​9.2 Gmail Group Logic​
+​Requirement:​
+​Gmail identity acts as group container.​
+​Example:​
+​None​
+
+project-team@gmail.com​
+​
+​Automatically becomes:​
+​●​ ​Shared secure workspace​
+​●​ ​Shared folder boundary​
+​●​ ​Shared governance container​
+
+​xqmsg.co | XQ Message​
+
+​10​
+
+​9.3 Dynamic Group Policies​
+​Groups inherit:​
+​●​
+​●​
+​●​
+​●​
+
+​Labels​
+​Access policies​
+​Sharing restrictions​
+​Retention rules​
+
+​10. Shared Folder Collaboration Model​
+​Invite-Based Workspace Creation​
+​User Flow:​
+​1.​ ​User invites participants​
+​2.​ ​App creates encrypted workspace container​
+​3.​ ​Policies applied automatically​
+​4.​ ​Shared folder established​
+​5.​ ​Dynamic membership maintained​
+
+​10.1 Shared Workspace Characteristics​
+​Capability​
+
+​Description​
+
+​Persistent encryption​
+
+​Data remains protected​
+
+​Membership​
+​governance​
+
+​Dynamic access​
+
+​Revocation​
+
+​Immediate removal​
+
+​Activity logging​
+
+​Full auditability​
+
+​Offline sync​
+
+​Controlled secure cache​
+
+​xqmsg.co | XQ Message​
+
+​11​
+
+​AI governance​
+
+​Continuous classification​
+
+​11. Localization & Language System​
+​11.1 Multi-Language Architecture​
+​Requirement:​
+​All UI text externalized.​
+
+​11.2 Localization Files​
+​None​
+
+/en/messages.json​
+​
+/fr/messages.json​
+​
+/de/messages.json​
+​
+/jp/messages.json​
+​
+​Example:​
+​JSON​
+
+{​
+​
+"home.title"​
+​
+:​​
+"Home"​
+,​
+"files.import"​
+​
+:​​
+"Import File"​
+,​
+"risk.warning"​
+​
+:​​
+"Sensitive file detected"​
+}​
+​
+
+​11.3 Runtime Language Switching​
+​Features:​
+
+​xqmsg.co | XQ Message​
+
+​12​
+
+​●​
+​●​
+​●​
+​●​
+
+​Dynamic reload​
+​No app restart required​
+​Tenant-specific language packs​
+​OTA translation updates​
+
+​11.4 Adaptive UI​
+​Requirements:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Auto-resizing buttons​
+​Flexible containers​
+​RTL support​
+​Dynamic type scaling​
+​Accessibility-first layouts​
+
+​12. Animation System​
+​Requirement​
+​Every UX element must animate.​
+
+​12.1 Animation Categories​
+​Type​
+
+​Requirement​
+
+​Entry​
+
+​Fade + motion​
+
+​Exit​
+
+​Scale + fade​
+
+​Click​
+
+​Spring response​
+
+​Navigation​
+
+​Smooth transitions​
+
+​xqmsg.co | XQ Message​
+
+​13​
+
+​Risk Alerts​
+
+​Contextual​
+​emphasis​
+
+​File Actions​ ​Gesture animation​
+
+​12.2 Animation Framework​
+​Use:​
+​●​ ​SwiftUI animations​
+​●​ ​Core Animation​
+​●​ ​Motion interpolation engine​
+​○​ ​Research the best UI framework for centralized Design control. Prioritize a cross​
+​platform module.​
+​Performance requirements:​
+​●​ ​60 FPS minimum​
+​●​ ​Reduced motion accessibility support​
+
+​12.3 UI Guidance​
+​For a modern iOS-first app that also needs strong Android consistency, the top choices in 2026​
+​are:​
+
+​Framework /​
+​Module Stack​
+
+​Native​
+​Feel​
+
+​Cross-Platfor​ ​Performanc​ ​Enterprise​
+​m​
+​e​
+​Suitability​
+​Consistency​
+
+​Kotlin Multiplatform​ ​Excellen​ ​High (logic​
+​+ SwiftUI +​
+t​​
+​shared)​
+​Jetpack Compose​
+
+​Native​
+
+​xqmsg.co | XQ Message​
+
+​Excellent​
+
+​Best Use​
+​Case​
+
+​Enterprise,​
+​security, AI,​
+​regulated apps​
+
+​14​
+
+​Flutter​
+
+​Very​
+​Good​
+
+​Excellent​
+
+​Near-native​
+
+​Very Good​
+
+​Pixel-perfect​
+​UX/UI​
+​consistency​
+
+​React Native​
+
+​Good​
+
+​Good​
+
+​Near-native​
+
+​Good​
+
+​Fast iteration,​
+​JS teams​
+
+​Compose​
+​Multiplatform​
+
+​Very​
+​Good​
+
+​Excellent​
+
+​Near-native​
+
+​Emerging​
+
+​Kotlin-centric​
+​shared UI​
+
+​Based on your requirements from prior discussions — enterprise security, modular architecture,​
+i​nterchangeable AI models, policy enforcement, adaptive UI, multilingual support, iPad + iPhone​
+​support, and likely long lifecycle maintenance — the strongest architecture is:​
+
+​Recommended Architecture​
+​1. Core UX/UI Stack​
+​iOS​
+​●​ ​SwiftUI​
+
+​Android​
+​●​ ​Jetpack Compose​
+
+​Shared Layer​
+​●​ ​Kotlin Multiplatform​
+​This gives:​
+​●​
+​●​
+​●​
+​●​
+
+​True native UX on each platform​
+​Shared business logic​
+​Shared networking​
+​Shared policy engine​
+
+​xqmsg.co | XQ Message​
+
+​15​
+
+​●​
+​●​
+​●​
+​●​
+
+​Shared security layer​
+​Shared AI orchestration​
+​Shared localization framework​
+​Shared design tokens​
+
+​This is increasingly considered the enterprise-grade approach for regulated/security-sensitive​
+​mobile applications.​
+
+​Why This Is Better Than Flutter​
+​Flutter is excellent for UI consistency, but your app requirements lean heavily toward:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​security​
+​native OS integrations​
+​policy enforcement​
+​background processing​
+​device posture​
+i​dentity providers​
+​external SDK integrations​
+​secure storage​
+​MDM compatibility​
+​AI model abstraction​
+​enterprise compliance​
+
+​These are areas where native platform access matters.​
+​Kotlin Multiplatform lets you:​
+​●​
+​●​
+​●​
+​●​
+
+​share 60–80% of code​
+​maintain fully native UI​
+​avoid bridge performance issues​
+i​ntegrate deeply with iOS and Android security APIs​
+
+​This is especially important for:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Zero Trust enforcement​
+​secure enclaves​
+​device attestation​
+​offline policy evaluation​
+​AI model switching​
+​encrypted local storage​
+
+​xqmsg.co | XQ Message​
+
+​16​
+
+​Best UX/UI Modules To Standardize​
+​Design System Layer​
+​Use:​
+​●​ ​Material 3 tokens internally​
+​●​ ​Apple Human Interface Guidelines on iOS​
+​●​ ​Shared design tokens via KMP​
+​Recommended structure:​
+​None​
+
+Shared Design Tokens​
+​
+
+├── colors​
+├── typography​
+​
+├── spacing​
+​
+├── iconography​
+​
+├── motion​
+​
+├── accessibility​
+​
+​
+
+└── responsive breakpoints​
+​
+
+​Best Native UI Modules​
+​Navigation​
+​xqmsg.co | XQ Message​
+
+​17​
+
+​iOS​
+​●​ ​NavigationStack​
+​●​ ​SplitView for iPad​
+
+​Android​
+​●​ ​Navigation Compose​
+
+​State Management​
+​Recommended:​
+​●​ ​MVVM + unidirectional data flow​
+​Use:​
+​●​ ​StateFlow​
+​●​ ​Combine​
+​●​ ​Shared ViewModels via KMP​
+
+​Best Cross-Platform UI Component​
+​Systems​
+​Best Overall​
+​Compose Multiplatform​
+​Best future-facing option if you later want:​
+​●​
+​●​
+​●​
+​●​
+
+​desktop​
+​web​
+​Android Automotive​
+​embedded AI terminals​
+
+​But:​
+
+​xqmsg.co | XQ Message​
+
+​18​
+
+​●​ i​OS support is still maturing​
+
+​Best Stable Enterprise Choice​
+​SwiftUI + Compose + KMP​
+​This is currently the safest long-term architecture.​
+
+​Recommended Modular UX/UI​
+​Architecture​
+​None​
+
+Presentation Layer​
+​
+
+├── Native UI​
+│
+​
+├── SwiftUI​
+​
+
+│
+​
+
+└── Jetpack Compose​
+
+│​
+​
+
+├── Shared Design System​
+​
+
+│​
+​
+
+├── Shared State Layer​
+​
+
+│​
+​
+
+├── Shared Policy Engine​
+​
+
+│​
+​
+
+├── Shared AI Interface​
+​
+
+​xqmsg.co | XQ Message​
+
+​19​
+
+│​
+​
+
+├── Shared Security Framework​
+​
+
+│​
+​
+└── Shared Localization Engine​
+​
+
+​Important UX/UI Requirements For Your​
+​App​
+​Given your previous requirements, your UI framework should support:​
+
+​Dynamic Policy-Controlled UI​
+​Example:​
+​●​
+​●​
+​●​
+​●​
+
+​Hide features by RBAC/ABAC​
+​Dynamic labels​
+​Geofenced UI​
+​Tenant-based layouts​
+
+​KMP handles this very well.​
+
+​Externalized Localization​
+​Use:​
+​JSON​
+
+/localization/en.json​
+​
+/localization/fr.json​
+​
+
+​xqmsg.co | XQ Message​
+
+​20​
+
+/localization/ar.json​
+​
+​Do NOT hardcode strings.​
+
+​Adaptive Layout System​
+​Must support:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+i​Phone​
+i​Pad​
+​foldables​
+​Android tablets​
+​external monitors​
+
+​SwiftUI + Compose are best-in-class here.​
+
+​Accessibility​
+​Need:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Dynamic text​
+​VoiceOver/TalkBack​
+​keyboard navigation​
+​high contrast​
+​RTL layouts​
+
+​Native UI frameworks handle accessibility significantly better than Flutter or React Native.​
+
+​Final Recommendation​
+​Best Overall Architecture​
+​Kotlin Multiplatform​
+​●​
+
+​xqmsg.co | XQ Message​
+
+​21​
+
+​SwiftUI​
+​●​
+
+​Jetpack Compose​
+​This gives you:​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​native-grade UX​
+​shared business/security logic​
+​Android/iOS consistency​
+​enterprise scalability​
+​best long-term maintainability​
+​strong AI integration flexibility​
+​best security posture​
+
+​Flutter is the second-best choice if:​
+​●​ ​maximum visual consistency matters more than native fidelity.​
+​React Native is best only if:​
+​●​ ​your organization is heavily JavaScript/TypeScript-centric.​
+
+​13. Resource Control System​
+​Purpose​
+​Prevent excessive:​
+​●​
+​●​
+​●​
+​●​
+
+​Battery drain​
+​AI processing​
+​Memory consumption​
+​Network utilization​
+
+​xqmsg.co | XQ Message​
+
+​22​
+
+​13.1 Adaptive Resource Policies​
+​Dynamic controls:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​AI throttling​
+​Sync batching​
+​Background limits​
+​GPU usage caps​
+​Cache pruning​
+
+​13.2 Device-Aware Scaling​
+​Example:​
+​Older devices:​
+​●​ ​Reduced animation complexity​
+​●​ ​Smaller AI models​
+​●​ ​Limited background tasks​
+
+​14. Secure File System​
+​14.1 File Protection Model​
+​All imported files:​
+​●​
+​●​
+​●​
+​●​
+
+​Encrypted immediately​
+​Bound to XQ policy metadata​
+​Stored in secure sandbox​
+​Never exposed directly to iOS filesystem​
+
+​xqmsg.co | XQ Message​
+
+​23​
+
+​14.2 Runtime Controls​
+​Protected Viewer:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Screenshot blocking​
+​Screen recording detection​
+​Clipboard prevention​
+​Background blur​
+​Watermark overlays​
+
+​14.3 Offline Storage​
+​Offline files:​
+​●​
+​●​
+​●​
+​●​
+
+​Time-limited​
+​Policy-bound​
+​Auto-expiring​
+​Remote revocable​
+
+​15. Integration Framework​
+​15.1 Unified Integration Interface​
+​Swift​
+
+protocol​​
+​
+ExternalIntegration​​
+{​
+func​​
+​
+authenticate()​
+func​​
+​
+sync()​
+func​​
+​
+query()​
+func​​
+​
+upload()​
+}​
+​
+
+​xqmsg.co | XQ Message​
+
+​24​
+
+​15.2 Supported Integrations​
+​Microsoft​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​SharePoint​
+​OneDrive​
+​Teams​
+​Exchange​
+​Entra ID​
+
+​Google​
+​●​ ​Gmail​
+​●​ ​Google Drive​
+​●​ ​Google Workspace​
+
+​Additional​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Box​
+​Dropbox​
+​SMB​
+​AWS S3​
+​Local storage​
+
+​16. Auto Update / Force Update System​
+​16.1 Update Modes​
+​Mode​
+
+​Description​
+
+​xqmsg.co | XQ Message​
+
+​25​
+
+​Silent Update​ ​Background content/config​
+​updates​
+​Soft Update​
+
+​Recommended app upgrade​
+
+​Force Update​ ​Mandatory security update​
+
+​16.2 Dynamic Configuration​
+​Remote config controls:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Feature flags​
+​Policy updates​
+​AI model rollout​
+​Kill switches​
+​Version gating​
+
+​17. Cross-Platform Strategy​
+​17.1 Shared Architecture​
+​Core shared concepts:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​APIs​
+​Policy engine​
+​AI abstraction​
+​Sync logic​
+​Security model​
+
+​17.2 Future Platform Support​
+​xqmsg.co | XQ Message​
+
+​26​
+
+​Platform​
+
+​Strategy​
+
+​Android​
+
+​Kotlin equivalent architecture​
+
+​macOS​
+
+​Native Catalyst​
+
+​Windows​ ​MAUI/Native​
+​Web​
+
+​Secure browser workspace​
+
+​18. Security Architecture​
+​18.1 Core Security Controls​
+​Control​
+​Secure Enclave​
+
+​Description​
+​Key storage​
+
+​Certificate Pinning​ ​API security​
+​Runtime integrity​
+
+​Tamper detection​
+
+​Jailbreak​
+​detection​
+
+​Compromise prevention​
+
+​Device posture​
+
+​Trust scoring​
+
+​Secure cache​
+
+​Encrypted storage​
+
+​18.2 Zero Trust Runtime​
+​Continuous evaluation:​
+​●​ ​Identity​
+​●​ ​Device​
+​●​ ​Session​
+
+​xqmsg.co | XQ Message​
+
+​27​
+
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Location​
+​Behavior​
+​Classification​
+​Network posture​
+​version​
+
+​19. Governance Architecture​
+​19.1 Policy Types​
+​Policy​
+
+​Description​
+
+​Classification​ ​Data sensitivity​
+​Sharing​
+
+​External access​
+
+​Retention​
+
+​Expiration​
+
+​Device​
+
+​Trust​
+​requirements​
+
+​Geographic​
+
+​Region restrictions​
+
+​Runtime​
+
+​Viewer protections​
+
+​19.2 Label Architecture​
+​Labels support:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Follow MIPS​
+​Hierarchical inheritance​
+​Multi-label assignment​
+​AI confidence scoring​
+​Dynamic reclassification​
+
+​xqmsg.co | XQ Message​
+
+​28​
+
+​20. Offline-First Sync Architecture​
+​Principles​
+​●​
+​●​
+​●​
+​●​
+
+​Local-first operations​
+​Eventual consistency​
+​Conflict resolution​
+​Secure sync queue​
+
+​20.1 Sync Engine​
+​Required for local groups​
+​Capabilities:​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Delta sync​
+​Retry queue​
+​Background sync​
+​Policy-aware sync​
+​Selective offline availability​
+
+​xqmsg.co | XQ Message​
+
+​29​
+
+​21. Enterprise Admin Framework​
+​Capabilities​
+​Governance​
+​●​
+​●​
+​●​
+​●​
+
+​Policy authoring​
+​AI threshold tuning​
+​Group administration​
+​Access management​
+
+​Audit​
+​●​
+​●​
+​●​
+​●​
+
+​File lineage​
+​User behavior​
+​Sharing events​
+​Device trust history​
+
+​22. Observability & Telemetry​
+​Telemetry Categories​
+​Category​
+
+​Description​
+
+​Security​
+
+​Threat events​
+
+​UX​
+
+​User interactions​
+
+​AI​
+
+​Model performance​
+
+​Sync​
+
+​Repository health​
+
+​Runtime​
+
+​Device​
+​performance​
+
+​All telemetry:​
+​●​ ​Policy governed​
+​●​ ​Privacy aware​
+​xqmsg.co | XQ Message​
+
+​30​
+
+​●​ ​Tenant configurable​
+
+​23. Recommended Repository Structure​
+​None​
+
+App/​
+​
+
+├── Core/​
+├── UI/​
+​
+├── ViewModels/​
+​
+├── Services/​
+​
+├── Interfaces/​
+​
+├── Providers/​
+​
+├── AI/​
+​
+├── Security/​
+​
+├── Policies/​
+​
+├── Localization/​
+​
+├── Animations/​
+​
+├── Sync/​
+​
+├── Integrations/​
+​
+├── Storage/​
+​
+​
+
+└── Utilities/​
+​
+
+​24. Recommended Development Phases​
+​Phase 1​
+​●​
+​●​
+​●​
+​●​
+​●​
+​●​
+
+​Authentication​
+​File browser​
+​Secure viewer​
+​XQ encryption​
+​SharePoint integration​
+​Offline cache​
+
+​xqmsg.co | XQ Message​
+
+​31​
+
+​Phase 2​
+​●​
+​●​
+​●​
+​●​
+
+​AI classification​
+​Dynamic policy engine​
+​Secure sharing​
+​Gmail group workspaces​
+
+​Phase 3​
+​●​
+​●​
+​●​
+​●​
+
+​Advanced governance​
+​AI copilots​
+​Multi-model orchestration​
+​Cross-platform sync​
+
+​Phase 4​
+​●​
+​●​
+​●​
+​●​
+
+​Autonomous governance agents​
+​AI collaboration​
+​Enterprise analytics​
+​Secure workflow automation​
+
+​xqmsg.co | XQ Message​
+
+​32​
+
+​Design guidance​
+
+​DESIGN INSPIRATION​
+
+​Best Overall Native iOS Design​
+​Things 3​
+​●​
+​●​
+​●​
+​●​
+
+​Gold standard for native iOS interaction design​
+​Exceptional typography, spacing, motion, and gesture behavior​
+​Uses Apple Human Interface Guidelines extremely well​
+​Great example of progressive disclosure and low cognitive load​
+
+​Craft​
+​●​
+​●​
+​●​
+​●​
+
+​Beautiful editor and navigation system​
+​Excellent iPad + iPhone adaptive layouts​
+​Strong use of glassmorphism and modern Apple visual language​
+​Very polished animations and transitions​
+
+​Fantastical​
+​●​ ​Outstanding information density without clutter​
+​●​ ​Excellent gesture systems and calendar UX​
+​●​ ​Strong widget and Apple ecosystem integration​
+
+​Linear​
+​●​ ​One of the cleanest modern productivity UIs​
+​●​ ​High-performance feel with subtle motion design​
+​●​ ​Strong cross-platform consistency between iOS, macOS, and web​
+
+​Best Apps for Interaction Design​
+​Flighty​
+​●​ ​Best-in-class live activity and Dynamic Island implementation​
+​●​ ​Superb real-time UX patterns​
+​●​ ​Excellent animation timing and visual hierarchy​
+
+​Gentler Streak​
+
+​●​ ​Exceptional health data visualization​
+​●​ ​Friendly, emotionally intelligent UX​
+​●​ ​Strong accessibility and Apple Watch integration​
+
+​Dark Noise​
+​●​ ​Minimalist interface with excellent tactile interactions​
+​●​ ​Great use of haptics and iOS-native controls​
+​●​ ​Highly refined microinteractions​
+
+
