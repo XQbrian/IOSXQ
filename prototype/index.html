@@ -156,6 +156,12 @@
   .tb{color:var(--brand);}
   .chip{background:var(--bg);border-radius:var(--rfull);padding:5px 12px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;white-space:nowrap;}
   .chip.on{background:var(--brand-light);color:var(--brand);}
+  /* iPad frame */
+  .ipad{display:none;position:relative;width:820px;min-height:1024px;background:#000;border-radius:24px;box-shadow:0 0 0 2px #3A3A3C,0 30px 80px rgba(0,0,0,.6);overflow:hidden;flex-shrink:0;}
+  .ipad-inner{position:absolute;inset:0;display:flex;background:var(--bg);}
+  .ipad-sidebar{width:320px;flex-shrink:0;border-right:.5px solid var(--sep);display:flex;flex-direction:column;background:var(--card);}
+  .ipad-detail{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .ipad.on{display:block;}
   @keyframes xspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
   .etbtn{padding:5px 9px;border-radius:var(--r4);font-size:14px;color:var(--t2);cursor:pointer;transition:background .12s;border:none;background:transparent;flex-shrink:0;}
   .etbtn:hover,.etbtn.on{background:var(--brand-light);color:var(--brand);}
@@ -175,7 +181,9 @@
   <button class="fbtn" onclick="flow(5)">⑤ Admin Policy</button>
   <button class="fbtn" onclick="flow(6)">⑥ Enterprise Auth</button>
   <button class="fbtn" onclick="flow(7)">⑦ Notifications</button>
+  <button class="fbtn" onclick="flow(8)">⑧ Email Intelligence</button>
   <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleDark()">🌙 Dark</button>
+  <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleIPad()">📱 iPad</button>
 </div>
 
 <div class="phone" id="phone">
@@ -599,23 +607,65 @@
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div class="lt"><div class="lt-text">Secure Email</div><div style="padding-bottom:8px;"><button style="background:var(--brand);color:#fff;border:none;border-radius:var(--rfull);padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;" onclick="go('s-email-compose')">✏️ Compose</button></div></div>
   <div style="padding:5px 16px 7px;display:flex;gap:6px;"><div class="chip on">Inbox (4)</div><div class="chip">Sent</div><div class="chip">Drafts</div></div>
+  <!-- AI Triage Summary Bar -->
+  <div style="background:linear-gradient(135deg,rgba(61,90,254,.07),rgba(0,0,0,0));border-bottom:.5px solid var(--sep);padding:9px 16px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
+    <span style="font-size:13px;">🤖</span>
+    <div style="font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;">AI Triage</div>
+    <div style="display:flex;gap:5px;flex:1;flex-wrap:wrap;">
+      <span style="background:var(--res-bg);color:var(--res-t);font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--rfull);">1 Critical</span>
+      <span style="background:var(--con-bg);color:var(--con-t);font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--rfull);">2 Action</span>
+      <span style="background:var(--int-bg);color:var(--int-t);font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--rfull);">1 FYI</span>
+    </div>
+    <span style="font-size:9px;color:var(--t3);">🔒 On-device</span>
+  </div>
   <div class="sc">
     <div class="card ph16">
-      <div class="cr" style="cursor:pointer;background:linear-gradient(135deg,rgba(198,40,40,.05),transparent);padding:13px 0;" onclick="go('s-email-compose')">
+      <!-- P0 Critical — phishing risk + PHI -->
+      <div class="cr" style="cursor:pointer;background:linear-gradient(135deg,rgba(198,40,40,.06),transparent);padding:13px 0;border-left:3px solid var(--res-d);padding-left:13px;" onclick="go('s-email-thread')">
         <div style="position:relative;flex-shrink:0;"><div class="av" style="background:#C62828;">CT</div><div style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#FF3B30;border-radius:50%;border:2px solid var(--card);"></div></div>
-        <div class="col"><div class="rjb"><span class="t1c semi" style="font-size:13px;">Carol Thomas</span><span class="t3c">9:14 AM</span></div><div style="font-size:12px;color:var(--t1);margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Re: Patient discharge summary — URGENT</div><div style="display:flex;gap:6px;margin-top:3px;"><span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span><span style="font-size:10px;color:var(--danger);">⚠ PHI</span></div></div>
+        <div class="col">
+          <div class="rjb"><span class="t1c semi" style="font-size:13px;">Carol Thomas</span><span style="font-size:9px;background:var(--res-bg);color:var(--res-t);font-weight:700;padding:2px 6px;border-radius:var(--rfull);">P0 Critical</span></div>
+          <div style="font-size:12px;color:var(--t1);margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Re: Patient discharge summary — URGENT</div>
+          <div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;">
+            <span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span>
+            <span style="font-size:9px;color:var(--danger);font-weight:600;">⚠ PHI</span>
+            <span style="font-size:9px;color:var(--warn);font-weight:600;">🎣 Phishing Risk</span>
+            <span style="font-size:9px;color:var(--brand);">3 actions extracted</span>
+          </div>
+        </div>
       </div>
-      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-email-compose')">
+      <!-- P1 Action Required -->
+      <div class="cr" style="cursor:pointer;padding:13px 0;border-left:3px solid var(--con-d);padding-left:13px;" onclick="go('s-email-thread')">
         <div class="av" style="background:#1565C0;">JS</div>
-        <div class="col"><div class="rjb"><span class="t1c" style="font-size:13px;">John Smith</span><span class="t3c">8:30 AM</span></div><div style="font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Q4 budget review — see attached</div><div style="margin-top:3px;"><span class="bg con" style="font-size:8px;"><span class="bg-dot"></span>Confidential</span></div></div>
+        <div class="col">
+          <div class="rjb"><span class="t1c" style="font-size:13px;">John Smith</span><span style="font-size:9px;background:var(--con-bg);color:var(--con-t);font-weight:700;padding:2px 6px;border-radius:var(--rfull);">P1 Action</span></div>
+          <div style="font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Q4 budget review — see attached</div>
+          <div style="display:flex;gap:5px;margin-top:3px;">
+            <span class="bg con" style="font-size:8px;"><span class="bg-dot"></span>Confidential</span>
+            <span style="font-size:9px;color:var(--brand);">2 actions · deadline Fri</span>
+          </div>
+        </div>
       </div>
-      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-email-compose')">
+      <!-- P1 Action Required -->
+      <div class="cr" style="cursor:pointer;padding:13px 0;border-left:3px solid var(--con-d);padding-left:13px;" onclick="go('s-email-thread')">
         <div class="av" style="background:#2E7D32;">AM</div>
-        <div class="col"><div class="rjb"><span class="t1c" style="font-size:13px;">Alice Martinez</span><span class="t3c">Yesterday</span></div><div style="font-size:12px;color:var(--t2);">Team all-hands agenda</div><div style="margin-top:3px;"><span class="bg int" style="font-size:8px;"><span class="bg-dot"></span>Internal</span></div></div>
+        <div class="col">
+          <div class="rjb"><span class="t1c" style="font-size:13px;">Alice Martinez</span><span style="font-size:9px;background:var(--con-bg);color:var(--con-t);font-weight:700;padding:2px 6px;border-radius:var(--rfull);">P1 Action</span></div>
+          <div style="font-size:12px;color:var(--t2);">Team all-hands agenda — confirm attendance</div>
+          <div style="display:flex;gap:5px;margin-top:3px;">
+            <span class="bg int" style="font-size:8px;"><span class="bg-dot"></span>Internal</span>
+            <span style="font-size:9px;color:var(--brand);">1 action · RSVP needed</span>
+          </div>
+        </div>
       </div>
-      <div class="cr" style="cursor:pointer;padding:13px 0;" onclick="go('s-email-compose')">
+      <!-- P2 FYI / Noise -->
+      <div class="cr" style="cursor:pointer;padding:13px 0;border-left:3px solid var(--sep);padding-left:13px;opacity:.75;" onclick="go('s-email-thread')">
         <div class="av" style="background:#3D5AFE;font-size:11px;">XQ</div>
-        <div class="col"><div class="rjb"><span class="t1c" style="font-size:13px;">XQ Security</span><span class="t3c">Yesterday</span></div><div style="font-size:12px;color:var(--t2);">Policy update — new PHI handling rules</div><div style="margin-top:3px;"><span class="bg pub" style="font-size:8px;"><span class="bg-dot"></span>Public</span></div></div>
+        <div class="col">
+          <div class="rjb"><span class="t1c" style="font-size:13px;">XQ Security</span><span style="font-size:9px;background:var(--int-bg);color:var(--int-t);font-weight:700;padding:2px 6px;border-radius:var(--rfull);">FYI</span></div>
+          <div style="font-size:12px;color:var(--t2);">Policy update — new PHI handling rules</div>
+          <div style="margin-top:3px;"><span class="bg pub" style="font-size:8px;"><span class="bg-dot"></span>Public</span></div>
+        </div>
       </div>
     </div>
     <div style="height:16px;"></div>
@@ -681,6 +731,24 @@
       <button class="etbtn" style="font-size:12px;">🔗</button>
       <div style="flex:1;"></div>
       <button style="background:var(--bg);border:none;border-radius:var(--r8);padding:5px 9px;font-size:11px;color:var(--t2);cursor:pointer;font-weight:600;">📎 Attach</button>
+    </div>
+    <!-- Tone Analysis Bar (Capability #4) -->
+    <div style="background:var(--card);border-bottom:.5px solid var(--sep);padding:8px 16px;display:flex;gap:12px;align-items:center;flex-shrink:0;">
+      <span style="font-size:11px;color:var(--t3);">Tone</span>
+      <div style="display:flex;gap:6px;flex:1;">
+        <span style="background:#E8F5E9;color:#1B5E20;font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">Formal ✓</span>
+        <span style="background:#E8F5E9;color:#1B5E20;font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">Concise ✓</span>
+        <span style="background:var(--con-bg);color:var(--con-t);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">⚠ Commitment</span>
+      </div>
+      <span style="font-size:9px;color:var(--t3);">🔒 On-device</span>
+    </div>
+    <!-- Commitment Detection Banner (Capability #3) -->
+    <div style="background:linear-gradient(135deg,rgba(255,149,0,.12),rgba(255,149,0,.05));border-bottom:1px solid rgba(255,149,0,.3);padding:9px 16px;flex-shrink:0;">
+      <div style="font-size:10px;font-weight:700;color:#E65100;letter-spacing:.3px;margin-bottom:5px;">📋 COMMITMENTS DETECTED</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="font-size:11px;color:var(--t1);">• You're committing to send the discharge summary to carol.thomas@hospital.org</div>
+        <div style="font-size:11px;color:var(--t2);">• No explicit deadline — consider adding one</div>
+      </div>
     </div>
     <div style="background:var(--res-bg);border-bottom:1px solid var(--res-d);padding:9px 16px;flex-shrink:0;">
       <div class="rjb mb8"><span style="font-size:11px;font-weight:700;color:var(--res-t);">AI Risk Score: 78 / 100</span><span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>Restricted</span></div>
@@ -805,6 +873,174 @@
     </div>
     <button class="btn bp mb8" onclick="go('s-settings')">Publish Policy Update</button>
     <button class="btn bo mb20" onclick="go('s-settings')">Discard Changes</button>
+  </div>
+</div>
+
+<!-- ══ S21 EMAIL THREAD ══ -->
+<div class="scr" id="s-email-thread" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb">
+    <span class="nb-back" onclick="go('s-email-inbox')">← Inbox</span>
+    <span class="nb-title" style="font-size:14px;">Patient discharge…</span>
+    <span class="nb-act" onclick="go('s-email-compose')">Reply</span>
+  </div>
+  <!-- Phishing risk banner -->
+  <div style="background:linear-gradient(135deg,rgba(255,149,0,.18),rgba(255,149,0,.07));border-bottom:1px solid rgba(255,149,0,.4);padding:9px 16px;display:flex;gap:9px;align-items:center;flex-shrink:0;cursor:pointer;" onclick="go('s-phishing-alert')">
+    <span style="font-size:16px;">🎣</span>
+    <div class="col"><div style="font-size:11px;font-weight:700;color:#E65100;">Phishing Risk Detected — Medium</div><div style="font-size:10px;color:var(--t2);margin-top:1px;">Urgency manipulation signal · 72% confidence · Tap for details</div></div>
+    <span style="color:var(--warn);font-size:16px;">›</span>
+  </div>
+  <div class="sc">
+    <!-- AI Thread Summary (Capability #2) -->
+    <div style="background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(0,0,0,0));border-bottom:.5px solid var(--sep);padding:13px 16px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
+        <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;">🤖</span><div style="font-size:12px;font-weight:700;color:var(--t1);">AI Thread Summary</div><span style="font-size:9px;color:var(--t3);">🔒 On-device CoreML</span></div>
+        <span id="sum-toggle" style="font-size:12px;color:var(--brand);cursor:pointer;" onclick="expandSummary()">▲ Hide</span>
+      </div>
+      <div id="sum-body">
+        <div style="font-size:13px;color:var(--t1);line-height:1.5;margin-bottom:10px;font-style:italic;">"Carol Thomas is requesting urgent review and confirmation of a restricted PHI discharge summary. Thread contains 6 messages over 2 days. External share requires compliance approval."</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <div style="background:var(--res-bg);border-radius:var(--r8);padding:7px 10px;flex:1;min-width:80px;text-align:center;"><div style="font-size:16px;font-weight:800;color:var(--res-t);">6</div><div style="font-size:9px;color:var(--res-t);font-weight:600;">Messages</div></div>
+          <div style="background:var(--con-bg);border-radius:var(--r8);padding:7px 10px;flex:1;min-width:80px;text-align:center;"><div style="font-size:16px;font-weight:800;color:var(--con-t);">3</div><div style="font-size:9px;color:var(--con-t);font-weight:600;">Actions</div></div>
+          <div style="background:var(--int-bg);border-radius:var(--r8);padding:7px 10px;flex:1;min-width:80px;text-align:center;"><div style="font-size:16px;font-weight:800;color:var(--int-t);">1</div><div style="font-size:9px;color:var(--int-t);font-weight:600;">Blocker</div></div>
+          <div style="background:var(--pub-bg);border-radius:var(--r8);padding:7px 10px;flex:1;min-width:80px;text-align:center;"><div style="font-size:12px;font-weight:800;color:var(--pub-d);">Tense</div><div style="font-size:9px;color:var(--pub-d);font-weight:600;">Sentiment</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Extracted Actions (Capability #3) -->
+    <div class="sh" style="padding:14px 16px 8px;">Extracted Actions</div>
+    <div class="card ph16 mb12">
+      <div class="cr" style="padding:11px 0;">
+        <div style="width:28px;height:28px;border-radius:7px;background:var(--res-bg);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📋</div>
+        <div class="col"><div style="font-size:12px;font-weight:600;color:var(--t1);">Confirm receipt of discharge summary</div><div style="font-size:11px;color:var(--t3);margin-top:2px;">Commitment · You → Carol · No deadline set</div></div>
+        <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+      </div>
+      <div class="cr" style="padding:11px 0;">
+        <div style="width:28px;height:28px;border-radius:7px;background:var(--con-bg);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">⚖️</div>
+        <div class="col"><div style="font-size:12px;font-weight:600;color:var(--t1);">Legal approval required before external share</div><div style="font-size:11px;color:var(--warn);margin-top:2px;">Blocker · Legal team · PHI policy</div></div>
+        <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+      </div>
+      <div class="cr" style="padding:11px 0;">
+        <div style="width:28px;height:28px;border-radius:7px;background:var(--int-bg);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">📅</div>
+        <div class="col"><div style="font-size:12px;font-weight:600;color:var(--t1);">Schedule follow-up if no reply by EOD Friday</div><div style="font-size:11px;color:var(--t3);margin-top:2px;">Reminder · Auto-set · May 23</div></div>
+        <div style="background:var(--brand);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:10px;color:#fff;">✓</span></div>
+      </div>
+    </div>
+    <!-- Sender Profile (Capability #6) -->
+    <div class="sh" style="padding:0 16px 8px;">Sender Intelligence</div>
+    <div class="card ph16 mb12">
+      <div style="padding:13px 0;">
+        <div style="display:flex;gap:11px;align-items:center;margin-bottom:10px;">
+          <div class="av" style="background:#1565C0;">CT</div>
+          <div class="col">
+            <div style="font-size:13px;font-weight:700;color:var(--t1);">Carol Thomas</div>
+            <div class="t3c">carol.thomas@hospital.org · External Partner</div>
+          </div>
+          <span class="bg res" style="font-size:8px;"><span class="bg-dot"></span>High Value</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div class="rjb"><span style="font-size:11px;color:var(--t2);">Avg. response time</span><span style="font-size:11px;font-weight:600;color:var(--t1);">4.2 hours</span></div>
+          <div class="rjb"><span style="font-size:11px;color:var(--t2);">Escalation pattern</span><span style="font-size:11px;font-weight:600;color:var(--warn);">Escalates quickly</span></div>
+          <div class="rjb"><span style="font-size:11px;color:var(--t2);">Projects</span><span style="font-size:11px;font-weight:600;color:var(--t1);">Patient Care, Discharge Protocol</span></div>
+          <div style="background:var(--bg);border-radius:var(--r8);padding:8px 10px;margin-top:4px;font-size:11px;color:var(--t2);line-height:1.5;">💡 <b>Pattern:</b> Carol sends urgent PHI requests on Monday mornings. Previous 3 threads escalated to compliance within 48h when not acknowledged.</div>
+        </div>
+      </div>
+    </div>
+    <!-- Thread messages -->
+    <div class="sh" style="padding:0 16px 8px;">Thread (6 messages)</div>
+    <div class="card ph16 mb16">
+      <div class="cr" style="padding:12px 0;">
+        <div class="av" style="background:#C62828;width:32px;height:32px;font-size:11px;flex-shrink:0;">CT</div>
+        <div class="col">
+          <div class="rjb"><span style="font-size:12px;font-weight:600;color:var(--t1);">Carol Thomas</span><span class="t3c">9:14 AM</span></div>
+          <div style="font-size:12px;color:var(--t2);margin-top:2px;line-height:1.4;">Re: Patient discharge summary — URGENT. Please confirm receipt and advise on approval timeline…</div>
+        </div>
+      </div>
+      <div class="cr" style="padding:12px 0;">
+        <div class="av" style="background:#3D5AFE;width:32px;height:32px;font-size:11px;flex-shrink:0;">BW</div>
+        <div class="col">
+          <div class="rjb"><span style="font-size:12px;font-weight:600;color:var(--brand);">You</span><span class="t3c">8:50 AM</span></div>
+          <div style="font-size:12px;color:var(--t2);margin-top:2px;line-height:1.4;">Acknowledged. I'm reviewing with legal before responding with the summary.</div>
+        </div>
+      </div>
+      <div class="cr" style="padding:12px 0;border-bottom:none;">
+        <span style="font-size:12px;color:var(--t3);padding:0 4px;">+ 4 earlier messages · 2 days</span>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div style="background:var(--tab);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:10px 16px 34px;display:flex;gap:9px;flex-shrink:0;">
+    <button class="btn bs" style="flex:1;" onclick="go('s-email-compose')">Reply</button>
+    <button class="btn bp" style="flex:1;" onclick="go('s-email-compose')">Reply All</button>
+  </div>
+</div>
+
+<!-- ══ S22 PHISHING ALERT ══ -->
+<div class="scr" id="s-phishing-alert" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-email-thread')">← Thread</span><span class="nb-title">Risk Analysis</span><span></span></div>
+  <div class="sc p16">
+    <!-- Overall risk card -->
+    <div style="border-radius:var(--r16);background:linear-gradient(135deg,rgba(255,149,0,.18),rgba(255,149,0,.06));border:1.5px solid rgba(255,149,0,.5);padding:18px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="font-size:36px;">🎣</div>
+        <div>
+          <div style="font-size:18px;font-weight:800;color:#E65100;">Medium Phishing Risk</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:2px;">Risk Score: 58 / 100 · 🔒 On-device CoreML analysis</div>
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,.07);border-radius:6px;height:6px;overflow:hidden;"><div style="width:58%;height:100%;background:linear-gradient(90deg,#FF9500,#FF6D00);border-radius:6px;"></div></div>
+    </div>
+    <!-- Risk Signals -->
+    <div class="sh" style="padding:0 0 9px;">Risk Signals Detected</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div class="card" style="padding:13px 14px;border-left:3px solid var(--warn);">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;">
+          <span style="font-size:14px;">⏰</span>
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Urgency Manipulation</div>
+          <span style="background:var(--con-bg);color:var(--con-t);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);margin-left:auto;">72% confidence</span>
+        </div>
+        <div class="t2c" style="font-size:12px;line-height:1.5;">Subject line uses "URGENT" combined with PHI content and short-deadline language. Pattern consistent with social engineering.</div>
+      </div>
+      <div class="card" style="padding:13px 14px;border-left:3px solid var(--int-d);">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;">
+          <span style="font-size:14px;">👤</span>
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Unusual Relationship Pattern</div>
+          <span style="background:var(--int-bg);color:var(--int-t);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);margin-left:auto;">45% confidence</span>
+        </div>
+        <div class="t2c" style="font-size:12px;line-height:1.5;">First message from this external domain in 30 days. Org graph shows no prior approval chain for this sender.</div>
+      </div>
+      <div class="card" style="padding:13px 14px;border-left:3px solid var(--ok);">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;">
+          <span style="font-size:14px;">✅</span>
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">No Prompt Injection Detected</div>
+          <span style="background:var(--pub-bg);color:var(--pub-t);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);margin-left:auto;">Safe</span>
+        </div>
+        <div class="t2c" style="font-size:12px;line-height:1.5;">Body text scanned for hidden instructions. No AI prompt injection patterns found.</div>
+      </div>
+      <div class="card" style="padding:13px 14px;border-left:3px solid var(--ok);">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;">
+          <span style="font-size:14px;">🔗</span>
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Links Clean</div>
+          <span style="background:var(--pub-bg);color:var(--pub-t);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);margin-left:auto;">Safe</span>
+        </div>
+        <div class="t2c" style="font-size:12px;line-height:1.5;">0 links found. No suspicious domains, redirects, or shortened URLs.</div>
+      </div>
+    </div>
+    <!-- Cited controls -->
+    <div class="sh" style="padding:0 0 9px;">Active Policy Controls</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;">
+      <div style="background:#1A0A00;border:1px solid #5A2000;border-radius:var(--r8);padding:10px 12px;display:flex;gap:9px;align-items:flex-start;">
+        <div style="background:#C62828;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">HIPAA</div>
+        <div><div style="font-size:11px;font-weight:700;color:#FFB3B3;">§164.502 — Use &amp; Disclosure of PHI</div><div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">PHI data in this email cannot be forwarded without authorization. Audit record created.</div></div>
+      </div>
+      <div style="background:#0A0A1A;border:1px solid #1E2A5A;border-radius:var(--r8);padding:10px 12px;display:flex;gap:9px;align-items:flex-start;">
+        <div style="background:#1565C0;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;">NIST</div>
+        <div><div style="font-size:11px;font-weight:700;color:#90CAF9;">SP 800-53 SI-7 — Software &amp; Info Integrity</div><div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">Integrity verification applied. Sender domain checked against known BEC patterns.</div></div>
+      </div>
+    </div>
+    <button class="btn bp mb8" onclick="go('s-email-thread')">Proceed with Caution</button>
+    <button class="btn bo mb16" onclick="go('s-email-inbox')" style="color:var(--danger);border-color:var(--danger);">Quarantine Email</button>
   </div>
 </div>
 
@@ -1125,6 +1361,170 @@
 
 </div><!-- /phone -->
 
+<!-- ══ IPAD SPLIT VIEW ══ -->
+<div class="ipad" id="ipad">
+  <div class="ipad-inner dm" id="ipad-inner">
+    <!-- Sidebar: Email Inbox -->
+    <div class="ipad-sidebar">
+      <div style="height:54px;padding:20px 20px 0;background:#1C1C1E;border-bottom:.5px solid #38383A;flex-shrink:0;">
+        <div style="font-size:22px;font-weight:700;color:#fff;">Secure Email</div>
+      </div>
+      <!-- AI triage bar -->
+      <div style="background:linear-gradient(135deg,rgba(105,121,248,.12),rgba(0,0,0,0));border-bottom:.5px solid #38383A;padding:9px 16px;display:flex;gap:7px;align-items:center;flex-shrink:0;">
+        <span style="font-size:12px;">🤖</span>
+        <div style="font-size:9px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:.4px;">AI Triage</div>
+        <div style="display:flex;gap:4px;flex:1;">
+          <span style="background:#2A0012;color:#FF6E9E;font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);">1 Critical</span>
+          <span style="background:#2A1F00;color:#FFD54F;font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);">2 Action</span>
+          <span style="background:#0A1C38;color:#6AABFF;font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rfull);">1 FYI</span>
+        </div>
+        <span style="font-size:9px;color:#636366;">🔒</span>
+      </div>
+      <!-- Email list -->
+      <div style="flex:1;overflow-y:auto;">
+        <!-- P0 Critical -->
+        <div style="padding:14px 16px;border-bottom:.5px solid #38383A;cursor:pointer;background:linear-gradient(135deg,rgba(198,40,40,.12),transparent);border-left:3px solid #C62828;" onclick="ipadSelectEmail('ct')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:13px;font-weight:700;color:#fff;">Carol Thomas</span>
+            <div style="display:flex;gap:4px;align-items:center;"><span style="font-size:8px;background:#2A0012;color:#FF6E9E;font-weight:700;padding:2px 5px;border-radius:var(--rfull);">P0</span><span style="font-size:10px;color:#636366;">9:14</span></div>
+          </div>
+          <div style="font-size:12px;color:#E5E5EA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;">Re: Patient discharge summary — URGENT</div>
+          <div style="display:flex;gap:4px;">
+            <span style="font-size:8px;background:#2A0012;color:#FF6E9E;font-weight:700;padding:2px 6px;border-radius:var(--rfull);">Restricted</span>
+            <span style="font-size:9px;color:#FF9500;font-weight:600;">🎣 Risk</span>
+            <span style="font-size:9px;color:#6AABFF;">3 actions</span>
+          </div>
+        </div>
+        <!-- P1 Action -->
+        <div style="padding:14px 16px;border-bottom:.5px solid #38383A;cursor:pointer;border-left:3px solid #F57F17;" onclick="ipadSelectEmail('js')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:13px;font-weight:600;color:#fff;">John Smith</span>
+            <div style="display:flex;gap:4px;align-items:center;"><span style="font-size:8px;background:#2A1F00;color:#FFD54F;font-weight:700;padding:2px 5px;border-radius:var(--rfull);">P1</span><span style="font-size:10px;color:#636366;">8:30</span></div>
+          </div>
+          <div style="font-size:12px;color:#AEAEB2;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;">Q4 budget review — see attached</div>
+          <div style="display:flex;gap:4px;">
+            <span style="font-size:8px;background:#2A1F00;color:#FFD54F;font-weight:700;padding:2px 6px;border-radius:var(--rfull);">Confidential</span>
+            <span style="font-size:9px;color:#6AABFF;">2 actions · Fri</span>
+          </div>
+        </div>
+        <!-- P1 Action -->
+        <div style="padding:14px 16px;border-bottom:.5px solid #38383A;cursor:pointer;border-left:3px solid #F57F17;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:13px;font-weight:600;color:#fff;">Alice Martinez</span>
+            <div style="display:flex;gap:4px;align-items:center;"><span style="font-size:8px;background:#2A1F00;color:#FFD54F;font-weight:700;padding:2px 5px;border-radius:var(--rfull);">P1</span><span style="font-size:10px;color:#636366;">Yesterday</span></div>
+          </div>
+          <div style="font-size:12px;color:#AEAEB2;margin-bottom:4px;">Team all-hands agenda — RSVP</div>
+          <div style="display:flex;gap:4px;"><span style="font-size:8px;background:#0A1C38;color:#6AABFF;font-weight:700;padding:2px 6px;border-radius:var(--rfull);">Internal</span></div>
+        </div>
+        <!-- FYI -->
+        <div style="padding:14px 16px;border-bottom:.5px solid #38383A;cursor:pointer;border-left:3px solid #38383A;opacity:.7;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:13px;font-weight:500;color:#fff;">XQ Security</span>
+            <div style="display:flex;gap:4px;align-items:center;"><span style="font-size:8px;background:#0A1C38;color:#6AABFF;font-weight:700;padding:2px 5px;border-radius:var(--rfull);">FYI</span><span style="font-size:10px;color:#636366;">Yesterday</span></div>
+          </div>
+          <div style="font-size:12px;color:#AEAEB2;">Policy update — new PHI handling rules</div>
+        </div>
+      </div>
+      <!-- Bottom tab bar -->
+      <div style="display:flex;background:#1C1C1E;border-top:.5px solid #38383A;padding:8px 0 20px;flex-shrink:0;">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-home'); toggleIPad()"><span style="font-size:20px;">🏠</span><span style="font-size:9px;color:#636366;">Home</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-file-browser'); toggleIPad()"><span style="font-size:20px;">📁</span><span style="font-size:9px;color:#636366;">Files</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:20px;">✉️</span><span style="font-size:9px;color:#6979F8;font-weight:600;">Email</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-sharing'); toggleIPad()"><span style="font-size:20px;">🔗</span><span style="font-size:9px;color:#636366;">Sharing</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-settings'); toggleIPad()"><span style="font-size:20px;">⚙️</span><span style="font-size:9px;color:#636366;">Settings</span></div>
+      </div>
+    </div>
+    <!-- Detail: Thread View with full AI intelligence panel -->
+    <div class="ipad-detail" id="ipad-detail">
+      <div style="height:54px;padding:14px 24px 0;display:flex;align-items:center;justify-content:space-between;background:#1C1C1E;border-bottom:.5px solid #38383A;flex-shrink:0;">
+        <div style="font-size:16px;font-weight:700;color:#fff;" id="ipad-thread-title">Patient discharge summary — URGENT</div>
+        <div style="display:flex;gap:8px;">
+          <button style="background:#2C2C2E;border:none;border-radius:8px;padding:6px 12px;font-size:12px;color:#6979F8;font-weight:600;cursor:pointer;">Reply</button>
+          <button style="background:#3D5AFE;border:none;border-radius:8px;padding:6px 12px;font-size:12px;color:#fff;font-weight:600;cursor:pointer;">Reply All</button>
+        </div>
+      </div>
+      <!-- Phishing banner -->
+      <div id="ipad-risk-banner" style="background:linear-gradient(135deg,rgba(255,149,0,.15),rgba(0,0,0,0));border-bottom:.5px solid rgba(255,149,0,.35);padding:9px 24px;display:flex;gap:9px;align-items:center;flex-shrink:0;">
+        <span style="font-size:14px;">🎣</span>
+        <div class="col"><div style="font-size:11px;font-weight:700;color:#FF9500;">Phishing Risk — Medium (Score 58)</div><div style="font-size:10px;color:#8E8E93;margin-top:1px;">Urgency manipulation · 72% confidence · Unusual relationship pattern · On-device analysis</div></div>
+        <span style="background:#2A1800;color:#FF9500;font-size:10px;font-weight:700;padding:4px 10px;border-radius:var(--rfull);flex-shrink:0;cursor:pointer;">Details →</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;gap:20px;">
+        <!-- Left: thread + summary -->
+        <div style="flex:1;min-width:0;">
+          <!-- AI Summary card -->
+          <div style="background:#1C1C1E;border-radius:14px;padding:16px;margin-bottom:16px;border:1px solid #38383A;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+              <span style="font-size:14px;">🤖</span>
+              <div style="font-size:13px;font-weight:700;color:#fff;">AI Thread Summary</div>
+              <span style="font-size:9px;color:#636366;background:#2C2C2E;padding:2px 7px;border-radius:var(--rfull);">🔒 On-device</span>
+            </div>
+            <p style="font-size:13px;color:#AEAEB2;line-height:1.5;margin-bottom:12px;font-style:italic;">"Carol Thomas requesting urgent review of a restricted PHI discharge summary. 6 messages over 2 days. Compliance approval blocking external share."</p>
+            <div style="display:flex;gap:8px;">
+              <div style="background:#2C2C2E;border-radius:8px;padding:8px 10px;flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#FF6E9E;">6</div><div style="font-size:9px;color:#8E8E93;">Messages</div></div>
+              <div style="background:#2C2C2E;border-radius:8px;padding:8px 10px;flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#FFD54F;">3</div><div style="font-size:9px;color:#8E8E93;">Actions</div></div>
+              <div style="background:#2C2C2E;border-radius:8px;padding:8px 10px;flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#6AABFF;">1</div><div style="font-size:9px;color:#8E8E93;">Blocker</div></div>
+              <div style="background:#2C2C2E;border-radius:8px;padding:8px 10px;flex:1;text-align:center;"><div style="font-size:13px;font-weight:800;color:#FF9500;">Tense</div><div style="font-size:9px;color:#8E8E93;">Sentiment</div></div>
+            </div>
+          </div>
+          <!-- Thread messages -->
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:#1C1C1E;border-radius:12px;padding:14px;border:1px solid #38383A;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C62828;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">CT</div>
+                <div class="col"><div style="font-size:13px;font-weight:600;color:#fff;">Carol Thomas</div><div style="font-size:10px;color:#636366;">carol.thomas@hospital.org · 9:14 AM</div></div>
+              </div>
+              <p style="font-size:13px;color:#E5E5EA;line-height:1.6;">Re: Patient discharge summary — URGENT. Please confirm receipt and advise on the approval timeline for the attached file. We have a patient waiting for this review.</p>
+            </div>
+            <div style="background:#1C2040;border-radius:12px;padding:14px;border:1px solid #2A3060;margin-left:20px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#3D5AFE;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">BW</div>
+                <div class="col"><div style="font-size:13px;font-weight:600;color:#6979F8;">You</div><div style="font-size:10px;color:#636366;">8:50 AM</div></div>
+              </div>
+              <p style="font-size:13px;color:#E5E5EA;line-height:1.6;">Acknowledged. Reviewing with legal before responding with the summary. Will update you by EOD.</p>
+            </div>
+            <div style="padding:8px 12px;font-size:12px;color:#636366;text-align:center;">+ 4 earlier messages over 2 days</div>
+          </div>
+        </div>
+        <!-- Right: Actions + Sender Intelligence panel -->
+        <div style="width:260px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;">
+          <!-- Extracted Actions -->
+          <div style="background:#1C1C1E;border-radius:14px;padding:14px;border:1px solid #38383A;">
+            <div style="font-size:11px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">Extracted Actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;gap:9px;align-items:flex-start;"><div style="width:22px;height:22px;border-radius:6px;background:#2A0012;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">📋</div><div style="font-size:12px;color:#E5E5EA;line-height:1.4;">Confirm receipt of discharge summary</div></div>
+              <div style="display:flex;gap:9px;align-items:flex-start;"><div style="width:22px;height:22px;border-radius:6px;background:#2A1F00;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">⚖️</div><div><div style="font-size:12px;color:#E5E5EA;line-height:1.4;">Legal approval before external share</div><div style="font-size:10px;color:#FF9500;margin-top:2px;">Blocker</div></div></div>
+              <div style="display:flex;gap:9px;align-items:flex-start;"><div style="width:22px;height:22px;border-radius:6px;background:#0A1C38;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">📅</div><div><div style="font-size:12px;color:#E5E5EA;line-height:1.4;">Follow up if no reply by Friday</div><div style="font-size:10px;color:#67C97A;margin-top:2px;">Auto-set ✓</div></div></div>
+            </div>
+          </div>
+          <!-- Sender Intelligence -->
+          <div style="background:#1C1C1E;border-radius:14px;padding:14px;border:1px solid #38383A;">
+            <div style="font-size:11px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">Sender Intelligence</div>
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:#1565C0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">CT</div>
+              <div><div style="font-size:13px;font-weight:600;color:#fff;">Carol Thomas</div><div style="font-size:10px;color:#636366;">External Partner</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;"><span style="font-size:11px;color:#8E8E93;">Avg response</span><span style="font-size:11px;color:#E5E5EA;font-weight:600;">4.2 hrs</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="font-size:11px;color:#8E8E93;">Escalation</span><span style="font-size:11px;color:#FF9500;font-weight:600;">Escalates quickly</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="font-size:11px;color:#8E8E93;">Org distance</span><span style="font-size:11px;color:#E5E5EA;font-weight:600;">External (3 hops)</span></div>
+            </div>
+            <div style="background:#2C2C2E;border-radius:8px;padding:8px 10px;margin-top:10px;font-size:11px;color:#8E8E93;line-height:1.5;">💡 Sends urgent PHI requests Mondays. Previous threads escalated within 48h when unacknowledged.</div>
+          </div>
+          <!-- Compliance controls -->
+          <div style="background:#1C1C1E;border-radius:14px;padding:14px;border:1px solid #38383A;">
+            <div style="font-size:11px;font-weight:700;color:#8E8E93;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">Active Controls</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;gap:7px;align-items:flex-start;"><div style="background:#C62828;color:#fff;font-size:8px;font-weight:800;padding:2px 5px;border-radius:3px;flex-shrink:0;margin-top:1px;">HIPAA</div><div style="font-size:11px;color:#FFB3B3;line-height:1.4;">§164.502 — PHI disclosure restricted</div></div>
+              <div style="display:flex;gap:7px;align-items:flex-start;"><div style="background:#1565C0;color:#fff;font-size:8px;font-weight:800;padding:2px 5px;border-radius:3px;flex-shrink:0;margin-top:1px;">NIST</div><div style="font-size:11px;color:#90CAF9;line-height:1.4;">AC-3 — Access enforcement active</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 function go(id) {
   document.querySelectorAll('.scr').forEach(s => { s.classList.remove('on'); s.style.display = 'none'; });
@@ -1135,7 +1535,7 @@ function go(id) {
 }
 
 function flow(n) {
-  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications'};
+  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread'};
   go(map[n]);
   document.querySelectorAll('.fbtn').forEach((b,i) => b.classList.toggle('on', i+1===n));
   if (n===1) splash();
@@ -1338,6 +1738,37 @@ function selectWorkgroup(id) {
       }
     }
   });
+}
+
+function toggleIPad() {
+  const ipad = document.getElementById('ipad');
+  const phone = document.getElementById('phone');
+  const btn = document.querySelector('[onclick="toggleIPad()"]');
+  if (!ipad || !phone) return;
+  const showing = ipad.classList.contains('on');
+  ipad.classList.toggle('on', !showing);
+  phone.style.display = showing ? 'block' : 'none';
+  if (btn) btn.textContent = showing ? '📱 iPad' : '📱 iPhone';
+  // sync dark mode
+  const isDark = phone.classList.contains('dm');
+  document.getElementById('ipad-inner')?.classList.toggle('dm', isDark);
+}
+
+function ipadSelectEmail(id) {
+  const titles = { ct: 'Patient discharge summary — URGENT', js: 'Q4 budget review — see attached' };
+  const titleEl = document.getElementById('ipad-thread-title');
+  if (titleEl && titles[id]) titleEl.textContent = titles[id];
+  const banner = document.getElementById('ipad-risk-banner');
+  if (banner) banner.style.display = id === 'ct' ? 'flex' : 'none';
+}
+
+function expandSummary() {
+  const body = document.getElementById('sum-body');
+  const toggle = document.getElementById('sum-toggle');
+  if (!body || !toggle) return;
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? 'block' : 'none';
+  toggle.textContent = hidden ? '▲ Hide' : '▼ Show';
 }
 
 window.addEventListener('load', () => splash());
