@@ -182,6 +182,7 @@
   <button class="fbtn" onclick="flow(6)">⑥ Enterprise Auth</button>
   <button class="fbtn" onclick="flow(7)">⑦ Notifications</button>
   <button class="fbtn" onclick="flow(8)">⑧ Email Intelligence</button>
+  <button class="fbtn" onclick="flow(9)">⑨ File Intelligence</button>
   <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleDark()">🌙 Dark</button>
   <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleIPad()">📱 iPad</button>
 </div>
@@ -341,9 +342,43 @@
 <div class="scr" id="s-file-browser" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div class="lt"><div class="lt-text">Files</div><div class="row" style="gap:8px;padding-bottom:8px;"><button class="ibtn" onclick="go('s-ai-import')">➕</button><button class="ibtn">⋯</button></div></div>
-  <div style="padding:6px 16px 4px;"><div style="background:var(--card);border-radius:var(--r12);padding:8px 14px;display:flex;gap:8px;align-items:center;color:var(--t3);font-size:14px;">🔍 Search files…</div></div>
+  <div style="padding:6px 16px 4px;" onclick="go('s-semantic-search')">
+    <div style="background:var(--card);border-radius:var(--r12);padding:9px 14px;display:flex;gap:8px;align-items:center;cursor:pointer;">
+      <span style="font-size:14px;">🔍</span>
+      <span style="flex:1;color:var(--t3);font-size:14px;">Ask AI: show contracts expiring this quarter…</span>
+      <span style="background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✦ AI</span>
+    </div>
+  </div>
   <div style="padding:5px 16px;display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;">
     <div class="chip on">All</div><div class="chip">🔴 Restricted</div><div class="chip">🟠 Confidential</div><div class="chip">🔵 Internal</div><div class="chip">🟢 Public</div>
+  </div>
+  <!-- AI Risk Overview Card -->
+  <div style="padding:0 16px 10px;">
+    <div style="background:var(--card);border-radius:var(--r16);padding:12px 14px;cursor:pointer;border-left:3px solid #FF3B30;" onclick="go('s-file-risk-dashboard')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
+        <div style="font-size:11px;font-weight:700;color:var(--res-t);letter-spacing:.4px;text-transform:uppercase;">⚠ AI Risk Discovery</div>
+        <span style="font-size:11px;color:var(--brand);font-weight:600;">View all →</span>
+      </div>
+      <div style="display:flex;gap:9px;margin-bottom:9px;">
+        <div style="flex:1;text-align:center;background:var(--res-bg);border-radius:8px;padding:7px 4px;">
+          <div style="font-size:18px;font-weight:800;color:var(--res-t);">3</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px;">Critical</div>
+        </div>
+        <div style="flex:1;text-align:center;background:var(--con-bg);border-radius:8px;padding:7px 4px;">
+          <div style="font-size:18px;font-weight:800;color:var(--con-t);">18</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px;">High Risk</div>
+        </div>
+        <div style="flex:1;text-align:center;background:var(--int-bg);border-radius:8px;padding:7px 4px;">
+          <div style="font-size:18px;font-weight:800;color:var(--int-t);">42</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px;">Policy Drift</div>
+        </div>
+        <div style="flex:1;text-align:center;background:var(--pub-bg);border-radius:8px;padding:7px 4px;">
+          <div style="font-size:18px;font-weight:800;color:var(--ok);">✓</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px;">Local AI</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--res-t);font-weight:600;">🔑 Exposed API key detected in 1 document · Quarantine recommended</div>
+    </div>
   </div>
   <div class="sc">
     <div class="sh">SharePoint — Acme Corp</div>
@@ -456,6 +491,84 @@
               <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;line-height:1.4;">Enterprise rule: Restricted files require VP-level approval before sharing outside org domain. Request approval →</div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <!-- ✦ AI File Intelligence Panels -->
+    <div style="padding:0 20px 20px;">
+      <!-- 1. Content Understanding -->
+      <div style="margin-top:16px;">
+        <div style="font-size:10px;font-weight:700;color:#6AABFF;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px;">✦ Content Understanding</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <div style="flex:1;background:#0A1828;border:1px solid #1E3A5A;border-radius:8px;padding:9px;text-align:center;">
+            <div style="font-size:9px;color:#6AABFF;font-weight:700;margin-bottom:3px;">DOC TYPE</div>
+            <div style="font-size:11px;color:#fff;font-weight:600;">Financial</div>
+          </div>
+          <div style="flex:1;background:#0A1828;border:1px solid #1E3A5A;border-radius:8px;padding:9px;text-align:center;">
+            <div style="font-size:9px;color:#6AABFF;font-weight:700;margin-bottom:3px;">ENTITIES</div>
+            <div style="font-size:11px;color:#fff;font-weight:600;">16 total</div>
+          </div>
+          <div style="flex:1;background:#0A1828;border:1px solid #1E3A5A;border-radius:8px;padding:9px;text-align:center;">
+            <div style="font-size:9px;color:#6AABFF;font-weight:700;margin-bottom:3px;">PROCESSED</div>
+            <div style="font-size:11px;color:#67C97A;font-weight:700;">✓ On-device</div>
+          </div>
+        </div>
+        <div style="background:#0A0A0A;border:1px solid #2A2A2A;border-radius:10px;padding:11px;">
+          <div style="font-size:9px;color:#8E8E93;font-weight:700;letter-spacing:.4px;margin-bottom:7px;">EXTRACTED OBLIGATIONS</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:10px;color:#FF3B30;flex-shrink:0;margin-top:2px;">●</span><span style="font-size:11px;color:#D0D0D0;line-height:1.4;">Board approval required before Q4 figures disclosed externally</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:10px;color:#FF9500;flex-shrink:0;margin-top:2px;">●</span><span style="font-size:11px;color:#D0D0D0;line-height:1.4;">Patient consent records must accompany PHI segments per §164.502</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:10px;color:#FFCC00;flex-shrink:0;margin-top:2px;">●</span><span style="font-size:11px;color:#D0D0D0;line-height:1.4;">Financial figures provisional — final audit required Jan 31, 2026</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 2. Workflow Extraction -->
+      <div style="margin-top:16px;">
+        <div style="font-size:10px;font-weight:700;color:#67C97A;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px;">📋 Workflow Extraction</div>
+        <div style="background:#0A0A0A;border:1px solid #2A2A2A;border-radius:10px;padding:11px;">
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;gap:9px;align-items:flex-start;">
+              <div style="background:#1A2A1A;border-radius:6px;padding:3px 7px;font-size:9px;color:#67C97A;font-weight:700;flex-shrink:0;margin-top:2px;">DUE</div>
+              <div><div style="font-size:11px;color:#E0E0E0;line-height:1.4;">Submit final Q4 figures to audit committee</div><div style="font-size:10px;color:#FF9500;margin-top:2px;">Jan 31, 2026 · Flagged at-risk</div></div>
+            </div>
+            <div style="height:.5px;background:#1A1A1A;"></div>
+            <div style="display:flex;gap:9px;align-items:flex-start;">
+              <div style="background:#2A1A00;border-radius:6px;padding:3px 7px;font-size:9px;color:#FF9500;font-weight:700;flex-shrink:0;margin-top:2px;">SIGN</div>
+              <div><div style="font-size:11px;color:#E0E0E0;line-height:1.4;">CFO signature missing on revenue attestation page 4</div><div style="font-size:10px;color:#FF3B30;margin-top:2px;">Blocks external disclosure</div></div>
+            </div>
+            <div style="height:.5px;background:#1A1A1A;"></div>
+            <div style="display:flex;gap:9px;align-items:flex-start;">
+              <div style="background:#0A1828;border-radius:6px;padding:3px 7px;font-size:9px;color:#6AABFF;font-weight:700;flex-shrink:0;margin-top:2px;">APPR</div>
+              <div><div style="font-size:11px;color:#E0E0E0;line-height:1.4;">Legal review approval pending for sections 3.1–3.4</div><div style="font-size:10px;color:#8E8E93;margin-top:2px;">Requested 3 days ago — no response</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 3. Threat Analysis -->
+      <div style="margin-top:16px;">
+        <div style="font-size:10px;font-weight:700;color:#FF6E9E;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px;">🛡 Threat Analysis</div>
+        <div style="background:#0A0A0A;border:1px solid #2A2A2A;border-radius:10px;padding:11px;">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#D0D0D0;">Embedded macros</span><span style="font-size:11px;color:#67C97A;font-weight:700;">None detected ✓</span></div>
+            <div style="height:.5px;background:#2A2A2A;"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#D0D0D0;">Prompt injection</span><span style="font-size:11px;color:#67C97A;font-weight:700;">Clean ✓</span></div>
+            <div style="height:.5px;background:#2A2A2A;"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#D0D0D0;">Steganography</span><span style="font-size:11px;color:#67C97A;font-weight:700;">No signal ✓</span></div>
+            <div style="height:.5px;background:#2A2A2A;"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#D0D0D0;">AI training risk</span><span style="font-size:11px;color:#FF9500;font-weight:700;">⚠ PHI present</span></div>
+            <div style="height:.5px;background:#2A2A2A;"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;color:#D0D0D0;">Shadow copy exposure</span><span style="font-size:11px;color:#FF3B30;font-weight:700;">⚠ 2 stale links</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 4. Data Lineage Mini -->
+      <div style="margin-top:16px;">
+        <div style="background:#0A0A1A;border:1px solid #1E1E5A;border-radius:10px;padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="go('s-data-lineage')">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#8888FF;letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px;">🔗 Data Lineage &amp; Provenance</div>
+            <div style="font-size:11px;color:#8E8E93;">Origin → 3 edits → AI scan → 2 outputs generated</div>
+          </div>
+          <span style="color:#8888FF;font-size:18px;font-weight:300;">›</span>
         </div>
       </div>
     </div>
@@ -1044,6 +1157,230 @@
   </div>
 </div>
 
+<!-- ══ S_SRCH SEMANTIC SEARCH ══ -->
+<div class="scr" id="s-semantic-search" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-file-browser')">← Files</span><span class="nb-title">AI File Search</span><span style="font-size:10px;font-weight:700;color:var(--brand);">✦ AI</span></div>
+  <div style="padding:10px 16px 4px;">
+    <div style="background:var(--card);border-radius:var(--r12);padding:10px 14px;display:flex;gap:10px;align-items:center;">
+      <span style="font-size:16px;">🔍</span>
+      <input id="ai-search-inp" style="flex:1;background:none;border:none;outline:none;color:var(--t1);font-size:14px;" placeholder="Ask anything about your files…" value="contracts expiring this quarter">
+      <span style="background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0;">✦ AI</span>
+    </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:4px;">
+      <div onclick="aiFileSearch('Show PHI files shared externally')" style="background:var(--brand-light);color:var(--brand);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;">PHI shared externally</div>
+      <div onclick="aiFileSearch('Find contracts missing signatures')" style="background:var(--brand-light);color:var(--brand);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;">Missing signatures</div>
+      <div onclick="aiFileSearch('Files accessed by departed employees')" style="background:var(--brand-light);color:var(--brand);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;">Departed employee access</div>
+    </div>
+  </div>
+  <div class="sc" style="padding:0 16px;">
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:8px 0 10px;">4 results — semantic match</div>
+    <div class="card mb16">
+      <div style="padding:13px 16px;border-bottom:.5px solid var(--sep);cursor:pointer;" onclick="go('s-file-viewer')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Contract-NDA-2026.docx</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="background:var(--brand-light);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;color:var(--brand);">98%</div>
+            <span class="bg con"><span class="bg-dot"></span>Confidential</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.5;">…<span style="background:rgba(106,171,255,.12);border-radius:3px;padding:1px 3px;color:var(--brand);font-weight:600;">expiry date: March 31, 2026</span> — mutual non-disclosure agreement between Acme Corp and…</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;">Local Vault · Modified 2 days ago</div>
+      </div>
+      <div style="padding:13px 16px;border-bottom:.5px solid var(--sep);cursor:pointer;" onclick="go('s-file-viewer')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Vendor-Agreement-Q3.pdf</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="background:var(--brand-light);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;color:var(--brand);">91%</div>
+            <span class="bg con"><span class="bg-dot"></span>Confidential</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.5;">…auto-renews unless cancellation notice 60 days before <span style="background:rgba(106,171,255,.12);border-radius:3px;padding:1px 3px;color:var(--brand);font-weight:600;">expiry: April 15, 2026</span>…</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;">SharePoint · 4 days ago</div>
+      </div>
+      <div style="padding:13px 16px;cursor:pointer;" onclick="go('s-file-viewer')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);">Q4-Financial-Report.pdf</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="background:var(--brand-light);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;color:var(--brand);">74%</div>
+            <span class="bg res"><span class="bg-dot"></span>Restricted</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.5;">…board approval required before figures disclosed; <span style="background:rgba(106,171,255,.12);border-radius:3px;padding:1px 3px;color:var(--brand);font-weight:600;">review deadline Jan 31, 2026</span>…</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;">SharePoint · 1 week ago · 🚫 PHI · Local AI only</div>
+      </div>
+    </div>
+    <div style="background:var(--brand-light);border-radius:var(--r12);padding:12px 14px;margin-bottom:16px;border:1px solid rgba(106,171,255,.18);">
+      <div style="font-size:10px;font-weight:700;color:var(--brand);letter-spacing:.4px;margin-bottom:5px;">✦ AI Insight</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.5;">3 contracts expire in the next 90 days. Contract-NDA-2026.docx expires soonest. No auto-renewal clause detected — manual renewal required. 2 require legal sign-off before expiry.</div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S_RISK FILE RISK DASHBOARD ══ -->
+<div class="scr" id="s-file-risk-dashboard" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-file-browser')">← Files</span><span class="nb-title">Risk Dashboard</span><span style="font-size:10px;font-weight:700;color:var(--brand);">✦ AI</span></div>
+  <div class="sc p16">
+    <!-- Overall risk score -->
+    <div style="background:var(--card);border-radius:var(--r16);padding:14px;margin-bottom:14px;border-left:3px solid #FF3B30;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--res-t);">Org Risk Score</div>
+        <div style="font-size:9px;color:var(--t3);">Last scan: 4 min ago · ✦ Local AI</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:48px;font-weight:800;color:var(--res-t);line-height:1;">78</div>
+        <div style="flex:1;">
+          <div style="height:8px;background:var(--sep);border-radius:4px;overflow:hidden;margin-bottom:6px;">
+            <div style="height:100%;width:78%;background:linear-gradient(90deg,#FF9500,#FF3B30);border-radius:4px;"></div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);">247 files · 63 issues across 3 categories</div>
+        </div>
+      </div>
+    </div>
+    <!-- Credential & Data Exposure -->
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;">🔑 Credential &amp; Data Exposure</div>
+    <div class="card mb16">
+      <div class="cr" style="cursor:pointer;" onclick="go('s-file-viewer')">
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">API key detected in document</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Dev-Notes-Internal.txt — live AWS key fragment</div></div>
+        <span style="background:#FF3B30;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">CRITICAL</span>
+      </div>
+      <div class="cr" style="cursor:pointer;" onclick="go('s-file-viewer')">
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">Shadow AI training data candidate</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Patient-Records-Scan.jpg — PHI in AI-readable format</div></div>
+        <span style="background:#FF9500;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">HIGH</span>
+      </div>
+      <div class="cr" style="cursor:pointer;" onclick="go('s-file-viewer')">
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">PHI in version history</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Q4-Financial-Report.pdf — prior draft included SSNs</div></div>
+        <span style="background:#FF9500;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">HIGH</span>
+      </div>
+    </div>
+    <!-- Stale Permissions & Drift -->
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;">🔓 Stale Permissions &amp; Drift</div>
+    <div class="card mb16">
+      <div class="cr">
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">3 files shared with departed employee</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">j.kim@acme.com — offboarded Dec 2025, share still active</div></div>
+        <span style="background:#FF9500;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">HIGH</span>
+      </div>
+      <div class="cr">
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">Public link active on restricted file</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Budget-Planning-FY26.xlsx — link created 47 days ago</div></div>
+        <span style="background:#FFCC00;color:#000;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">MEDIUM</span>
+      </div>
+      <div class="cr">
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">42 files exceed retention window</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Policy: 90 days. Oldest file: 312 days old.</div></div>
+        <span style="background:#FFCC00;color:#000;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">MEDIUM</span>
+      </div>
+    </div>
+    <!-- Autonomous File Agent -->
+    <div style="background:var(--brand-light);border-radius:var(--r16);padding:14px;margin-bottom:16px;border:1px solid rgba(106,171,255,.2);">
+      <div style="font-size:11px;font-weight:700;color:var(--brand);margin-bottom:6px;">✦ Autonomous File Agent</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px;">AI agent can auto-quarantine the exposed API key and revoke the departed employee share. Requires your approval. All actions audit-logged on-device.</div>
+      <button class="btn bp" style="padding:10px;font-size:12px;">Review &amp; Authorize Agent →</button>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ S_LIN DATA LINEAGE ══ -->
+<div class="scr" id="s-data-lineage" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-file-viewer')">← Q4 Report</span><span class="nb-title">Data Lineage</span><span></span></div>
+  <div class="sc p16">
+    <!-- File header -->
+    <div style="background:var(--card);border-radius:var(--r16);padding:14px;margin-bottom:16px;display:flex;gap:12px;align-items:center;">
+      <div class="fi pdf">PDF</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--t1);">Q4-Financial-Report.pdf</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px;">SHA-256: 3a8f…c2b4 · Cryptographically verified ✓</div>
+        <span class="bg res" style="margin-top:6px;display:inline-flex;"><span class="bg-dot"></span>Restricted</span>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:12px;">🔗 Provenance Chain</div>
+    <!-- Timeline -->
+    <div style="position:relative;padding-left:28px;">
+      <div style="position:absolute;left:9px;top:14px;bottom:14px;width:2px;background:var(--brand);border-radius:2px;opacity:.3;"></div>
+      <!-- Created -->
+      <div style="position:relative;margin-bottom:14px;">
+        <div style="position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--brand);border:2px solid var(--bg);"></div>
+        <div style="background:var(--card);border-radius:10px;padding:10px 12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--t1);">Origin — Created</div><div style="font-size:10px;color:var(--t3);">Nov 4, 2025</div></div>
+          <div style="font-size:11px;color:var(--t2);">Generated by SharePoint export from finance system by sarah@acme.com</div>
+          <div style="font-size:10px;color:var(--brand);margin-top:4px;">Hash: 3a8f…c2b4 — origin certified ✓</div>
+        </div>
+      </div>
+      <!-- Modified -->
+      <div style="position:relative;margin-bottom:14px;">
+        <div style="position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:#6AABFF;border:2px solid var(--bg);"></div>
+        <div style="background:var(--card);border-radius:10px;padding:10px 12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--t1);">Modified — Sections 3.1–3.4</div><div style="font-size:10px;color:var(--t3);">Nov 18, 2025</div></div>
+          <div style="font-size:11px;color:var(--t2);">CFO mike@acme.com updated revenue figures. Delta hash verified against prior version.</div>
+          <div style="font-size:10px;color:var(--brand);margin-top:4px;">Delta integrity ✓</div>
+        </div>
+      </div>
+      <!-- AI Scan -->
+      <div style="position:relative;margin-bottom:14px;">
+        <div style="position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:#8888FF;border:2px solid var(--bg);"></div>
+        <div style="background:var(--card);border-radius:10px;padding:10px 12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--t1);">AI Scan — XQ CoreML</div><div style="font-size:10px;color:var(--t3);">Dec 3, 2025</div></div>
+          <div style="font-size:11px;color:var(--t2);">SensitiveEntityClassifier v2.1 detected 12 PHI entities. Processed on-device — content never left Secure Enclave boundary.</div>
+          <div style="display:flex;gap:6px;margin-top:6px;">
+            <span style="background:var(--brand-light);color:var(--brand);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;">✦ Local only</span>
+            <span style="background:var(--brand-light);color:var(--brand);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;">Zero cloud egress</span>
+          </div>
+        </div>
+      </div>
+      <!-- Classified -->
+      <div style="position:relative;margin-bottom:14px;">
+        <div style="position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:#C62828;border:2px solid var(--bg);"></div>
+        <div style="background:var(--card);border-radius:10px;padding:10px 12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--t1);">Classification — RESTRICTED</div><div style="font-size:10px;color:var(--t3);">Dec 3, 2025</div></div>
+          <div style="font-size:11px;color:var(--t2);">Auto-elevated from Confidential on PHI detection. Policy rule HIPAA-PHI-001 applied. Watermark written. Audit event created.</div>
+        </div>
+      </div>
+      <!-- Redacted output -->
+      <div style="position:relative;margin-bottom:14px;">
+        <div style="position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:#FF9500;border:2px solid var(--bg);"></div>
+        <div style="background:var(--card);border-radius:10px;padding:10px 12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--t1);">Output — Redacted version</div><div style="font-size:10px;color:var(--t3);">Jan 8, 2026</div></div>
+          <div style="font-size:11px;color:var(--t2);">Q4-Financial-Report-REDACTED.pdf generated with PHI removed. Shared with external-audit@firm.com. Encryption key rotated.</div>
+        </div>
+      </div>
+      <!-- Share blocked -->
+      <div style="position:relative;margin-bottom:14px;">
+        <div style="position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:#FF3B30;border:2px solid var(--bg);"></div>
+        <div class="ra" style="padding:10px 12px;">
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;"><div class="ra-t" style="font-size:11px;">Share Blocked — Policy Enforcement</div><div style="font-size:10px;color:var(--t3);">Today</div></div>
+            <div style="font-size:11px;color:var(--t2);">Attempted share to partner@external.com blocked by XQ Policy: EXTERNAL_SHARE_BLOCKED. VP approval required. Audit event written.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
 <!-- ══ S14 ENTERPRISE AUTH ══ -->
 <div class="scr" id="s-enterprise-auth" style="background:#000;align-items:center;justify-content:center;">
   <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
@@ -1535,7 +1872,7 @@ function go(id) {
 }
 
 function flow(n) {
-  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread'};
+  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread',9:'s-file-risk-dashboard'};
   go(map[n]);
   document.querySelectorAll('.fbtn').forEach((b,i) => b.classList.toggle('on', i+1===n));
   if (n===1) splash();
@@ -1769,6 +2106,21 @@ function expandSummary() {
   const hidden = body.style.display === 'none';
   body.style.display = hidden ? 'block' : 'none';
   toggle.textContent = hidden ? '▲ Hide' : '▼ Show';
+}
+
+function aiFileSearch(query) {
+  go('s-semantic-search');
+  const inp = document.getElementById('ai-search-inp');
+  if (inp && query) inp.value = query;
+}
+
+function expandFileIntel(id) {
+  const body = document.getElementById(id + '-body');
+  const toggle = document.getElementById(id + '-toggle');
+  if (!body || !toggle) return;
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? 'block' : 'none';
+  toggle.textContent = hidden ? '▲' : '▼';
 }
 
 window.addEventListener('load', () => splash());
