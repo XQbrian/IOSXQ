@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "XQPolicy",     targets: ["XQPolicy"]),
         .library(name: "XQSync",             targets: ["XQSync"]),
         .library(name: "XQEmailIntelligence", targets: ["XQEmailIntelligence"]),
+        .library(name: "XQFileIntelligence",  targets: ["XQFileIntelligence"]),
     ],
     targets: [
         .target(name: "XQCore",
@@ -38,6 +39,9 @@ let package = Package(
         .target(name: "XQEmailIntelligence",
                 dependencies: ["XQCore", "XQPolicy", "XQAI"],
                 path: "XQSecureWorkspaces/Modules/EmailIntelligence"),
+        .target(name: "XQFileIntelligence",
+                dependencies: ["XQCore", "XQPolicy", "XQAI"],
+                path: "XQSecureWorkspaces/Modules/FileIntelligence"),
         .testTarget(name: "XQCoreTests",
                     dependencies: ["XQCore"],
                     path: "Tests/Unit"),
