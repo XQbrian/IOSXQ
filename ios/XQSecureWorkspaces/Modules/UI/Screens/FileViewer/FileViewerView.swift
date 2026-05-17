@@ -71,33 +71,7 @@ struct FileViewerView: View {
                 VStack(alignment: .leading, spacing: 16) {
 
                     // Document body area
-                    ZStack {
-                        Color(UIColor(red: 0.118, green: 0.118, blue: 0.118, alpha: 1.0))
-
-                        // Watermark
-                        Text("RESTRICTED · brian@xqmsg.com")
-                            .font(.system(size: 26, weight: .black))
-                            .foregroundColor(Color(red: 0.482, green: 0.000, blue: 0.200))
-                            .opacity(0.07)
-                            .rotationEffect(.degrees(-30))
-                            .lineLimit(1)
-                            .fixedSize()
-
-                        VStack(alignment: .leading, spacing: 12) {
-                            // Placeholder document blocks
-                            ForEach(0..<3, id: \.self) { i in
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.white.opacity(0.08))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: i == 0 ? 60 : i == 1 ? 100 : 80)
-                            }
-                        }
-                        .padding(20)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 280)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding(.horizontal, 16)
+                    documentPreviewSection
 
                     // Cited Controls
                     if let result = vm.classificationResult, !vm.citedControls.isEmpty {
@@ -116,6 +90,28 @@ struct FileViewerView: View {
                         }
                         .padding(.vertical, 4)
                         .id(result.fileId)
+                    }
+
+                    // Detected Entities (AI scan output)
+                    if let entities = vm.classificationResult?.entities, !entities.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "sparkles")
+                                    .font(.system(size: 13, weight: .semibold))
+                                Text("Detected Entities")
+                                    .font(.system(size: 15, weight: .bold))
+                            }
+                            .foregroundColor(.primary)
+                            .padding(.horizontal, 16)
+
+                            VStack(spacing: 8) {
+                                ForEach(entities) { entity in
+                                    EntityRow(entity: entity)
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                        .padding(.vertical, 4)
                     }
 
                     Spacer(minLength: 120)
@@ -155,6 +151,284 @@ struct FileViewerView: View {
             )
             await vm.loadAndScan(session: stubSession)
         }
+    }
+
+    // MARK: - Document Preview Section
+
+    @ViewBuilder
+    private var documentPreviewSection: some View {
+        Group {
+            if let pdfData = vm.generatedPDFData, !pdfData.isEmpty {
+                ZStack {
+                    PDFDocumentView(data: pdfData)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 480)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                    // SwiftUI watermark overlay (in addition to the PDF-baked
+                    // watermark — this ensures visibility regardless of
+                    // PDFKit zoom level).
+                    Text("\(vm.file.sensitivity.rawValue) · brian@xqmsg.com")
+                        .font(.system(size: 22, weight: .black))
+                        .foregroundColor(bannerBackground.opacity(0.08))
+                        .rotationEffect(.degrees(-30))
+                        .allowsHitTesting(false)
+                }
+                .padding(.horizontal, 16)
+                .transition(.opacity)
+            } else if vm.isScanning {
+                scanningPlaceholder
+                    .padding(.horizontal, 16)
+                    .transition(.opacity)
+            } else {
+                genericDocumentPreview
+                    .padding(.horizontal, 16)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: vm.generatedPDFData)
+        .animation(.easeInOut(duration: 0.25), value: vm.isScanning)
+    }
+
+    private var scanningPlaceholder: some View {
+        VStack(spacing: 14) {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .tint(.white)
+                .scaleEffect(1.1)
+
+            VStack(spacing: 4) {
+                Text("Scanning document…")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                Text("On-device AI · CoreML 3.2")
+                    .font(.system(size: 11))
+                    .foregroundColor(.white.opacity(0.6))
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 480)
+        .background(Color(UIColor(red: 0.118, green: 0.118, blue: 0.118, alpha: 1.0)))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var genericDocumentPreview: some View {
+        let (iconName, accent) = officeIconAndAccent(for: vm.file.mimeType)
+        return VStack(spacing: 0) {
+            // Top — large file-format glyph and filename
+            VStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(accent.opacity(0.18))
+                        .frame(width: 88, height: 88)
+                    Image(systemName: iconName)
+                        .font(.system(size: 40, weight: .semibold))
+                        .foregroundColor(accent)
+                }
+
+                VStack(spacing: 4) {
+                    Text(vm.file.name)
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                    Text(formatLabel(for: vm.file.mimeType))
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(accent)
+                        .kerning(0.5)
+                }
+            }
+            .padding(.top, 36)
+            .padding(.horizontal, 24)
+
+            Spacer(minLength: 18)
+
+            // Bottom — metadata grid
+            VStack(spacing: 0) {
+                metaRow(label: "Size", value: byteString(vm.file.sizeBytes))
+                Divider().background(Color.white.opacity(0.08))
+                metaRow(label: "Source", value: vm.file.sourceProvider.rawValue)
+                Divider().background(Color.white.opacity(0.08))
+                metaRow(label: "Modified", value: relativeDate(vm.file.modifiedAt))
+                Divider().background(Color.white.opacity(0.08))
+                metaRow(
+                    label: "Encryption",
+                    value: "AES-256-GCM",
+                    valueColor: Color(red: 0.204, green: 0.780, blue: 0.349)
+                )
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .background(Color.white.opacity(0.04))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .padding(.horizontal, 16)
+            .padding(.bottom, 18)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 480)
+        .background(Color(UIColor(red: 0.118, green: 0.118, blue: 0.118, alpha: 1.0)))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            // Diagonal watermark over the card.
+            Text("\(vm.file.sensitivity.rawValue) · brian@xqmsg.com")
+                .font(.system(size: 22, weight: .black))
+                .foregroundColor(bannerBackground.opacity(0.08))
+                .rotationEffect(.degrees(-30))
+                .allowsHitTesting(false)
+        )
+    }
+
+    private func metaRow(label: String, value: String, valueColor: Color = .white) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 12))
+                .foregroundColor(.white.opacity(0.55))
+            Spacer()
+            Text(value)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(valueColor)
+        }
+        .padding(.vertical, 9)
+    }
+
+    private func officeIconAndAccent(for mime: String) -> (String, Color) {
+        switch mime {
+        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            return ("doc.text.fill", Color(red: 0.16, green: 0.42, blue: 0.85))
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            return ("tablecells.fill", Color(red: 0.13, green: 0.62, blue: 0.31))
+        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            return ("rectangle.on.rectangle.fill", Color(red: 0.86, green: 0.43, blue: 0.13))
+        case "application/pdf":
+            return ("doc.richtext.fill", Color(red: 0.85, green: 0.15, blue: 0.15))
+        default:
+            return ("doc.fill", Color.gray)
+        }
+    }
+
+    private func formatLabel(for mime: String) -> String {
+        switch mime {
+        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            return "MICROSOFT WORD · DOCX"
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            return "MICROSOFT EXCEL · XLSX"
+        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+            return "MICROSOFT POWERPOINT · PPTX"
+        case "application/pdf":
+            return "PORTABLE DOCUMENT · PDF"
+        default:
+            return mime.uppercased()
+        }
+    }
+
+    private func byteString(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useKB, .useMB, .useGB]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
+
+    private func relativeDate(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+}
+
+// MARK: - Entity Row
+
+private struct EntityRow: View {
+    let entity: AIEntity
+
+    private var iconName: String {
+        switch entity.type {
+        case .phi: return "cross.case.fill"
+        case .pii: return "person.text.rectangle.fill"
+        case .financial: return "dollarsign.circle.fill"
+        case .credential: return "key.fill"
+        case .pciData: return "creditcard.fill"
+        }
+    }
+
+    private var iconColor: Color {
+        switch entity.type {
+        case .phi: return Color(red: 0.78, green: 0.12, blue: 0.30)
+        case .pii: return Color(red: 0.62, green: 0.30, blue: 0.78)
+        case .financial: return Color(red: 0.17, green: 0.58, blue: 0.30)
+        case .credential: return Color(red: 0.86, green: 0.55, blue: 0.10)
+        case .pciData: return Color(red: 0.05, green: 0.41, blue: 0.74)
+        }
+    }
+
+    private var typeLabel: String {
+        switch entity.type {
+        case .phi: return "PHI"
+        case .pii: return "PII"
+        case .financial: return "FINANCIAL"
+        case .credential: return "CREDENTIAL"
+        case .pciData: return "PCI"
+        }
+    }
+
+    private var enforcementInfo: (label: String, color: Color)? {
+        guard let enforcement = entity.citedControl?.enforcement else { return nil }
+        switch enforcement {
+        case .block: return ("BLOCK", Color(red: 0.714, green: 0.110, blue: 0.110))
+        case .warn: return ("WARN", Color(red: 0.86, green: 0.55, blue: 0.10))
+        case .audit: return ("AUDIT", Color(red: 0.05, green: 0.41, blue: 0.74))
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(iconColor.opacity(0.14))
+                    .frame(width: 32, height: 32)
+                Image(systemName: iconName)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(iconColor)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(typeLabel)
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(iconColor)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(
+                            Capsule().fill(iconColor.opacity(0.12))
+                        )
+                    Text("\(Int(entity.confidence * 100))% confidence")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+                Text(entity.value)
+                    .font(.system(size: 13, weight: .medium, design: .monospaced))
+                    .foregroundColor(.primary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+
+            Spacer(minLength: 4)
+
+            if let info = enforcementInfo {
+                Text(info.label)
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule().fill(info.color)
+                    )
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 1)
     }
 }
 
@@ -312,13 +586,53 @@ private final class StubAIOrchestrator: AIOrchestrator {
         StubAIProvider()
     }
     func scanAndClassify(fileData: Data, mimeType: String, policy: PolicyBundle) async throws -> AIClassificationResult {
-        AIClassificationResult(
+        // Simulate a brief on-device scan so the UI can show its loading state.
+        try await Task.sleep(nanoseconds: 600_000_000)
+
+        let hipaaControl = CitedControl(
+            framework: .hipaa,
+            controlId: "HIPAA-164.502",
+            title: "Uses and disclosures of protected health information",
+            description: "Covered entities may not use or disclose PHI except as permitted or required by HIPAA.",
+            enforcement: .block
+        )
+        let nistAccessControl = CitedControl(
+            framework: .nistSP80053,
+            controlId: "NIST-AC-3",
+            title: "Access Enforcement",
+            description: "Enforce approved authorizations for logical access to information and system resources.",
+            enforcement: .warn
+        )
+
+        return AIClassificationResult(
             fileId: UUID(),
             sensitivity: .restricted,
             riskScore: 87,
-            entities: [],
-            modelVersion: "CoreML-3.0",
-            processingMs: 340,
+            entities: [
+                AIEntity(
+                    id: UUID(),
+                    type: .phi,
+                    value: "Patient ID: 847293-A",
+                    confidence: 0.97,
+                    citedControl: hipaaControl
+                ),
+                AIEntity(
+                    id: UUID(),
+                    type: .phi,
+                    value: "SSN: ***-**-4821",
+                    confidence: 0.99,
+                    citedControl: hipaaControl
+                ),
+                AIEntity(
+                    id: UUID(),
+                    type: .financial,
+                    value: "Revenue: $124.7M",
+                    confidence: 0.94,
+                    citedControl: nistAccessControl
+                )
+            ],
+            modelVersion: "CoreML-3.2",
+            processingMs: 618,
             wasCloudProcessed: false
         )
     }
@@ -334,12 +648,65 @@ private final class StubAIProvider: AIProvider {
 }
 
 private final class StubFileViewerPolicyEngine: PolicyEngine {
-    var currentBundle: PolicyBundle? { nil }
-    func loadBundle(_ bundle: PolicyBundle) async throws {}
-    func evaluate(operation: PolicyOperation, for file: SecureFile, actor: String) async -> PolicyDecision {
-        PolicyDecision(allowed: false, enforcement: .block, citedControls: [], requiredApprovalRole: nil, auditRequired: true)
+    var currentBundle: PolicyBundle? {
+        PolicyBundle(
+            version: "1.0",
+            signatureHex: String(repeating: "a", count: 64),
+            rules: SensitivityLevel.allCases.map { level in
+                PolicyRule(
+                    id: UUID(),
+                    name: "\(level.rawValue) Policy",
+                    sensitivity: level,
+                    allowExternalShare: level == .public_ || level == .internal_,
+                    maxShareExpiryDays: level == .restricted ? nil : 30,
+                    requireApprovalFromRole: level == .restricted ? "admin" : nil,
+                    cloudAIPermitted: level == .public_
+                )
+            },
+            fetchedAt: Date()
+        )
     }
-    func rule(for sensitivity: SensitivityLevel) -> PolicyRule? { nil }
+
+    func loadBundle(_ bundle: PolicyBundle) async throws {}
+
+    func evaluate(operation: PolicyOperation, for file: SecureFile, actor: String) async -> PolicyDecision {
+        // Default-deny external share for restricted files; allow others.
+        let allowed: Bool
+        switch (operation, file.sensitivity) {
+        case (.openFile, _):
+            allowed = true
+        case (.shareExternally, .restricted), (.shareExternally, .confidential):
+            allowed = false
+        case (.shareExternally, _):
+            allowed = true
+        case (.uploadToCloud, .restricted):
+            allowed = false
+        default:
+            allowed = true
+        }
+
+        let controls: [CitedControl] = file.sensitivity == .restricted
+            ? [CitedControl(
+                framework: .hipaa,
+                controlId: "HIPAA-164.502",
+                title: "Uses and disclosures of protected health information",
+                description: "Covered entities may not use or disclose PHI except as permitted or required by HIPAA.",
+                enforcement: .block
+            )]
+            : []
+
+        return PolicyDecision(
+            allowed: allowed,
+            enforcement: allowed ? .audit : .block,
+            citedControls: controls,
+            requiredApprovalRole: allowed ? nil : "admin",
+            auditRequired: true
+        )
+    }
+
+    func rule(for sensitivity: SensitivityLevel) -> PolicyRule? {
+        currentBundle?.rules.first { $0.sensitivity == sensitivity }
+    }
 }
 
 private final class StubXQSecureAPI: XQSecureAPI {

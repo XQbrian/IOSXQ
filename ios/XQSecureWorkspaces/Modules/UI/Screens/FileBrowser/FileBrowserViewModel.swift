@@ -11,6 +11,7 @@ final class FileBrowserViewModel: ObservableObject {
     @Published var filterSensitivity: SensitivityLevel? = nil
     @Published var searchQuery = ""
     @Published var isLoading = false
+    @Published var isRefreshing = false
 
     var filteredFiles: [SecureFile] {
         files.filter { file in
@@ -21,9 +22,20 @@ final class FileBrowserViewModel: ObservableObject {
         }
     }
 
+    /// The highest risk score across loaded files. Used to drive the
+    /// organisation risk banner. Returns 0 when no files are loaded.
+    var orgRiskScore: Int {
+        files.compactMap(\.riskScore).max() ?? 0
+    }
+
+    /// Number of files currently classified as `.restricted`.
+    var restrictedCount: Int {
+        files.filter { $0.sensitivity == .restricted }.count
+    }
+
     private let repository: any RepositoryProvider
 
-    init(repository: any RepositoryProvider) {
+    init(repository: any RepositoryProvider = SampleDataRepository()) {
         self.repository = repository
     }
 
@@ -34,6 +46,8 @@ final class FileBrowserViewModel: ObservableObject {
     }
 
     func refresh() async {
-        await load(path: "/")
+        isRefreshing = true
+        defer { isRefreshing = false }
+        files = (try? await repository.listFiles(path: "/")) ?? []
     }
 }

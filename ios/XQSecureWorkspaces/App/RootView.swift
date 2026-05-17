@@ -1,5 +1,6 @@
 import SwiftUI
 import XQCore
+import XQSecurity
 
 struct RootView: View {
     @EnvironmentObject var coordinator: AppCoordinator
@@ -9,23 +10,44 @@ struct RootView: View {
         case .splash:
             SplashView()
         case .welcome:
-            Text("Welcome")
+            Text("Welcome — Coming Soon")
         case .home:
-            Text("Home")
+            FileBrowserView()
         case .fileBrowser:
-            Text("File Browser")
+            FileBrowserView()
         case .fileViewer(let file):
-            Text("File Viewer: \(file.name)")
+            NavigationStack {
+                FileViewerView(file: file)
+            }
         case .aiImport:
-            Text("AI Import")
+            Text("AI Import — Coming Soon")
         case .emailInbox:
-            Text("Email Inbox")
+            Text("Email Inbox — Coming Soon")
         case .settings:
-            Text("Settings")
+            Text("Settings — Coming Soon")
         case .adminPolicy:
-            Text("Admin Policy")
+            Text("Admin Policy — Coming Soon")
         case .securityFailure(let assessment):
-            Text("Security check failed (score: \(assessment.confidenceScore))")
+            SecurityFailureView(assessment: assessment)
         }
+    }
+}
+
+// MARK: - Security Failure
+
+private struct SecurityFailureView: View {
+    let assessment: JailbreakAssessment
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.shield.fill")
+                .font(.system(size: 64))
+                .foregroundColor(.red)
+            Text("Security Check Failed")
+                .font(.title2.bold())
+            Text("Jailbreak confidence: \(assessment.confidenceScore)%")
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

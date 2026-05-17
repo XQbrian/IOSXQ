@@ -13,6 +13,7 @@ final class FileViewerViewModel: ObservableObject {
     @Published var policyDecision: PolicyDecision? = nil
     @Published var isScanning = false
     @Published var decryptedPreviewData: Data? = nil
+    @Published var generatedPDFData: Data? = nil
 
     private let aiOrchestrator: any AIOrchestrator
     private let policyEngine: any PolicyEngine
@@ -45,6 +46,13 @@ final class FileViewerViewModel: ObservableObject {
             )
             let plainData = try await xqAPI.decryptFile(encryptedPayload, session: session)
             decryptedPreviewData = plainData
+
+            // Generate an in-memory PDF preview for PDF MIME types so the
+            // viewer can render real document content. Non-PDF formats fall
+            // back to a generic card preview in the view layer.
+            if file.mimeType == "application/pdf" {
+                generatedPDFData = DocumentContentGenerator.pdfData(for: file)
+            }
 
             let result = try await aiOrchestrator.scanAndClassify(
                 fileData: plainData,
