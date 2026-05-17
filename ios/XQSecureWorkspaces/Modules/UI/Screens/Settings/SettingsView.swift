@@ -1,4 +1,6 @@
 import SwiftUI
+import XQCore
+import XQPolicy
 
 struct SettingsView: View {
     @EnvironmentObject var coordinator: AppCoordinator

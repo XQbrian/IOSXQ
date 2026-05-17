@@ -1,4 +1,7 @@
 import Foundation
+import XQCore
+import XQRepository
+import XQFileIntelligence
 
 @MainActor
 final class HomeViewModel: ObservableObject {

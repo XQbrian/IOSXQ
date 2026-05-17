@@ -1,26 +1,28 @@
 import Foundation
+import XQCore
+import XQSecurity
 
-actor LocalVaultProvider: RepositoryProvider {
+public actor LocalVaultProvider: RepositoryProvider {
 
-    let source: RepositorySource = .localVault
-    let isAvailableOffline: Bool = true
+    public nonisolated let source: RepositorySource = .localVault
+    public nonisolated let isAvailableOffline: Bool = true
 
     private let fileStore: SecureFileStore
     private let xqAPI: any XQSecureAPI
     private var metadataCache: [UUID: SecureFile] = [:]
 
-    init(fileStore: SecureFileStore, xqAPI: any XQSecureAPI) {
+    public init(fileStore: SecureFileStore, xqAPI: any XQSecureAPI) {
         self.fileStore = fileStore
         self.xqAPI = xqAPI
     }
 
     // MARK: - RepositoryProvider
 
-    func listFiles(path: String) async throws -> [SecureFile] {
+    public func listFiles(path: String) async throws -> [SecureFile] {
         Array(metadataCache.values).sorted { $0.modifiedAt > $1.modifiedAt }
     }
 
-    func fetchFile(_ file: SecureFile) async throws -> Data {
+    public func fetchFile(_ file: SecureFile) async throws -> Data {
         // Build the URL using the file's id as the stored file name.
         let appSupport = FileManager.default.urls(
             for: .applicationSupportDirectory,
@@ -36,7 +38,7 @@ actor LocalVaultProvider: RepositoryProvider {
         return try await xqAPI.decryptFile(payload, session: session)
     }
 
-    func uploadFile(data: Data, name: String, path: String, session: XQSession) async throws -> SecureFile {
+    public func uploadFile(data: Data, name: String, path: String, session: XQSession) async throws -> SecureFile {
         // Encrypt before any persistence; plaintext never reaches disk.
         let payload = try await xqAPI.encryptFile(data: data, session: session)
 
@@ -59,7 +61,7 @@ actor LocalVaultProvider: RepositoryProvider {
         return file
     }
 
-    func deleteFile(_ file: SecureFile, session: XQSession) async throws {
+    public func deleteFile(_ file: SecureFile, session: XQSession) async throws {
         metadataCache.removeValue(forKey: file.id)
 
         let appSupport = FileManager.default.urls(
@@ -73,7 +75,7 @@ actor LocalVaultProvider: RepositoryProvider {
         try await fileStore.delete(at: fileURL)
     }
 
-    func deltaSync(since cursor: SyncCursor?) async throws -> DeltaSyncResult {
+    public func deltaSync(since cursor: SyncCursor?) async throws -> DeltaSyncResult {
         // Local vault has no remote counterpart; there is nothing to diff.
         let nextCursor = SyncCursor(
             token: UUID().uuidString,

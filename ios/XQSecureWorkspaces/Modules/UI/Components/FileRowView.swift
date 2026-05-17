@@ -1,4 +1,6 @@
 import SwiftUI
+import XQCore
+import XQFileIntelligence
 
 struct FileRowView: View {
     let file: SecureFile

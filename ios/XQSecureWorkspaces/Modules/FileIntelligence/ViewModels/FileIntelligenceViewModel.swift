@@ -1,4 +1,5 @@
 import Foundation
+import XQCore
 
 @MainActor
 final class FileIntelligenceViewModel: ObservableObject {

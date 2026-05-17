@@ -1,4 +1,7 @@
 import Foundation
+import XQCore
+import XQEmailIntelligence
+import XQPolicy
 
 @MainActor
 final class EmailThreadViewModel: ObservableObject {

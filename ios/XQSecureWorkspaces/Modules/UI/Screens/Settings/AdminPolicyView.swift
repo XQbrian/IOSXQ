@@ -1,4 +1,6 @@
 import SwiftUI
+import XQCore
+import XQPolicy
 
 struct AdminPolicyView: View {
     @EnvironmentObject var coordinator: AppCoordinator

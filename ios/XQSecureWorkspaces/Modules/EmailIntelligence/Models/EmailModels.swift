@@ -1,57 +1,100 @@
 import Foundation
+import XQCore
 
 // MARK: - Core Email Types
 
-struct SecureEmail: Identifiable, Hashable, Sendable {
-    let id: UUID
-    let messageId: String
-    let threadId: String
-    let subject: String
-    let senderEmail: String
-    let senderName: String
-    let recipientEmails: [String]
-    let ccEmails: [String]
-    let bodyPreview: String
-    let encryptedPayloadId: String
-    let sensitivity: SensitivityLevel
-    let receivedAt: Date
-    let isRead: Bool
-    let hasAttachments: Bool
+public struct SecureEmail: Identifiable, Hashable, Sendable {
+    public let id: UUID
+    public let messageId: String
+    public let threadId: String
+    public let subject: String
+    public let senderEmail: String
+    public let senderName: String
+    public let recipientEmails: [String]
+    public let ccEmails: [String]
+    public let bodyPreview: String
+    public let encryptedPayloadId: String
+    public let sensitivity: SensitivityLevel
+    public let receivedAt: Date
+    public let isRead: Bool
+    public let hasAttachments: Bool
+
+    public init(id: UUID, messageId: String, threadId: String, subject: String,
+                senderEmail: String, senderName: String, recipientEmails: [String],
+                ccEmails: [String], bodyPreview: String, encryptedPayloadId: String,
+                sensitivity: SensitivityLevel, receivedAt: Date, isRead: Bool, hasAttachments: Bool) {
+        self.id = id
+        self.messageId = messageId
+        self.threadId = threadId
+        self.subject = subject
+        self.senderEmail = senderEmail
+        self.senderName = senderName
+        self.recipientEmails = recipientEmails
+        self.ccEmails = ccEmails
+        self.bodyPreview = bodyPreview
+        self.encryptedPayloadId = encryptedPayloadId
+        self.sensitivity = sensitivity
+        self.receivedAt = receivedAt
+        self.isRead = isRead
+        self.hasAttachments = hasAttachments
+    }
 }
 
-struct SecureEmailAttachment: Identifiable, Hashable, Sendable {
-    let id: UUID
-    let filename: String
-    let mimeType: String
-    let sizeBytes: Int64
-    let encryptedPayloadId: String
-    let sensitivity: SensitivityLevel
+public struct SecureEmailAttachment: Identifiable, Hashable, Sendable {
+    public let id: UUID
+    public let filename: String
+    public let mimeType: String
+    public let sizeBytes: Int64
+    public let encryptedPayloadId: String
+    public let sensitivity: SensitivityLevel
+
+    public init(id: UUID, filename: String, mimeType: String, sizeBytes: Int64,
+                encryptedPayloadId: String, sensitivity: SensitivityLevel) {
+        self.id = id
+        self.filename = filename
+        self.mimeType = mimeType
+        self.sizeBytes = sizeBytes
+        self.encryptedPayloadId = encryptedPayloadId
+        self.sensitivity = sensitivity
+    }
 }
 
-struct EmailThread: Identifiable, Sendable {
-    let id: String
-    let subject: String
-    let participants: [String]
-    let messageCount: Int
-    let latestAt: Date
-    let sensitivity: SensitivityLevel
-    let messages: [SecureEmail]
-    let summary: ThreadSummary?
+public struct EmailThread: Identifiable, Sendable {
+    public let id: String
+    public let subject: String
+    public let participants: [String]
+    public let messageCount: Int
+    public let latestAt: Date
+    public let sensitivity: SensitivityLevel
+    public let messages: [SecureEmail]
+    public let summary: ThreadSummary?
+
+    public init(id: String, subject: String, participants: [String], messageCount: Int,
+                latestAt: Date, sensitivity: SensitivityLevel, messages: [SecureEmail], summary: ThreadSummary?) {
+        self.id = id
+        self.subject = subject
+        self.participants = participants
+        self.messageCount = messageCount
+        self.latestAt = latestAt
+        self.sensitivity = sensitivity
+        self.messages = messages
+        self.summary = summary
+    }
 }
 
 // MARK: - Priority
 
-enum EmailPriority: Int, Comparable, CaseIterable, Sendable {
+public enum EmailPriority: Int, Comparable, CaseIterable, Sendable {
     case critical = 0
     case action = 1
     case fyi = 2
     case noise = 3
 
-    static func < (lhs: EmailPriority, rhs: EmailPriority) -> Bool {
+    public static func < (lhs: EmailPriority, rhs: EmailPriority) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
 
-    var label: String {
+    public var label: String {
         switch self {
         case .critical: return "Critical"
         case .action:   return "Action Required"
@@ -61,17 +104,17 @@ enum EmailPriority: Int, Comparable, CaseIterable, Sendable {
     }
 }
 
-struct EmailTriageResult: Identifiable, Sendable {
-    let id: UUID
-    let emailId: UUID
-    let priority: EmailPriority
-    let priorityReason: String
-    let extractedActionCount: Int
-    let hasDeadline: Bool
-    let deadlineAt: Date?
-    let senderImportance: SenderImportance
+public struct EmailTriageResult: Identifiable, Sendable {
+    public let id: UUID
+    public let emailId: UUID
+    public let priority: EmailPriority
+    public let priorityReason: String
+    public let extractedActionCount: Int
+    public let hasDeadline: Bool
+    public let deadlineAt: Date?
+    public let senderImportance: SenderImportance
 
-    init(emailId: UUID, priority: EmailPriority, priorityReason: String,
+    public init(emailId: UUID, priority: EmailPriority, priorityReason: String,
          extractedActionCount: Int, hasDeadline: Bool, deadlineAt: Date?,
          senderImportance: SenderImportance) {
         self.id = UUID()
@@ -85,7 +128,7 @@ struct EmailTriageResult: Identifiable, Sendable {
     }
 }
 
-enum SenderImportance: String, CaseIterable, Sendable {
+public enum SenderImportance: String, CaseIterable, Sendable {
     case executive
     case directReport
     case peer
@@ -96,7 +139,7 @@ enum SenderImportance: String, CaseIterable, Sendable {
 
 // MARK: - Risk Detection
 
-enum EmailRiskLevel: String, CaseIterable, Comparable, Sendable {
+public enum EmailRiskLevel: String, CaseIterable, Comparable, Sendable {
     case safe
     case low
     case medium
@@ -113,18 +156,18 @@ enum EmailRiskLevel: String, CaseIterable, Comparable, Sendable {
         }
     }
 
-    static func < (lhs: EmailRiskLevel, rhs: EmailRiskLevel) -> Bool {
+    public static func < (lhs: EmailRiskLevel, rhs: EmailRiskLevel) -> Bool {
         lhs.order < rhs.order
     }
 }
 
-struct EmailRiskSignal: Identifiable, Sendable {
-    let id: UUID
-    let type: SignalType
-    let description: String
-    let confidence: Double
+public struct EmailRiskSignal: Identifiable, Sendable {
+    public let id: UUID
+    public let type: SignalType
+    public let description: String
+    public let confidence: Double
 
-    enum SignalType: String, CaseIterable, Sendable {
+    public enum SignalType: String, CaseIterable, Sendable {
         case urgencyManipulation
         case senderSpoofing
         case domainAnomaly
@@ -137,7 +180,7 @@ struct EmailRiskSignal: Identifiable, Sendable {
         case behavioralAnomaly
     }
 
-    init(id: UUID = UUID(), type: SignalType, description: String, confidence: Double) {
+    public init(id: UUID = UUID(), type: SignalType, description: String, confidence: Double) {
         self.id = id
         self.type = type
         self.description = description
@@ -145,24 +188,42 @@ struct EmailRiskSignal: Identifiable, Sendable {
     }
 }
 
-struct EmailRiskAssessment: Sendable {
-    let emailId: UUID
-    let overallRisk: EmailRiskLevel
+public struct EmailRiskAssessment: Sendable {
+    public let emailId: UUID
+    public let overallRisk: EmailRiskLevel
     /// Normalized 0–100 composite score.
-    let riskScore: Int
-    let signals: [EmailRiskSignal]
-    let isPhishing: Bool
-    let isBEC: Bool
-    let hasUrgencyManipulation: Bool
-    let hasImpersonation: Bool
-    let hasSuspiciousLinks: Bool
-    let hasPromptInjection: Bool
+    public let riskScore: Int
+    public let signals: [EmailRiskSignal]
+    public let isPhishing: Bool
+    public let isBEC: Bool
+    public let hasUrgencyManipulation: Bool
+    public let hasImpersonation: Bool
+    public let hasSuspiciousLinks: Bool
+    public let hasPromptInjection: Bool
     /// Controls cited when PHI/Restricted email is assessed (HIPAA §164.502, NIST AC-3, GDPR Art. 9).
-    let citedControls: [CitedControl]
-    let recommendedAction: EmailRiskAction
+    public let citedControls: [CitedControl]
+    public let recommendedAction: EmailRiskAction
+
+    public init(emailId: UUID, overallRisk: EmailRiskLevel, riskScore: Int, signals: [EmailRiskSignal],
+                isPhishing: Bool, isBEC: Bool, hasUrgencyManipulation: Bool, hasImpersonation: Bool,
+                hasSuspiciousLinks: Bool, hasPromptInjection: Bool, citedControls: [CitedControl],
+                recommendedAction: EmailRiskAction) {
+        self.emailId = emailId
+        self.overallRisk = overallRisk
+        self.riskScore = riskScore
+        self.signals = signals
+        self.isPhishing = isPhishing
+        self.isBEC = isBEC
+        self.hasUrgencyManipulation = hasUrgencyManipulation
+        self.hasImpersonation = hasImpersonation
+        self.hasSuspiciousLinks = hasSuspiciousLinks
+        self.hasPromptInjection = hasPromptInjection
+        self.citedControls = citedControls
+        self.recommendedAction = recommendedAction
+    }
 }
 
-enum EmailRiskAction: String, CaseIterable, Sendable {
+public enum EmailRiskAction: String, CaseIterable, Sendable {
     case allow
     case warn
     case quarantine
@@ -172,7 +233,7 @@ enum EmailRiskAction: String, CaseIterable, Sendable {
 
 // MARK: - Thread Intelligence
 
-enum ThreadSentiment: String, CaseIterable, Sendable {
+public enum ThreadSentiment: String, CaseIterable, Sendable {
     case positive
     case neutral
     case tense
@@ -180,16 +241,16 @@ enum ThreadSentiment: String, CaseIterable, Sendable {
     case escalating
 }
 
-struct ExtractedEmailAction: Identifiable, Sendable {
-    let id: UUID
-    let text: String
-    let assignee: String?
-    let deadline: Date?
-    let type: ActionType
-    let confidence: Double
-    let sourceMessageId: String
+public struct ExtractedEmailAction: Identifiable, Sendable {
+    public let id: UUID
+    public let text: String
+    public let assignee: String?
+    public let deadline: Date?
+    public let type: ActionType
+    public let confidence: Double
+    public let sourceMessageId: String
 
-    enum ActionType: String, CaseIterable, Sendable {
+    public enum ActionType: String, CaseIterable, Sendable {
         case commitment
         case request
         case approval
@@ -199,7 +260,7 @@ struct ExtractedEmailAction: Identifiable, Sendable {
         case legalReview
     }
 
-    init(id: UUID = UUID(), text: String, assignee: String?, deadline: Date?,
+    public init(id: UUID = UUID(), text: String, assignee: String?, deadline: Date?,
          type: ActionType, confidence: Double, sourceMessageId: String) {
         self.id = id
         self.text = text
@@ -211,24 +272,41 @@ struct ExtractedEmailAction: Identifiable, Sendable {
     }
 }
 
-struct ThreadSummary: Sendable {
-    let threadId: String
-    let oneSentenceSummary: String
-    let keyDecisions: [String]
-    let actionItems: [ExtractedEmailAction]
-    let unresolvedIssues: [String]
-    let blockers: [String]
-    let sentiment: ThreadSentiment
-    let messageCount: Int
-    let compressedFromWordCount: Int
-    let compressedToWordCount: Int
+public struct ThreadSummary: Sendable {
+    public let threadId: String
+    public let oneSentenceSummary: String
+    public let keyDecisions: [String]
+    public let actionItems: [ExtractedEmailAction]
+    public let unresolvedIssues: [String]
+    public let blockers: [String]
+    public let sentiment: ThreadSentiment
+    public let messageCount: Int
+    public let compressedFromWordCount: Int
+    public let compressedToWordCount: Int
     /// False when sensitivity constraints forced local-only processing.
-    let wasCloudProcessed: Bool
+    public let wasCloudProcessed: Bool
+
+    public init(threadId: String, oneSentenceSummary: String, keyDecisions: [String],
+                actionItems: [ExtractedEmailAction], unresolvedIssues: [String], blockers: [String],
+                sentiment: ThreadSentiment, messageCount: Int, compressedFromWordCount: Int,
+                compressedToWordCount: Int, wasCloudProcessed: Bool) {
+        self.threadId = threadId
+        self.oneSentenceSummary = oneSentenceSummary
+        self.keyDecisions = keyDecisions
+        self.actionItems = actionItems
+        self.unresolvedIssues = unresolvedIssues
+        self.blockers = blockers
+        self.sentiment = sentiment
+        self.messageCount = messageCount
+        self.compressedFromWordCount = compressedFromWordCount
+        self.compressedToWordCount = compressedToWordCount
+        self.wasCloudProcessed = wasCloudProcessed
+    }
 }
 
 // MARK: - Tone Analysis
 
-enum EmailTone: String, CaseIterable, Sendable {
+public enum EmailTone: String, CaseIterable, Sendable {
     case veryFormal
     case formal
     case neutral
@@ -238,11 +316,11 @@ enum EmailTone: String, CaseIterable, Sendable {
     case passive
 }
 
-struct ToneSuggestion: Sendable {
-    let type: SuggestionType
-    let description: String
+public struct ToneSuggestion: Sendable {
+    public let type: SuggestionType
+    public let description: String
 
-    enum SuggestionType: String, CaseIterable, Sendable {
+    public enum SuggestionType: String, CaseIterable, Sendable {
         case tooFormal
         case tooCasual
         case tooLong
@@ -250,32 +328,57 @@ struct ToneSuggestion: Sendable {
         case unclearDeadline
         case ambiguousCommitment
     }
+
+    public init(type: SuggestionType, description: String) {
+        self.type = type
+        self.description = description
+    }
 }
 
-struct DetectedCommitment: Sendable {
-    let text: String
-    let deliverable: String
-    let deadline: Date?
-    let isExplicit: Bool
+public struct DetectedCommitment: Sendable {
+    public let text: String
+    public let deliverable: String
+    public let deadline: Date?
+    public let isExplicit: Bool
+
+    public init(text: String, deliverable: String, deadline: Date?, isExplicit: Bool) {
+        self.text = text
+        self.deliverable = deliverable
+        self.deadline = deadline
+        self.isExplicit = isExplicit
+    }
 }
 
-struct EmailToneAnalysis: Sendable {
-    let emailId: UUID
-    let tone: EmailTone
+public struct EmailToneAnalysis: Sendable {
+    public let emailId: UUID
+    public let tone: EmailTone
     /// 0 = extremely casual, 100 = maximally formal.
-    let formalityScore: Int
+    public let formalityScore: Int
     /// 0 = no urgency, 100 = extreme urgency.
-    let urgencyScore: Int
+    public let urgencyScore: Int
     /// -100 = very negative, 0 = neutral, +100 = very positive.
-    let sentimentScore: Int
-    let matchesVoiceProfile: Bool
-    let suggestions: [ToneSuggestion]
-    let commitments: [DetectedCommitment]
+    public let sentimentScore: Int
+    public let matchesVoiceProfile: Bool
+    public let suggestions: [ToneSuggestion]
+    public let commitments: [DetectedCommitment]
+
+    public init(emailId: UUID, tone: EmailTone, formalityScore: Int, urgencyScore: Int,
+                sentimentScore: Int, matchesVoiceProfile: Bool, suggestions: [ToneSuggestion],
+                commitments: [DetectedCommitment]) {
+        self.emailId = emailId
+        self.tone = tone
+        self.formalityScore = formalityScore
+        self.urgencyScore = urgencyScore
+        self.sentimentScore = sentimentScore
+        self.matchesVoiceProfile = matchesVoiceProfile
+        self.suggestions = suggestions
+        self.commitments = commitments
+    }
 }
 
 // MARK: - Organizational Memory
 
-enum SenderRelationship: String, CaseIterable, Sendable {
+public enum SenderRelationship: String, CaseIterable, Sendable {
     case manager
     case directReport
     case peer
@@ -286,44 +389,74 @@ enum SenderRelationship: String, CaseIterable, Sendable {
     case unknown
 }
 
-enum EscalationPattern: String, CaseIterable, Sendable {
+public enum EscalationPattern: String, CaseIterable, Sendable {
     case neverEscalates
     case escalatesSlowly
     case escalatesQuickly
     case sendsToExecutives
 }
 
-struct SenderProfile: Identifiable, Sendable {
-    let id: UUID
-    let email: String
-    let displayName: String
-    let orgGraphDistance: Int
-    let relationship: SenderRelationship
-    let averageResponseHours: Double
-    let escalationTendency: EscalationPattern
-    let projectAssociations: [String]
-    let historicalSentiment: Double
-    let knownPatterns: [String]
+public struct SenderProfile: Identifiable, Sendable {
+    public let id: UUID
+    public let email: String
+    public let displayName: String
+    public let orgGraphDistance: Int
+    public let relationship: SenderRelationship
+    public let averageResponseHours: Double
+    public let escalationTendency: EscalationPattern
+    public let projectAssociations: [String]
+    public let historicalSentiment: Double
+    public let knownPatterns: [String]
+
+    public init(id: UUID, email: String, displayName: String, orgGraphDistance: Int,
+                relationship: SenderRelationship, averageResponseHours: Double,
+                escalationTendency: EscalationPattern, projectAssociations: [String],
+                historicalSentiment: Double, knownPatterns: [String]) {
+        self.id = id
+        self.email = email
+        self.displayName = displayName
+        self.orgGraphDistance = orgGraphDistance
+        self.relationship = relationship
+        self.averageResponseHours = averageResponseHours
+        self.escalationTendency = escalationTendency
+        self.projectAssociations = projectAssociations
+        self.historicalSentiment = historicalSentiment
+        self.knownPatterns = knownPatterns
+    }
 }
 
 // MARK: - Composite Intelligence Result
 
-struct EmailIntelligenceResult: Sendable {
-    let emailId: UUID
-    let triage: EmailTriageResult
-    let riskAssessment: EmailRiskAssessment
-    let toneAnalysis: EmailToneAnalysis?
-    let senderProfile: SenderProfile?
-    let processedAt: Date
-    let processingMs: Int
-    let wasCloudProcessed: Bool
+public struct EmailIntelligenceResult: Sendable {
+    public let emailId: UUID
+    public let triage: EmailTriageResult
+    public let riskAssessment: EmailRiskAssessment
+    public let toneAnalysis: EmailToneAnalysis?
+    public let senderProfile: SenderProfile?
+    public let processedAt: Date
+    public let processingMs: Int
+    public let wasCloudProcessed: Bool
     /// Key: capability name, Value: model version string.
-    let modelVersions: [String: String]
+    public let modelVersions: [String: String]
+
+    public init(emailId: UUID, triage: EmailTriageResult, riskAssessment: EmailRiskAssessment,
+                toneAnalysis: EmailToneAnalysis?, senderProfile: SenderProfile?, processedAt: Date,
+                processingMs: Int, wasCloudProcessed: Bool, modelVersions: [String: String]) {
+        self.emailId = emailId
+        self.triage = triage
+        self.riskAssessment = riskAssessment
+        self.toneAnalysis = toneAnalysis
+        self.senderProfile = senderProfile
+        self.processedAt = processedAt
+        self.processingMs = processingMs
+        self.wasCloudProcessed = wasCloudProcessed
+        self.modelVersions = modelVersions
+    }
 }
 
 // MARK: - Audit
 
-enum EmailAuditEventType: String, Sendable {
+public enum EmailAuditEventType: String, Sendable {
     case emailTriaged
     case phishingDetected
     case phishingBlocked

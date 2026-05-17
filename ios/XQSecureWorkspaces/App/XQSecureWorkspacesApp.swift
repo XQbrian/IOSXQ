@@ -1,4 +1,6 @@
 import SwiftUI
+import XQCore
+import XQSecurity
 
 @main
 struct XQSecureWorkspacesApp: App {

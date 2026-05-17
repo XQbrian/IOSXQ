@@ -1,6 +1,6 @@
 import Foundation
 
-protocol PolicyEngine: Sendable {
+public protocol PolicyEngine: Sendable {
     var currentBundle: PolicyBundle? { get }
 
     func loadBundle(_ bundle: PolicyBundle) async throws
@@ -8,7 +8,7 @@ protocol PolicyEngine: Sendable {
     func rule(for sensitivity: SensitivityLevel) -> PolicyRule?
 }
 
-enum PolicyOperation {
+public enum PolicyOperation {
     case openFile
     case shareExternally(recipientDomain: String)
     case shareInternally
@@ -17,10 +17,19 @@ enum PolicyOperation {
     case screenshot
 }
 
-struct PolicyDecision {
-    let allowed: Bool
-    let enforcement: CitedControl.Enforcement
-    let citedControls: [CitedControl]
-    let requiredApprovalRole: String?
-    let auditRequired: Bool
+public struct PolicyDecision: Sendable {
+    public let allowed: Bool
+    public let enforcement: CitedControl.Enforcement
+    public let citedControls: [CitedControl]
+    public let requiredApprovalRole: String?
+    public let auditRequired: Bool
+
+    public init(allowed: Bool, enforcement: CitedControl.Enforcement, citedControls: [CitedControl],
+                requiredApprovalRole: String?, auditRequired: Bool) {
+        self.allowed = allowed
+        self.enforcement = enforcement
+        self.citedControls = citedControls
+        self.requiredApprovalRole = requiredApprovalRole
+        self.auditRequired = auditRequired
+    }
 }

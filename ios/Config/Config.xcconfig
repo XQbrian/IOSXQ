@@ -1,0 +1,7 @@
+// Base configuration — committed. Secrets.xcconfig is gitignored and holds real keys.
+#include "Secrets.xcconfig"
+
+SWIFT_VERSION = 6.0
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+TARGETED_DEVICE_FAMILY = 1,2
+ENABLE_BITCODE = NO

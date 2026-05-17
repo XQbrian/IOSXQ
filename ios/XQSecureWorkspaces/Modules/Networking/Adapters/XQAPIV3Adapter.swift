@@ -1,17 +1,18 @@
 import Foundation
+import XQCore
 import CryptoKit
 
 // v3 uses ChaCha20-Poly1305 for transport but AES-256-GCM for stored payloads.
-actor XQAPIV3Adapter: XQSecureAPI {
+public actor XQAPIV3Adapter: XQSecureAPI {
 
-    let negotiatedVersion: XQAPIVersion = .v3
+    public let negotiatedVersion: XQAPIVersion = .v3
     private let gateway: XQAPIGateway
 
-    init(gateway: XQAPIGateway) {
+    public init(gateway: XQAPIGateway) {
         self.gateway = gateway
     }
 
-    func authenticate(credentials: XQCredentials) async throws -> XQSession {
+    public func authenticate(credentials: XQCredentials) async throws -> XQSession {
         struct AuthRequest: Encodable {
             let userId: String
             let authToken: String
@@ -39,7 +40,7 @@ actor XQAPIV3Adapter: XQSecureAPI {
         )
     }
 
-    func refreshSession(_ session: XQSession) async throws -> XQSession {
+    public func refreshSession(_ session: XQSession) async throws -> XQSession {
         struct RefreshResponse: Decodable { let accessToken: String; let expiresAt: Date }
         let resp: RefreshResponse = try await gateway.post(
             path: "v3/auth/refresh",
@@ -55,7 +56,7 @@ actor XQAPIV3Adapter: XQSecureAPI {
         )
     }
 
-    func revokeSession(_ session: XQSession) async throws {
+    public func revokeSession(_ session: XQSession) async throws {
         let _: EmptyResponse = try await gateway.post(
             path: "v3/auth/revoke",
             body: EmptyBody(),
@@ -63,7 +64,7 @@ actor XQAPIV3Adapter: XQSecureAPI {
         )
     }
 
-    func encryptFile(data: Data, session: XQSession) async throws -> EncryptedPayload {
+    public func encryptFile(data: Data, session: XQSession) async throws -> EncryptedPayload {
         // DEK is generated on-device; only the DEK encrypted under Secure Enclave KEK is sent to XQ KMS.
         let key = SymmetricKey(size: .bits256)
         let iv = AES.GCM.Nonce()
@@ -88,7 +89,7 @@ actor XQAPIV3Adapter: XQSecureAPI {
         )
     }
 
-    func decryptFile(_ payload: EncryptedPayload, session: XQSession) async throws -> Data {
+    public func decryptFile(_ payload: EncryptedPayload, session: XQSession) async throws -> Data {
         struct KeyFetchResponse: Decodable { let encryptedDek: String }
         let resp: KeyFetchResponse = try await gateway.get(
             path: "v3/keys/\(payload.keyId)",
@@ -107,7 +108,7 @@ actor XQAPIV3Adapter: XQSecureAPI {
         return try AES.GCM.open(sealedBox, using: key)
     }
 
-    func rotateFileKey(fileId: String, session: XQSession) async throws -> EncryptedPayload {
+    public func rotateFileKey(fileId: String, session: XQSession) async throws -> EncryptedPayload {
         struct RotateResponse: Decodable { let payload: DecodableEncryptedPayload }
         let resp: RotateResponse = try await gateway.post(
             path: "v3/keys/\(fileId)/rotate",
@@ -117,11 +118,11 @@ actor XQAPIV3Adapter: XQSecureAPI {
         return resp.payload.toEncryptedPayload()
     }
 
-    func fetchPolicyBundle(tenantId: String, session: XQSession) async throws -> PolicyBundle {
+    public func fetchPolicyBundle(tenantId: String, session: XQSession) async throws -> PolicyBundle {
         try await gateway.get(path: "v3/tenants/\(tenantId)/policy", session: session)
     }
 
-    func submitAuditEvent(_ event: AuditEvent, session: XQSession) async throws {
+    public func submitAuditEvent(_ event: AuditEvent, session: XQSession) async throws {
         let _: EmptyResponse = try await gateway.post(
             path: "v3/audit",
             body: EncodableAuditEvent(event),

@@ -1,4 +1,8 @@
 import Foundation
+import XQCore
+import XQRepository
+import XQPolicy
+import XQFileIntelligence
 
 @MainActor
 final class FileViewerViewModel: ObservableObject {

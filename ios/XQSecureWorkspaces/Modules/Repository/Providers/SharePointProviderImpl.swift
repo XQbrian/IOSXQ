@@ -1,22 +1,24 @@
 import Foundation
+import XQCore
+import XQNetworking
 
-actor SharePointProviderImpl: SharePointProvider {
+public actor SharePointProviderImpl: SharePointProvider {
 
-    let source: RepositorySource = .sharePoint
-    let isAvailableOffline: Bool = false
+    public nonisolated let source: RepositorySource = .sharePoint
+    public nonisolated let isAvailableOffline: Bool = false
 
     private let gateway: XQAPIGateway
     private let xqAPI: any XQSecureAPI
     private var sharePointSession: SharePointSession?
 
-    init(gateway: XQAPIGateway, xqAPI: any XQSecureAPI) {
+    public init(gateway: XQAPIGateway, xqAPI: any XQSecureAPI) {
         self.gateway = gateway
         self.xqAPI = xqAPI
     }
 
     // MARK: - SharePointProvider
 
-    func authenticate(tenantId: String, clientId: String) async throws -> SharePointSession {
+    public func authenticate(tenantId: String, clientId: String) async throws -> SharePointSession {
         struct AuthBody: Encodable { let tenantId: String; let clientId: String }
         let body = AuthBody(tenantId: tenantId, clientId: clientId)
         let session: SharePointSession = try await gateway.post(
@@ -27,14 +29,14 @@ actor SharePointProviderImpl: SharePointProvider {
         return session
     }
 
-    func listSites() async throws -> [SharePointSite] {
+    public func listSites() async throws -> [SharePointSite] {
         guard sharePointSession != nil else {
             throw RepositoryError.authenticationRequired
         }
         return try await gateway.get(path: "graph/v1.0/sites")
     }
 
-    func fetchDriveItems(siteId: String, driveId: String, path: String) async throws -> [SecureFile] {
+    public func fetchDriveItems(siteId: String, driveId: String, path: String) async throws -> [SecureFile] {
         guard sharePointSession != nil else {
             throw RepositoryError.authenticationRequired
         }
@@ -46,13 +48,13 @@ actor SharePointProviderImpl: SharePointProvider {
 
     // MARK: - RepositoryProvider
 
-    func listFiles(path: String) async throws -> [SecureFile] {
+    public func listFiles(path: String) async throws -> [SecureFile] {
         // Uses empty-string placeholders; callers should prefer fetchDriveItems
         // directly once siteId and driveId are resolved for the tenant.
         try await fetchDriveItems(siteId: "", driveId: "", path: path)
     }
 
-    func fetchFile(_ file: SecureFile) async throws -> Data {
+    public func fetchFile(_ file: SecureFile) async throws -> Data {
         // Downloads raw bytes from SharePoint via the Graph content endpoint.
         // PRODUCTION NOTE: In a full XQ deployment the file stored in SharePoint
         // will be an EncryptedPayload blob. Callers must decrypt it via
@@ -64,7 +66,7 @@ actor SharePointProviderImpl: SharePointProvider {
         return data
     }
 
-    func uploadFile(data: Data, name: String, path: String, session: XQSession) async throws -> SecureFile {
+    public func uploadFile(data: Data, name: String, path: String, session: XQSession) async throws -> SecureFile {
         // Encrypt before transit; plaintext never leaves the device unprotected.
         let payload = try await xqAPI.encryptFile(data: data, session: session)
         let encryptedBlob = payload.iv + payload.authTag + payload.ciphertext
@@ -87,7 +89,7 @@ actor SharePointProviderImpl: SharePointProvider {
         )
     }
 
-    func deleteFile(_ file: SecureFile, session: XQSession) async throws {
+    public func deleteFile(_ file: SecureFile, session: XQSession) async throws {
         struct DeleteBody: Encodable {}
         let endpoint = "graph/v1.0/me/drive/items/\(file.id)"
         let _: EmptyResponse = try await gateway.post(path: endpoint, body: DeleteBody())
@@ -95,7 +97,7 @@ actor SharePointProviderImpl: SharePointProvider {
         // will be added in Phase 5; until then this post stands as a placeholder.
     }
 
-    func deltaSync(since cursor: SyncCursor?) async throws -> DeltaSyncResult {
+    public func deltaSync(since cursor: SyncCursor?) async throws -> DeltaSyncResult {
         let endpoint: String
         if let cursor {
             endpoint = "graph/v1.0/me/drive/root/delta?token=\(cursor.token)"
@@ -186,23 +188,27 @@ extension SharePointSession: Decodable {
         case accessToken, refreshToken, expiresAt, tenantId
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        accessToken  = try c.decode(String.self, forKey: .accessToken)
-        refreshToken = try c.decode(String.self, forKey: .refreshToken)
-        expiresAt    = try c.decode(Date.self,   forKey: .expiresAt)
-        tenantId     = try c.decode(String.self, forKey: .tenantId)
+        self.init(
+            accessToken:  try c.decode(String.self, forKey: .accessToken),
+            refreshToken: try c.decode(String.self, forKey: .refreshToken),
+            expiresAt:    try c.decode(Date.self,   forKey: .expiresAt),
+            tenantId:     try c.decode(String.self, forKey: .tenantId)
+        )
     }
 }
 
 extension SharePointSite: Decodable {
     private enum CodingKeys: String, CodingKey { case id, displayName, webUrl }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        id          = try c.decode(String.self, forKey: .id)
-        displayName = try c.decode(String.self, forKey: .displayName)
-        webUrl      = try c.decode(String.self, forKey: .webUrl)
+        self.init(
+            id:          try c.decode(String.self, forKey: .id),
+            displayName: try c.decode(String.self, forKey: .displayName),
+            webUrl:      try c.decode(String.self, forKey: .webUrl)
+        )
     }
 }
 

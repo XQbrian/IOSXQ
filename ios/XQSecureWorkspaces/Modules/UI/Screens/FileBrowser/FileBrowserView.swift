@@ -1,4 +1,7 @@
 import SwiftUI
+import XQCore
+import XQRepository
+import XQFileIntelligence
 
 struct FileBrowserView: View {
     @EnvironmentObject var coordinator: AppCoordinator

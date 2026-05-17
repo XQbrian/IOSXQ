@@ -32,6 +32,7 @@ node_modules/
 *.p12
 *.mobileprovision
 AuthKey_*.p8
+ios/Config/Secrets.xcconfig
 
 # IDE
 .idea/

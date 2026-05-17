@@ -1,4 +1,23 @@
 import Foundation
+import XQCore
+import XQNetworking
+
+// MARK: - OfflineOperation
+
+/// Represents a mutation that could not be sent to the remote provider because
+/// the device was offline. Operations are executed in order when connectivity
+/// is restored via drainQueue(session:).
+public enum OfflineOperation: Identifiable {
+    case upload(id: UUID, data: Data, name: String, path: String, provider: RepositorySource)
+    case delete(id: UUID, fileId: UUID, provider: RepositorySource)
+
+    public var id: UUID {
+        switch self {
+        case .upload(let id, _, _, _, _): return id
+        case .delete(let id, _, _):       return id
+        }
+    }
+}
 
 // MARK: - OfflineOperation + Codable
 
@@ -28,7 +47,7 @@ extension OfflineOperation: Codable {
 
     // MARK: Encodable
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         switch self {
         case .upload(let id, let data, let name, let path, let provider):
             var container = encoder.singleValueContainer()
@@ -48,7 +67,7 @@ extension OfflineOperation: Codable {
 
     // MARK: Decodable
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let keyed = try decoder.container(keyedBy: TaggedCodingKeys.self)
         let tag = try keyed.decode(TypeTag.self, forKey: .type)
         switch tag {
@@ -69,11 +88,11 @@ extension OfflineOperation: Codable {
 /// Persists the offline operation queue to disk so queued mutations survive
 /// app restarts. All data is written under NSFileProtectionComplete so the
 /// queue file is inaccessible while the device is locked.
-actor OfflineQueueStore {
+public actor OfflineQueueStore {
 
     private let storageURL: URL
 
-    init() {
+    public init() {
         let appSupport = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -107,8 +126,10 @@ actor OfflineQueueStore {
     /// PRODUCTION NOTE: UploadPayload embeds raw Data which can be several MB
     /// per operation. Replace with a SecureFileStore URL reference before
     /// shipping to reduce peak memory usage and queue file size.
-    func save(operations: [OfflineOperation]) async throws {
-        let data = try JSONEncoder.xq.encode(operations)
+    public func save(operations: [OfflineOperation]) async throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(operations)
         try data.write(to: storageURL, options: .atomicWrite)
 
         // Re-apply file protection after every write; atomicWrite may create a
@@ -122,16 +143,13 @@ actor OfflineQueueStore {
     /// Deserialises the operation queue from disk. Returns an empty array when
     /// the queue file does not yet exist (first launch or after a successful
     /// full drain).
-    func load() async throws -> [OfflineOperation] {
+    public func load() async throws -> [OfflineOperation] {
         guard FileManager.default.fileExists(atPath: storageURL.path) else {
             return []
         }
         let data = try Data(contentsOf: storageURL)
-        return try JSONDecoder.xq.decode([OfflineOperation].self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode([OfflineOperation].self, from: data)
     }
 }
-
-// MARK: - Shared JSON coders (local scope to avoid re-declaration conflicts)
-
-// JSONEncoder.xq and JSONDecoder.xq are defined in XQAPIGateway.swift and are
-// visible across the module, so no redeclaration is needed here.

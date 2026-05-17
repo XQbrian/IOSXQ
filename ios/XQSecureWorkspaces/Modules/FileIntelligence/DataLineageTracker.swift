@@ -1,4 +1,5 @@
 import Foundation
+import XQCore
 import CryptoKit
 
 // MARK: - Well-known stub file identifiers
@@ -10,17 +11,17 @@ extension UUID {
 
 // MARK: - DataLineageTracker
 
-actor DataLineageTracker: DataLineageService {
+public actor DataLineageTracker: DataLineageService {
 
     private var lineageStore: [UUID: DataLineageRecord] = [:]
 
-    init() {
+    public init() {
         lineageStore[.q4FinancialReport] = Self.makeQ4FinancialReportLineage()
     }
 
     // MARK: - DataLineageService
 
-    func lineageFor(_ fileId: UUID, session: XQSession) async throws -> DataLineageRecord {
+    public func lineageFor(_ fileId: UUID, session: XQSession) async throws -> DataLineageRecord {
         if let existing = lineageStore[fileId] {
             return existing
         }
@@ -43,7 +44,7 @@ actor DataLineageTracker: DataLineageService {
         return stub
     }
 
-    func recordEvent(_ event: LineageEvent, for fileId: UUID, session: XQSession) async throws {
+    public func recordEvent(_ event: LineageEvent, for fileId: UUID, session: XQSession) async throws {
         if let proof = event.cryptographicProof {
             // Proof must be a 64-character hex string (SHA-256).
             guard proof.count == 64, proof.allSatisfy({ $0.isHexDigit }) else {

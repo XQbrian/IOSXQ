@@ -1,14 +1,15 @@
 import Foundation
+import XQCore
 
 // MARK: - Errors
 
-enum EmailIntelligenceError: Error, LocalizedError {
+public enum EmailIntelligenceError: Error, LocalizedError {
     case localOnlyViolation(reason: String)
     case policyBlockedCloudAI(sensitivity: SensitivityLevel)
     case modelNotLoaded(capability: String)
     case analysisTimeout(emailId: UUID, elapsedMs: Int)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .localOnlyViolation(let reason):
             return "Local-only violation: \(reason)"
@@ -27,7 +28,7 @@ enum EmailIntelligenceError: Error, LocalizedError {
 /// Coordinates all 8 email intelligence capabilities.
 /// Enforces routing decisions (local vs. cloud) based on sensitivity level and PolicyBundle;
 /// never silently degrades — callers receive a typed error on policy violation.
-actor EmailIntelligenceOrchestrator: EmailOrchestrator {
+public actor EmailIntelligenceOrchestrator: EmailOrchestrator {
 
     private let prioritizer: any EmailPrioritizer
     private let threadProvider: any ThreadIntelligenceProvider
@@ -37,7 +38,7 @@ actor EmailIntelligenceOrchestrator: EmailOrchestrator {
 
     private var auditLog: [AuditEvent] = []
 
-    init(
+    public init(
         prioritizer: any EmailPrioritizer,
         threadProvider: any ThreadIntelligenceProvider,
         toneAnalyzer: any EmailToneAnalyzer,
@@ -53,7 +54,7 @@ actor EmailIntelligenceOrchestrator: EmailOrchestrator {
 
     // MARK: - analyze
 
-    func analyze(
+    public func analyze(
         email: SecureEmail,
         session: XQSession,
         policy: PolicyBundle
@@ -114,7 +115,7 @@ actor EmailIntelligenceOrchestrator: EmailOrchestrator {
 
     // MARK: - autonomousTriage
 
-    func autonomousTriage(
+    public func autonomousTriage(
         inbox: [SecureEmail],
         session: XQSession,
         policy: PolicyBundle
@@ -152,7 +153,7 @@ actor EmailIntelligenceOrchestrator: EmailOrchestrator {
 
     // MARK: - suggestReply
 
-    func suggestReply(
+    public func suggestReply(
         for email: SecureEmail,
         userContext: String,
         policy: PolicyBundle

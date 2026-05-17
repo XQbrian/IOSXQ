@@ -1,4 +1,8 @@
 import SwiftUI
+import XQCore
+import XQSecurity
+import XQNetworking
+import XQPolicy
 
 @MainActor
 final class AppCoordinator: ObservableObject {

@@ -1,4 +1,5 @@
 import Foundation
+import XQCore
 
 // MARK: - Orchestrator
 
@@ -7,7 +8,7 @@ import Foundation
 //   2. file.sensitivity is not .restricted
 // Failing either condition forces all analysis to the local provider with no silent fallback.
 
-actor FileIntelligenceOrchestrator: FileAgentOrchestrator {
+public actor FileIntelligenceOrchestrator: FileAgentOrchestrator {
 
     private let localProvider: LocalFileIntelligenceProvider
     private let lineageTracker: DataLineageTracker
@@ -15,14 +16,14 @@ actor FileIntelligenceOrchestrator: FileAgentOrchestrator {
     private var pendingAgentTasks: [UUID: FileAgentTask] = [:]
     private var auditLog: [AuditEvent] = []
 
-    init(localProvider: LocalFileIntelligenceProvider, lineageTracker: DataLineageTracker) {
+    public init(localProvider: LocalFileIntelligenceProvider, lineageTracker: DataLineageTracker) {
         self.localProvider = localProvider
         self.lineageTracker = lineageTracker
     }
 
     // MARK: - Primary Analysis Entry Point
 
-    func analyze(
+    public func analyze(
         _ file: SecureFile,
         policy: PolicyBundle,
         session: XQSession
@@ -97,7 +98,7 @@ actor FileIntelligenceOrchestrator: FileAgentOrchestrator {
 
     // MARK: - FileAgentOrchestrator
 
-    func proposeTask(_ task: FileAgentTask) async throws -> FileAgentTask {
+    public func proposeTask(_ task: FileAgentTask) async throws -> FileAgentTask {
         // Restricted files and tasks operating on PHI always require human approval.
         let needsApproval = task.type == .quarantine
             || task.type == .revokeShare
@@ -116,7 +117,7 @@ actor FileIntelligenceOrchestrator: FileAgentOrchestrator {
         return staged
     }
 
-    func authorizeAndExecute(
+    public func authorizeAndExecute(
         taskId: UUID,
         authorizedBy: String,
         session: XQSession
@@ -176,7 +177,7 @@ actor FileIntelligenceOrchestrator: FileAgentOrchestrator {
         return completed
     }
 
-    func pendingTasks(session: XQSession) async throws -> [FileAgentTask] {
+    public func pendingTasks(session: XQSession) async throws -> [FileAgentTask] {
         pendingAgentTasks.values
             .filter { $0.status == .pending || $0.status == .requiresApproval }
             .sorted { $0.createdAt < $1.createdAt }

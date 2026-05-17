@@ -1,4 +1,5 @@
 import Foundation
+import XQCore
 
 private let controlHIPAA164502 = CitedControl(
     framework: .hipaa,
@@ -24,18 +25,20 @@ private let controlNISTSI12 = CitedControl(
     enforcement: .audit
 )
 
-actor FuzzyPolicyEngine: PolicyEngine {
+public actor FuzzyPolicyEngine: @preconcurrency PolicyEngine {
 
-    private(set) var currentBundle: PolicyBundle? = nil
+    public private(set) var currentBundle: PolicyBundle? = nil
 
-    func loadBundle(_ bundle: PolicyBundle) async throws {
+    public init() {}
+
+    public func loadBundle(_ bundle: PolicyBundle) async throws {
         guard !bundle.signatureHex.isEmpty else {
             throw XQAPIError.policyViolation(rule: "Policy bundle signature is missing")
         }
         currentBundle = bundle
     }
 
-    func evaluate(
+    public func evaluate(
         operation: PolicyOperation,
         for file: SecureFile,
         actor actorId: String
@@ -49,7 +52,7 @@ actor FuzzyPolicyEngine: PolicyEngine {
         }
 
         switch operation {
-        case .shareExternally:
+        case .shareExternally(_):
             if !rule.allowExternalShare {
                 var controls: [CitedControl] = [controlNISTAC3]
                 if file.sensitivity == .restricted {
@@ -75,7 +78,7 @@ actor FuzzyPolicyEngine: PolicyEngine {
         }
     }
 
-    func rule(for sensitivity: SensitivityLevel) -> PolicyRule? {
+    public func rule(for sensitivity: SensitivityLevel) -> PolicyRule? {
         currentBundle?.rules.first { $0.sensitivity == sensitivity }
     }
 }

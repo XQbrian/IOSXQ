@@ -1,4 +1,5 @@
 import SwiftUI
+import XQCore
 
 struct HomeView: View {
     @EnvironmentObject var coordinator: AppCoordinator

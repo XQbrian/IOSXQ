@@ -1,4 +1,5 @@
 import Foundation
+import XQCore
 import CryptoKit
 
 // MARK: - Local Email Intelligence Provider
@@ -7,7 +8,7 @@ import CryptoKit
 // PHI / Restricted content: local-only enforcement is structural, not a flag.
 // Cloud AI routing is the orchestrator's responsibility; this actor never calls remote endpoints.
 
-actor LocalEmailIntelligenceProvider:
+public actor LocalEmailIntelligenceProvider:
     EmailPrioritizer,
     ThreadIntelligenceProvider,
     EmailToneAnalyzer,
@@ -15,7 +16,9 @@ actor LocalEmailIntelligenceProvider:
 {
     // MARK: Shared
 
-    let isLocalOnly = true
+    public let isLocalOnly = true
+
+    public init() {}
 
     private let modelVersion = "local-1.4.0"
 
@@ -32,7 +35,7 @@ actor LocalEmailIntelligenceProvider:
 
     // MARK: - Capability 1: EmailPrioritizer
 
-    func triage(
+    public func triage(
         email: SecureEmail,
         senderProfile: SenderProfile?,
         policy: PolicyBundle
@@ -56,7 +59,7 @@ actor LocalEmailIntelligenceProvider:
             reason = hasUrgencyMarkers
                 ? "Direct report with urgency language detected."
                 : "Message from direct report requires attention."
-        case .peer, .crossFunctional:
+        case .peer:
             priority = hasUrgencyMarkers ? .action : .fyi
             reason = hasUrgencyMarkers
                 ? "Peer communication with urgency indicators."
@@ -88,7 +91,7 @@ actor LocalEmailIntelligenceProvider:
         )
     }
 
-    func rankInbox(_ emails: [SecureEmail], policy: PolicyBundle) async -> [SecureEmail] {
+    public func rankInbox(_ emails: [SecureEmail], policy: PolicyBundle) async -> [SecureEmail] {
         var triaged: [(email: SecureEmail, result: EmailTriageResult)] = []
         for email in emails {
             let result = await triage(email: email, senderProfile: nil, policy: policy)
@@ -101,7 +104,7 @@ actor LocalEmailIntelligenceProvider:
 
     // MARK: - Capability 2: ThreadIntelligenceProvider — summarize
 
-    func summarize(thread: EmailThread, policy: PolicyBundle) async throws -> ThreadSummary {
+    public func summarize(thread: EmailThread, policy: PolicyBundle) async throws -> ThreadSummary {
         // Structural rule: if any message in the thread is Restricted (PHI),
         // cloud processing is unconditionally forbidden.
         let containsPHI = thread.messages.contains { $0.sensitivity == .restricted }
@@ -134,13 +137,13 @@ actor LocalEmailIntelligenceProvider:
 
     // MARK: - Capability 3: ThreadIntelligenceProvider — extractActions
 
-    func extractActions(from email: SecureEmail, policy: PolicyBundle) async throws -> [ExtractedEmailAction] {
+    public func extractActions(from email: SecureEmail, policy: PolicyBundle) async throws -> [ExtractedEmailAction] {
         return buildActions(from: email.bodyPreview, messageId: email.messageId)
     }
 
     // MARK: - Capability 4: EmailToneAnalyzer
 
-    func analyzeTone(
+    public func analyzeTone(
         draftBody: String,
         subject: String,
         recipientProfile: SenderProfile?
@@ -200,7 +203,7 @@ actor LocalEmailIntelligenceProvider:
         )
     }
 
-    func detectCommitments(in text: String) async -> [DetectedCommitment] {
+    public func detectCommitments(in text: String) async -> [DetectedCommitment] {
         let patterns: [(trigger: String, deliverable: String)] = [
             ("i will send", "Send deliverable"),
             ("i'll follow up", "Follow-up communication"),
@@ -227,7 +230,7 @@ actor LocalEmailIntelligenceProvider:
 
     // MARK: - Capability 5: EmailRiskDetector
 
-    func assess(
+    public func assess(
         email: SecureEmail,
         senderProfile: SenderProfile?,
         policy: PolicyBundle
@@ -367,7 +370,7 @@ actor LocalEmailIntelligenceProvider:
         )
     }
 
-    func scanForPromptInjection(body: String) async -> Bool {
+    public func scanForPromptInjection(body: String) async -> Bool {
         // Detection heuristics for adversarial instruction payloads.
         let injectionPatterns: [String] = [
             "ignore previous instructions",

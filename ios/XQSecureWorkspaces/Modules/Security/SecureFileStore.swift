@@ -1,14 +1,15 @@
 import Foundation
+import XQCore
 
-actor SecureFileStore {
+public actor SecureFileStore {
 
     private let enclaveManager: any SecureEnclaveManager
 
-    init(enclaveManager: any SecureEnclaveManager) {
+    public init(enclaveManager: any SecureEnclaveManager) {
         self.enclaveManager = enclaveManager
     }
 
-    func write(payload: EncryptedPayload, fileName: String) async throws -> URL {
+    public func write(payload: EncryptedPayload, fileName: String) async throws -> URL {
         let url = protectedURL(for: fileName)
         var raw = Data()
         raw.append(payload.iv)
@@ -27,7 +28,7 @@ actor SecureFileStore {
         return url
     }
 
-    func read(from url: URL) async throws -> EncryptedPayload {
+    public func read(from url: URL) async throws -> EncryptedPayload {
         let raw = try Data(contentsOf: url)
         guard raw.count > 28 else {
             throw CocoaError(.fileReadCorruptFile)
@@ -43,7 +44,7 @@ actor SecureFileStore {
         )
     }
 
-    func delete(at url: URL) async throws {
+    public func delete(at url: URL) async throws {
         try FileManager.default.removeItem(at: url)
     }
 

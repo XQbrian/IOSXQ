@@ -1,4 +1,7 @@
 import Foundation
+import XQCore
+import XQAI
+import XQPolicy
 
 @MainActor
 final class AIImportViewModel: ObservableObject {

@@ -1,14 +1,17 @@
 import Foundation
+import XQCore
 
-actor CoreMLProvider: AIProvider {
+public actor CoreMLProvider: AIProvider {
 
-    let isLocalOnly = true
+    public let isLocalOnly = true
 
     private let sensitiveEntityClassifierName = "SensitiveEntityClassifier"
     private let documentClassifierName = "DocumentClassifier"
     private let riskScorerName = "RiskScoringModel"
 
-    func classify(
+    public init() {}
+
+    public func classify(
         fileData: Data,
         mimeType: String,
         policy: PolicyBundle
@@ -29,11 +32,11 @@ actor CoreMLProvider: AIProvider {
         )
     }
 
-    func extractEntities(from text: String, policy: PolicyBundle) async throws -> [AIEntity] {
+    public func extractEntities(from text: String, policy: PolicyBundle) async throws -> [AIEntity] {
         return []
     }
 
-    func scoreRisk(file: SecureFile, entities: [AIEntity], policy: PolicyBundle) async throws -> Int {
+    public func scoreRisk(file: SecureFile, entities: [AIEntity], policy: PolicyBundle) async throws -> Int {
         return min(entities.count * 8, 100)
     }
 }

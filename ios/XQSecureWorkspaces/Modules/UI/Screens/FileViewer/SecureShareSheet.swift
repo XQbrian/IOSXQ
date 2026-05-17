@@ -1,4 +1,6 @@
 import SwiftUI
+import XQCore
+import XQPolicy
 
 struct SecureShareSheet: View {
     @Binding var isPresented: Bool

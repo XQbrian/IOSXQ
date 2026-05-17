@@ -1,47 +1,32 @@
 import Foundation
-
-// MARK: - OfflineOperation
-
-/// Represents a mutation that could not be sent to the remote provider because
-/// the device was offline. Operations are executed in order when connectivity
-/// is restored via drainQueue(session:).
-enum OfflineOperation: Identifiable {
-    case upload(id: UUID, data: Data, name: String, path: String, provider: RepositorySource)
-    case delete(id: UUID, fileId: UUID, provider: RepositorySource)
-
-    var id: UUID {
-        switch self {
-        case .upload(let id, _, _, _, _): return id
-        case .delete(let id, _, _):       return id
-        }
-    }
-}
+import XQCore
+import XQRepository
 
 // MARK: - SyncEngine
 
 /// Coordinates delta synchronisation across all registered repository providers
 /// and manages an in-memory queue of offline operations that are drained once
 /// connectivity returns.
-actor SyncEngine {
+public actor SyncEngine {
 
     private var providers: [any RepositoryProvider] = []
     private var operationQueue: [OfflineOperation] = []
     private var syncCursors: [RepositorySource: SyncCursor] = [:]
     private let xqAPI: any XQSecureAPI
 
-    init(xqAPI: any XQSecureAPI) {
+    public init(xqAPI: any XQSecureAPI) {
         self.xqAPI = xqAPI
     }
 
     // MARK: - Provider registration
 
-    func register(provider: any RepositoryProvider) {
+    public func register(provider: any RepositoryProvider) {
         providers.append(provider)
     }
 
     // MARK: - Offline queue
 
-    func enqueueUpload(data: Data, name: String, path: String, provider: RepositorySource) {
+    public func enqueueUpload(data: Data, name: String, path: String, provider: RepositorySource) {
         let op = OfflineOperation.upload(
             id: UUID(),
             data: data,
@@ -52,7 +37,7 @@ actor SyncEngine {
         operationQueue.append(op)
     }
 
-    func enqueueDelete(fileId: UUID, provider: RepositorySource) {
+    public func enqueueDelete(fileId: UUID, provider: RepositorySource) {
         let op = OfflineOperation.delete(
             id: UUID(),
             fileId: fileId,
@@ -64,7 +49,7 @@ actor SyncEngine {
     /// Drains the offline queue by executing each queued operation against the
     /// matching provider. Successfully executed operations are removed; failed
     /// operations remain in the queue for the next drain attempt.
-    func drainQueue(session: XQSession) async {
+    public func drainQueue(session: XQSession) async {
         var remaining: [OfflineOperation] = []
 
         for operation in operationQueue {
@@ -111,7 +96,7 @@ actor SyncEngine {
 
     /// Runs deltaSync on every registered provider, updates the stored cursors,
     /// and returns one DeltaSyncResult per provider.
-    func syncAll(session: XQSession) async throws -> [DeltaSyncResult] {
+    public func syncAll(session: XQSession) async throws -> [DeltaSyncResult] {
         var results: [DeltaSyncResult] = []
 
         for provider in providers {
@@ -132,7 +117,7 @@ actor SyncEngine {
     /// entities containing .phi) must never be resolved automatically. Those
     /// conflicts must be surfaced to the user or a compliance officer for manual
     /// resolution to satisfy HIPAA audit requirements.
-    func conflictPolicy(local: SecureFile, remote: SecureFile) -> SecureFile {
+    public func conflictPolicy(local: SecureFile, remote: SecureFile) -> SecureFile {
         local.modifiedAt >= remote.modifiedAt ? local : remote
     }
 }

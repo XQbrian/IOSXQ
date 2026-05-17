@@ -1,4 +1,6 @@
 import SwiftUI
+import XQCore
+import XQFileIntelligence
 
 struct RiskAlertCard: View {
     let title: String

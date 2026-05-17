@@ -1,10 +1,11 @@
 import Foundation
+import XQCore
 
 // LocalFileIntelligenceProvider runs entirely on-device.
 // CUI/PHI content never reaches a remote endpoint from this actor — that constraint is structural,
 // not a runtime flag, because this type never holds a network client.
 
-actor LocalFileIntelligenceProvider:
+public actor LocalFileIntelligenceProvider:
     ContentAnalyzer,
     FileClassifier,
     FilePolicyEnforcer,
@@ -12,7 +13,9 @@ actor LocalFileIntelligenceProvider:
     FileThreatAnalyzer,
     PrivacyAnalyzer
 {
-    let isLocalOnly = true
+    public let isLocalOnly = true
+
+    public init() {}
 
     private let modelVersion = "local-2.1.0"
 
@@ -33,7 +36,7 @@ actor LocalFileIntelligenceProvider:
 
     // MARK: - ContentAnalyzer
 
-    func analyzeContent(_ file: SecureFile, session: XQSession) async throws -> DocumentContentProfile {
+    public func analyzeContent(_ file: SecureFile, session: XQSession) async throws -> DocumentContentProfile {
         // PHI/Restricted files may only be analyzed locally. If a caller has somehow set
         // wasCloudProcessed on the file's prior classification result and routes here,
         // the invariant is still preserved — but we surface a typed error to prevent silent drift.
@@ -60,7 +63,7 @@ actor LocalFileIntelligenceProvider:
 
     // MARK: - FileClassifier
 
-    func classify(_ file: SecureFile, session: XQSession) async throws -> FileClassificationLabel {
+    public func classify(_ file: SecureFile, session: XQSession) async throws -> FileClassificationLabel {
         let entities = entitiesFor(file: file)
         let confidence: Float = entities.isEmpty ? 0.61 : 0.91
 
@@ -82,7 +85,7 @@ actor LocalFileIntelligenceProvider:
 
     // MARK: - FilePolicyEnforcer
 
-    func enforce(policy: PolicyBundle, for file: SecureFile) -> FilePolicyDecision {
+    public nonisolated func enforce(policy: PolicyBundle, for file: SecureFile) -> FilePolicyDecision {
         let matchingRules = policy.rules.filter { $0.sensitivity == file.sensitivity }
 
         let action: PolicyAction
@@ -125,7 +128,7 @@ actor LocalFileIntelligenceProvider:
 
     // MARK: - FileRiskScanner
 
-    func scanForRisks(_ file: SecureFile, session: XQSession) async throws -> [FileRiskFinding] {
+    public func scanForRisks(_ file: SecureFile, session: XQSession) async throws -> [FileRiskFinding] {
         var findings: [FileRiskFinding] = []
         let loweredName = file.name.lowercased()
 
@@ -168,7 +171,7 @@ actor LocalFileIntelligenceProvider:
 
     // MARK: - FileThreatAnalyzer
 
-    func analyzeThreat(_ file: SecureFile, session: XQSession) async throws -> FileThreatReport {
+    public func analyzeThreat(_ file: SecureFile, session: XQSession) async throws -> FileThreatReport {
         let ext = file.name.components(separatedBy: ".").last?.lowercased() ?? ""
         let hasMacros = macroExtensions.contains(ext)
 
@@ -206,7 +209,7 @@ actor LocalFileIntelligenceProvider:
 
     // MARK: - PrivacyAnalyzer
 
-    func analyzePrivacy(
+    public func analyzePrivacy(
         _ file: SecureFile,
         policy: PolicyBundle,
         session: XQSession

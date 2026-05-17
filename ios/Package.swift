@@ -25,7 +25,7 @@ let package = Package(
                 dependencies: ["XQCore", "XQSecurity"],
                 path: "XQSecureWorkspaces/Modules/Networking"),
         .target(name: "XQRepository",
-                dependencies: ["XQCore", "XQNetworking"],
+                dependencies: ["XQCore", "XQNetworking", "XQSecurity"],
                 path: "XQSecureWorkspaces/Modules/Repository"),
         .target(name: "XQPolicy",
                 dependencies: ["XQCore"],
@@ -44,9 +44,9 @@ let package = Package(
                 path: "XQSecureWorkspaces/Modules/FileIntelligence"),
         .testTarget(name: "XQCoreTests",
                     dependencies: ["XQCore"],
-                    path: "Tests/Unit"),
+                    path: "Tests/XQCoreTests"),
         .testTarget(name: "XQIntegrationTests",
                     dependencies: ["XQCore", "XQNetworking", "XQSecurity"],
-                    path: "Tests/Integration"),
+                    path: "Tests/XQIntegrationTests"),
     ]
 )

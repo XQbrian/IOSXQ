@@ -1,7 +1,7 @@
 import Foundation
 
 // Version negotiation happens once at session start; adapter is pinned for session lifetime.
-protocol XQSecureAPI: Sendable {
+public protocol XQSecureAPI: Sendable {
     var negotiatedVersion: XQAPIVersion { get }
 
     func authenticate(credentials: XQCredentials) async throws -> XQSession
@@ -17,21 +17,35 @@ protocol XQSecureAPI: Sendable {
     func submitAuditEvent(_ event: AuditEvent, session: XQSession) async throws
 }
 
-struct XQCredentials {
-    let userId: String
-    let authToken: String
-    let deviceId: String
-    let appAttestAssertion: Data
+public struct XQCredentials {
+    public let userId: String
+    public let authToken: String
+    public let deviceId: String
+    public let appAttestAssertion: Data
+
+    public init(userId: String, authToken: String, deviceId: String, appAttestAssertion: Data) {
+        self.userId = userId
+        self.authToken = authToken
+        self.deviceId = deviceId
+        self.appAttestAssertion = appAttestAssertion
+    }
 }
 
-struct EncryptedPayload: Sendable {
-    let ciphertext: Data
-    let iv: Data
-    let authTag: Data
-    let keyId: String
+public struct EncryptedPayload: Sendable {
+    public let ciphertext: Data
+    public let iv: Data
+    public let authTag: Data
+    public let keyId: String
+
+    public init(ciphertext: Data, iv: Data, authTag: Data, keyId: String) {
+        self.ciphertext = ciphertext
+        self.iv = iv
+        self.authTag = authTag
+        self.keyId = keyId
+    }
 }
 
-enum XQAPIError: Error, LocalizedError {
+public enum XQAPIError: Error, LocalizedError {
     case unauthenticated
     case sessionExpired
     case apiVersionMismatch(negotiated: XQAPIVersion, required: XQAPIVersion)
@@ -41,7 +55,7 @@ enum XQAPIError: Error, LocalizedError {
     case rateLimited(retryAfter: TimeInterval)
     case serverError(statusCode: Int, message: String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .policyViolation(let rule): return "Policy violation: \(rule)"
         case .apiVersionMismatch(let n, let r): return "API v\(n.rawValue) cannot satisfy v\(r.rawValue) requirement"

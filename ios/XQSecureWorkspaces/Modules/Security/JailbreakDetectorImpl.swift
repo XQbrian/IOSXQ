@@ -1,9 +1,11 @@
 import Foundation
-import UIKit
+import XQCore
 
-actor JailbreakDetectorImpl: JailbreakDetector {
+public actor JailbreakDetectorImpl: JailbreakDetector {
 
-    func assess() async -> JailbreakAssessment {
+    public init() {}
+
+    public func assess() async -> JailbreakAssessment {
         var score = 0
         var signals: [JailbreakAssessment.JailbreakSignal] = []
 
@@ -34,10 +36,10 @@ actor JailbreakDetectorImpl: JailbreakDetector {
     }
 
     private func checkProcessIntegrity() async -> Bool {
-        // fork() succeeds only on jailbroken devices due to sandbox escape.
-        let pid = fork()
-        if pid == 0 { exit(0) }
-        return pid >= 0
+        // On stock devices the sandbox prevents spawning children.
+        // We check for sshd and other daemons that only run post-jailbreak.
+        let jailbreakDaemons = ["/usr/sbin/sshd", "/usr/bin/ssh", "/usr/local/bin/cycript"]
+        return jailbreakDaemons.contains { FileManager.default.fileExists(atPath: $0) }
     }
 
     private func checkBehavioral() async -> Bool {

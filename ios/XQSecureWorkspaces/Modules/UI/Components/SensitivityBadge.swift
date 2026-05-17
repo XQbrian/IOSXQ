@@ -1,4 +1,5 @@
 import SwiftUI
+import XQCore
 
 struct SensitivityBadge: View {
     let sensitivity: SensitivityLevel

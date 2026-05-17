@@ -1,7 +1,7 @@
 import Foundation
 
 // Keys generated here never leave the Secure Enclave.
-protocol SecureEnclaveManager: Sendable {
+public protocol SecureEnclaveManager: Sendable {
     var isAvailable: Bool { get }
 
     func generateRootKey() async throws -> SecureEnclaveKeyReference
@@ -11,33 +11,42 @@ protocol SecureEnclaveManager: Sendable {
     func deleteKey(_ reference: SecureEnclaveKeyReference) async throws
 }
 
-struct SecureEnclaveKeyReference: Sendable {
+public struct SecureEnclaveKeyReference: Sendable {
     // The actual key material never crosses this boundary.
-    let tag: String
+    public let tag: String
+
+    public init(tag: String) {
+        self.tag = tag
+    }
 }
 
-protocol JailbreakDetector: Sendable {
+public protocol JailbreakDetector: Sendable {
     // Returns a confidence score 0–100. >40 = refuse session.
     func assess() async -> JailbreakAssessment
 }
 
-struct JailbreakAssessment {
-    let confidenceScore: Int
-    let signals: [JailbreakSignal]
+public struct JailbreakAssessment: Sendable {
+    public let confidenceScore: Int
+    public let signals: [JailbreakSignal]
 
-    enum JailbreakSignal: String {
+    public enum JailbreakSignal: String {
         case suspiciousFilesystem, dyldInjection, processIntegrityFail,
              behavioralAnomaly, appAttestFail
     }
+
+    public init(confidenceScore: Int, signals: [JailbreakSignal]) {
+        self.confidenceScore = confidenceScore
+        self.signals = signals
+    }
 }
 
-protocol CertificatePinner: Sendable {
+public protocol CertificatePinner: Sendable {
     // SPKI hash pinning. Pins are refreshed via remote config without an app update.
     func validate(serverTrust: SecTrust, hostname: String) throws
     func updatePins(_ pins: [String: [String]]) async
 }
 
-protocol SessionManager: Sendable {
+public protocol SessionManager: Sendable {
     var currentSession: XQSession? { get }
 
     func startSession(credentials: XQCredentials) async throws -> XQSession

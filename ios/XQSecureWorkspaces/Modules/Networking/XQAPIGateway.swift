@@ -1,13 +1,14 @@
 import Foundation
+import XQCore
 
-actor XQAPIGateway {
+public actor XQAPIGateway {
 
     private let baseURL: URL
     private let pinner: any CertificatePinner
     private let session: URLSession
-    private(set) var negotiatedVersion: XQAPIVersion = .v1
+    public private(set) var negotiatedVersion: XQAPIVersion = .v1
 
-    init(baseURL: URL, pinner: any CertificatePinner) {
+    public init(baseURL: URL, pinner: any CertificatePinner) {
         self.baseURL = baseURL
         self.pinner = pinner
         let config = URLSessionConfiguration.ephemeral
@@ -17,7 +18,7 @@ actor XQAPIGateway {
         self.session = URLSession(configuration: config)
     }
 
-    func negotiateVersion() async throws {
+    public func negotiateVersion() async throws {
         struct CapabilityResponse: Decodable { let maxVersion: String }
         let response: CapabilityResponse = try await get(path: "v1/capabilities")
         negotiatedVersion = XQAPIVersion(rawValue: response.maxVersion) ?? .v1
@@ -25,12 +26,12 @@ actor XQAPIGateway {
 
     // MARK: - Internal request helpers
 
-    func get<T: Decodable>(path: String, session xqSession: XQSession? = nil) async throws -> T {
+    public func get<T: Decodable>(path: String, session xqSession: XQSession? = nil) async throws -> T {
         let req = try buildRequest(method: "GET", path: path, body: nil as Data?, xqSession: xqSession)
         return try await execute(req)
     }
 
-    func post<Body: Encodable, Response: Decodable>(
+    public func post<Body: Encodable, Response: Decodable>(
         path: String,
         body: Body,
         session xqSession: XQSession? = nil

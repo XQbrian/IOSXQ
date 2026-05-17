@@ -1,4 +1,5 @@
 import SwiftUI
+import XQCore
 
 struct SplashView: View {
     @EnvironmentObject var coordinator: AppCoordinator

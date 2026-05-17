@@ -1,4 +1,6 @@
 import Foundation
+import XQCore
+import XQEmailIntelligence
 
 @MainActor
 final class EmailInboxViewModel: ObservableObject {

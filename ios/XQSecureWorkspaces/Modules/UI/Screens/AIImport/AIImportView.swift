@@ -1,4 +1,7 @@
 import SwiftUI
+import XQCore
+import XQAI
+import XQPolicy
 
 struct AIImportView: View {
     @EnvironmentObject var coordinator: AppCoordinator

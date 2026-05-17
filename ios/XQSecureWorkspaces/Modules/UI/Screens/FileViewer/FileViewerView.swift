@@ -1,4 +1,7 @@
 import SwiftUI
+import XQCore
+import XQFileIntelligence
+import XQPolicy
 
 struct FileViewerView: View {
     @EnvironmentObject var coordinator: AppCoordinator
