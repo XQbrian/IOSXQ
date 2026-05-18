@@ -10,7 +10,13 @@ struct RootView: View {
         case .splash:
             SplashView()
         case .welcome:
-            Text("Welcome — Coming Soon")
+            EnterpriseLoginView()
+        case .xqVerification(let email, let idToken, let msalAccountIdentifier):
+            XQVerificationView(
+                email: email,
+                idToken: idToken,
+                msalAccountIdentifier: msalAccountIdentifier
+            )
         case .home:
             FileBrowserView()
         case .fileBrowser:
@@ -24,11 +30,32 @@ struct RootView: View {
         case .emailInbox:
             Text("Email Inbox — Coming Soon")
         case .settings:
-            Text("Settings — Coming Soon")
+            SettingsRootView()
         case .adminPolicy:
             Text("Admin Policy — Coming Soon")
         case .securityFailure(let assessment):
             SecurityFailureView(assessment: assessment)
+        }
+    }
+}
+
+// MARK: - Settings (sign-out entry point)
+
+private struct SettingsRootView: View {
+    @EnvironmentObject var coordinator: AppCoordinator
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Button(role: .destructive) {
+                        coordinator.signOut()
+                    } label: {
+                        Label("Sign Out", systemImage: "arrow.right.square")
+                    }
+                }
+            }
+            .navigationTitle("Settings")
         }
     }
 }
@@ -45,7 +72,12 @@ private struct SecurityFailureView: View {
                 .foregroundColor(.red)
             Text("Security Check Failed")
                 .font(.title2.bold())
+            Text("This device cannot be trusted. Access is denied.")
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
             Text("Jailbreak confidence: \(assessment.confidenceScore)%")
+                .font(.caption)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

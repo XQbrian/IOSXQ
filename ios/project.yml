@@ -25,6 +25,9 @@ configFiles:
 packages:
   XQSecureWorkspacesPackage:
     path: .
+  MSAL:
+    url: https://github.com/AzureAD/microsoft-authentication-library-for-objc
+    from: 1.3.0
 
 targets:
   XQSecureWorkspaces:
@@ -53,6 +56,9 @@ targets:
             UIWindowSceneSessionRoleApplication:
               - UISceneConfigurationName: Default Configuration
                 UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - msauth.$(PRODUCT_BUNDLE_IDENTIFIER)
         NSFaceIDUsageDescription: "Used to secure access to your encrypted workspace"
         NSPhotoLibraryUsageDescription: "Allows importing files from your photo library"
         NSCameraUsageDescription: "Allows scanning documents directly into your secure vault"
@@ -69,6 +75,15 @@ targets:
             dashboard.xqmsg.net:
               NSExceptionRequiresForwardSecrecy: true
               NSExceptionMinimumTLSVersion: TLSv1.3
+            login.microsoftonline.com:
+              NSExceptionRequiresForwardSecrecy: false
+              NSExceptionMinimumTLSVersion: TLSv1.2
+            login.windows.net:
+              NSExceptionRequiresForwardSecrecy: false
+              NSExceptionMinimumTLSVersion: TLSv1.2
+            login.microsoft.com:
+              NSExceptionRequiresForwardSecrecy: false
+              NSExceptionMinimumTLSVersion: TLSv1.2
         XQ_API_KEY: $(XQ_API_KEY)
         XQ_DASHBOARD_API_KEY: $(XQ_DASHBOARD_API_KEY)
         XQ_BASE_URL: $(XQ_BASE_URL)
@@ -103,6 +118,8 @@ targets:
         product: XQEmailIntelligence
       - package: XQSecureWorkspacesPackage
         product: XQFileIntelligence
+      - package: MSAL
+        product: MSAL
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.xqmsg.ios.secureworkspaces

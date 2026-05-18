@@ -35,8 +35,8 @@ struct SplashView: View {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(vm.checks) { check in
                     HStack(spacing: 8) {
-                        Image(systemName: check.passed ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(check.passed ? .green : .secondary)
+                        Image(systemName: check.failed ? "xmark.circle.fill" : check.passed ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(check.failed ? .red : check.passed ? .green : .secondary)
                         Text(check.label)
                             .font(.subheadline)
                     }
@@ -53,8 +53,11 @@ struct SplashView: View {
             await vm.performSecurityChecks()
         }
         .onChange(of: vm.isReady) { _, ready in
-            if ready {
-                coordinator.navigate(to: .welcome)
+            if ready { coordinator.navigate(to: .welcome) }
+        }
+        .onChange(of: vm.isFailed) { _, failed in
+            if failed, let assessment = vm.failureAssessment {
+                coordinator.navigate(to: .securityFailure(assessment))
             }
         }
     }

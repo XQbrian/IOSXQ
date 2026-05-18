@@ -10,6 +10,7 @@ final class AppCoordinator: ObservableObject {
     enum AppRoute {
         case splash
         case welcome
+        case xqVerification(email: String, idToken: String, msalAccountIdentifier: String)
         case home
         case fileBrowser
         case fileViewer(SecureFile)
@@ -21,21 +22,53 @@ final class AppCoordinator: ObservableObject {
     }
 
     @Published var route: AppRoute = .splash
+    @Published var currentSession: XQSession? = nil
 
-    private let sessionManager: any SessionManager
+    let authOrchestrator: XQAuthOrchestrator
     private let jailbreakDetector: any JailbreakDetector
 
     init(
-        sessionManager: any SessionManager = DefaultSessionManager(),
+        authOrchestrator: XQAuthOrchestrator? = nil,
         jailbreakDetector: any JailbreakDetector = JailbreakDetectorImpl()
     ) {
-        self.sessionManager = sessionManager
         self.jailbreakDetector = jailbreakDetector
+
+        if let provided = authOrchestrator {
+            self.authOrchestrator = provided
+        } else {
+            let info = Bundle.main.infoDictionary ?? [:]
+            let apiKey   = info["XQ_API_KEY"]  as? String ?? ""
+            let baseURL  = URL(string: info["XQ_BASE_URL"] as? String ?? "https://subscription.xqmsg.net/v2")!
+            let clientId = info["AZURE_CLIENT_ID"] as? String ?? ""
+            let tenantId = info["AZURE_TENANT_ID"] as? String ?? ""
+            let bundleId = Bundle.main.bundleIdentifier ?? "com.xqmsg.ios.secureworkspaces"
+
+            let msalProvider = (try? MSALAuthProvider(clientId: clientId, tenantId: tenantId, bundleId: bundleId))
+                ?? (try! MSALAuthProvider(clientId: "placeholder", tenantId: "common", bundleId: bundleId))
+            self.authOrchestrator = XQAuthOrchestrator(
+                msalProvider: msalProvider,
+                xqClient: XQSubscriptionClient(apiKey: apiKey, baseURL: baseURL),
+                attestService: AppAttestService(),
+                keychainStore: KeychainSessionStore()
+            )
+        }
+
         Task { await runStartupChecks() }
     }
 
-    func navigate(to route: AppRoute) {
-        self.route = route
+    func navigate(to route: AppRoute) { self.route = route }
+
+    func completeAuthentication(session: XQSession) {
+        currentSession = session
+        route = .home
+    }
+
+    func signOut() {
+        Task {
+            await authOrchestrator.signOut()
+            currentSession = nil
+            route = .welcome
+        }
     }
 
     func handleForeground() {
@@ -45,9 +78,7 @@ final class AppCoordinator: ObservableObject {
                 route = .securityFailure(assessment)
                 return
             }
-            if sessionManager.requiresReauthentication() {
-                route = .welcome
-            }
+            if currentSession == nil || sessionIsStale() { route = .welcome }
         }
     }
 
@@ -57,16 +88,17 @@ final class AppCoordinator: ObservableObject {
             route = .securityFailure(assessment)
             return
         }
+        let restored = await authOrchestrator.restoreSessionIfPossible()
+        if let session = restored {
+            currentSession = session
+            route = .home
+        } else {
+            route = .welcome
+        }
     }
-}
 
-// Placeholder conformances allow the coordinator to compile before real
-// implementations are wired through DI at the composition root.
-private final class DefaultSessionManager: SessionManager {
-    var currentSession: XQSession? { nil }
-    func startSession(credentials: XQCredentials) async throws -> XQSession {
-        throw XQAPIError.unauthenticated
+    private func sessionIsStale() -> Bool {
+        guard let s = currentSession else { return true }
+        return s.expiresAt <= Date().addingTimeInterval(300)
     }
-    func endSession() async {}
-    func requiresReauthentication() -> Bool { true }
 }

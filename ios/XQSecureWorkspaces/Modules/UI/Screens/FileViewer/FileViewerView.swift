@@ -142,14 +142,8 @@ struct FileViewerView: View {
                 .presentationDragIndicator(.hidden)
         }
         .task {
-            let stubSession = XQSession(
-                userId: "brian@xqmsg.com",
-                tenantId: "acme-corp",
-                accessToken: "",
-                expiresAt: Date().addingTimeInterval(3600),
-                apiVersion: .v3
-            )
-            await vm.loadAndScan(session: stubSession)
+            guard let session = coordinator.currentSession else { return }
+            await vm.loadAndScan(session: session)
         }
     }
 

@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C842CB0570B632B245AE69D /* EnterpriseLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7513ED1F2E604434D8AB3FD2 /* EnterpriseLoginView.swift */; };
 		1234AFE99D1F3064FE65B4B2 /* XQSecureWorkspacesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E929B99B885E47B5E0FDB1 /* XQSecureWorkspacesApp.swift */; };
 		1392EFAB57EA7BC71659419F /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5072F7EF963F2BA2F42C4A35 /* HomeViewModel.swift */; };
 		188DDBBE9457A75B5836482A /* XQSync in Frameworks */ = {isa = PBXBuildFile; productRef = D69849D148FB4EAE4F40FA6A /* XQSync */; };
 		1B481BF205BB736C7BD5A877 /* AdminPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61031DD4ECE457FAE19F2B9A /* AdminPolicyView.swift */; };
 		1D9E4808A97E0E8CB71C1A23 /* FileBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDB35C5E5EF5EB880E77FF0 /* FileBrowserView.swift */; };
+		1DAA4691424831643D3072CD /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = B40474EE04AC49D55AFA041A /* MSAL */; };
 		22E19988EC6E8988A30318B3 /* XQAI in Frameworks */ = {isa = PBXBuildFile; productRef = 5731E8074F9DC0528217900A /* XQAI */; };
 		23D514861ED7E3036CC496FE /* XQPolicy in Frameworks */ = {isa = PBXBuildFile; productRef = 0CC04F4FFB3282DD8E58BAA4 /* XQPolicy */; };
 		26052E8C2B282B1480225912 /* PDFDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2529EF02CD116E0D0CF12090 /* PDFDocumentView.swift */; };
@@ -21,19 +23,25 @@
 		48869BD29EAF1006EE5C1E5F /* AIImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF51B8C7FEF141EA8B9166BD /* AIImportView.swift */; };
 		49455C7886C1E221FF013FB2 /* XQCore in Frameworks */ = {isa = PBXBuildFile; productRef = EEB486EFB53D9AE3EBD092DE /* XQCore */; };
 		53C2427B76B8A9D9137F0225 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C79BF19CD6CAE4AC11F2A2F /* SplashView.swift */; };
+		596A70409803DF3EB64AD9CD /* XQVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D9389EAE4D54BF9A0B2CD /* XQVerificationView.swift */; };
 		5C7577BCB00E07F695CD4DB9 /* XQFileIntelligence in Frameworks */ = {isa = PBXBuildFile; productRef = FAA294D956008BAF8BB2FA89 /* XQFileIntelligence */; };
 		67D8E33E2781BB5D6B9498D7 /* SensitivityBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E11C6648E5FCFD5DC764A9 /* SensitivityBadge.swift */; };
 		69FD996407B05B4D5623DD4B /* DocumentContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDC1D2757ED9D454AFA68B9 /* DocumentContentGenerator.swift */; };
 		75E9F753627275C989BF7475 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03EF8AA20A78AC78796C5C8 /* SettingsView.swift */; };
+		7AD39045DB26E8AC62459B42 /* XQSubscriptionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBE6E4033CA20336A6FF5C4 /* XQSubscriptionClient.swift */; };
 		816450B026D0F18ED613F02D /* XQSecurity in Frameworks */ = {isa = PBXBuildFile; productRef = BB1D211C6AE9AF5984C216C1 /* XQSecurity */; };
 		925BAEFEE0B9F91C93135D81 /* RiskAlertCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFC8DE0C56C10836B11B41B /* RiskAlertCard.swift */; };
 		9DD9B27FFE34C1CDFFEB7BE6 /* XQCore in Frameworks */ = {isa = PBXBuildFile; productRef = BF089E1FD5FF6EECBF114650 /* XQCore */; };
 		A6760BDE3E9C2A055ECDC4C0 /* SampleDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDC240DAF990B44C814F624 /* SampleDataRepository.swift */; };
+		ADD9D90E12902B46DF4E3209 /* MSALAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A76EF97C95C49B6593A77F /* MSALAuthProvider.swift */; };
 		B59EC124DC240706458520D6 /* AIImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5328ED66244E1D5D879FEA /* AIImportViewModel.swift */; };
+		B73A290F61BCEC8B0FFBAF37 /* XQAuthOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */; };
 		C83EB4CFACD848A0A1D927DD /* SecureShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20303901883C64DF159F5037 /* SecureShareSheet.swift */; };
+		CE4258A2E3DD831A7A583995 /* AppAttestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCE49A4B4747698963A0C8D /* AppAttestService.swift */; };
 		D12D097A720ABC21DAFF31C6 /* XQRepository in Frameworks */ = {isa = PBXBuildFile; productRef = D2978032A53E53A54AA093BF /* XQRepository */; };
 		D3B7EE20CD306739C47B6779 /* EmailInboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38ED486AD678B4A4E8BB10C2 /* EmailInboxViewModel.swift */; };
 		DC91239930D93EC59BA7978C /* FileBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E737EA9B4004B1AC4E72 /* FileBrowserViewModel.swift */; };
+		DDE4CB41E69179EEAA4563AD /* KeychainSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A00376D8B3EE17853181A7 /* KeychainSessionStore.swift */; };
 		DE101EE5B7A9126311C997B9 /* XQNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = C744CAEF3D6A65BF21AACB75 /* XQNetworking */; };
 		F0645B45EE842ACDB3996A1E /* EmailThreadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581189F5D7E898ACC1516919 /* EmailThreadViewModel.swift */; };
 		F1C9545296AD1961E88147FF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D78ADCCD66522EF698719C5 /* RootView.swift */; };
@@ -62,6 +70,7 @@
 		2529EF02CD116E0D0CF12090 /* PDFDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDocumentView.swift; sourceTree = "<group>"; };
 		2C79BF19CD6CAE4AC11F2A2F /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		2C85C209D198B7C12D655795 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		365D9389EAE4D54BF9A0B2CD /* XQVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQVerificationView.swift; sourceTree = "<group>"; };
 		38ED486AD678B4A4E8BB10C2 /* EmailInboxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInboxViewModel.swift; sourceTree = "<group>"; };
 		3920F23F8C8E6C33BFFDEB9B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5072F7EF963F2BA2F42C4A35 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -69,16 +78,22 @@
 		61031DD4ECE457FAE19F2B9A /* AdminPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminPolicyView.swift; sourceTree = "<group>"; };
 		69E929B99B885E47B5E0FDB1 /* XQSecureWorkspacesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQSecureWorkspacesApp.swift; sourceTree = "<group>"; };
 		6DDC240DAF990B44C814F624 /* SampleDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataRepository.swift; sourceTree = "<group>"; };
+		72A76EF97C95C49B6593A77F /* MSALAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSALAuthProvider.swift; sourceTree = "<group>"; };
+		7513ED1F2E604434D8AB3FD2 /* EnterpriseLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterpriseLoginView.swift; sourceTree = "<group>"; };
 		7640385CD7F67E9DE13064E8 /* FileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRowView.swift; sourceTree = "<group>"; };
 		7C5328ED66244E1D5D879FEA /* AIImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIImportViewModel.swift; sourceTree = "<group>"; };
 		7D78ADCCD66522EF698719C5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		7EDC1D2757ED9D454AFA68B9 /* DocumentContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentGenerator.swift; sourceTree = "<group>"; };
+		8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQAuthOrchestrator.swift; sourceTree = "<group>"; };
 		9AE956187F663DBB960A8A3D /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = .; sourceTree = SOURCE_ROOT; };
+		9DBE6E4033CA20336A6FF5C4 /* XQSubscriptionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQSubscriptionClient.swift; sourceTree = "<group>"; };
 		9EDB35C5E5EF5EB880E77FF0 /* FileBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBrowserView.swift; sourceTree = "<group>"; };
+		A1A00376D8B3EE17853181A7 /* KeychainSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainSessionStore.swift; sourceTree = "<group>"; };
 		A3837EDC33F440EF1E909E0B /* FileViewerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewerViewModel.swift; sourceTree = "<group>"; };
 		AF51B8C7FEF141EA8B9166BD /* AIImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIImportView.swift; sourceTree = "<group>"; };
 		B1A623CBD2CDACBC7C742364 /* XQSecureWorkspacesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = XQSecureWorkspacesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C890D7496B7FEC9644C68335 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		CBCE49A4B4747698963A0C8D /* AppAttestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAttestService.swift; sourceTree = "<group>"; };
 		D72E0F401DF68D375AF450B2 /* XQSecureWorkspaces.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = XQSecureWorkspaces.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E03EF8AA20A78AC78796C5C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E2E11C6648E5FCFD5DC764A9 /* SensitivityBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitivityBadge.swift; sourceTree = "<group>"; };
@@ -99,6 +114,7 @@
 				188DDBBE9457A75B5836482A /* XQSync in Frameworks */,
 				4825B43AAF55DECBD15EEAB4 /* XQEmailIntelligence in Frameworks */,
 				5C7577BCB00E07F695CD4DB9 /* XQFileIntelligence in Frameworks */,
+				1DAA4691424831643D3072CD /* MSAL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +137,18 @@
 			);
 			name = UI;
 			path = UI;
+			sourceTree = "<group>";
+		};
+		14BD489A3EC5090EC7786082 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				CBCE49A4B4747698963A0C8D /* AppAttestService.swift */,
+				A1A00376D8B3EE17853181A7 /* KeychainSessionStore.swift */,
+				72A76EF97C95C49B6593A77F /* MSALAuthProvider.swift */,
+				8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */,
+				9DBE6E4033CA20336A6FF5C4 /* XQSubscriptionClient.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		1D373916BC6128365874085B = {
@@ -189,10 +217,20 @@
 			path = FileViewer;
 			sourceTree = "<group>";
 		};
+		7B91417B199332DB536CABE5 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				7513ED1F2E604434D8AB3FD2 /* EnterpriseLoginView.swift */,
+				365D9389EAE4D54BF9A0B2CD /* XQVerificationView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		7BDA86AB20A959707E6B790E /* Screens */ = {
 			isa = PBXGroup;
 			children = (
 				35A7628136C4952E7B1049FB /* AIImport */,
+				7B91417B199332DB536CABE5 /* Auth */,
 				9D95A411559BD6AB2C58E744 /* Email */,
 				CC2382907602860EBB4842D2 /* FileBrowser */,
 				719B57AF8B884F89C3B56804 /* FileViewer */,
@@ -289,6 +327,7 @@
 				C890D7496B7FEC9644C68335 /* AppCoordinator.swift */,
 				7D78ADCCD66522EF698719C5 /* RootView.swift */,
 				69E929B99B885E47B5E0FDB1 /* XQSecureWorkspacesApp.swift */,
+				14BD489A3EC5090EC7786082 /* Auth */,
 			);
 			name = App;
 			path = App;
@@ -319,6 +358,7 @@
 				D69849D148FB4EAE4F40FA6A /* XQSync */,
 				A2E5E61AA21D34CB7F298C45 /* XQEmailIntelligence */,
 				FAA294D956008BAF8BB2FA89 /* XQFileIntelligence */,
+				B40474EE04AC49D55AFA041A /* MSAL */,
 			);
 			productName = XQSecureWorkspaces;
 			productReference = D72E0F401DF68D375AF450B2 /* XQSecureWorkspaces.app */;
@@ -373,6 +413,7 @@
 			mainGroup = 1D373916BC6128365874085B;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				570D40A9B116105B985BD703 /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
 				ADFD4B9A1307BCE2A497B525 /* XCLocalSwiftPackageReference "." */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -394,10 +435,12 @@
 				48869BD29EAF1006EE5C1E5F /* AIImportView.swift in Sources */,
 				B59EC124DC240706458520D6 /* AIImportViewModel.swift in Sources */,
 				1B481BF205BB736C7BD5A877 /* AdminPolicyView.swift in Sources */,
+				CE4258A2E3DD831A7A583995 /* AppAttestService.swift in Sources */,
 				3A11F9EFAFB544FC0F33CFC1 /* AppCoordinator.swift in Sources */,
 				69FD996407B05B4D5623DD4B /* DocumentContentGenerator.swift in Sources */,
 				D3B7EE20CD306739C47B6779 /* EmailInboxViewModel.swift in Sources */,
 				F0645B45EE842ACDB3996A1E /* EmailThreadViewModel.swift in Sources */,
+				0C842CB0570B632B245AE69D /* EnterpriseLoginView.swift in Sources */,
 				1D9E4808A97E0E8CB71C1A23 /* FileBrowserView.swift in Sources */,
 				DC91239930D93EC59BA7978C /* FileBrowserViewModel.swift in Sources */,
 				FBFF17673B7E1FBD8F8470DB /* FileRowView.swift in Sources */,
@@ -405,6 +448,8 @@
 				F81BB1DA0BFA15C3092CD92A /* FileViewerViewModel.swift in Sources */,
 				F995E687EDA98F4DE0D10960 /* HomeView.swift in Sources */,
 				1392EFAB57EA7BC71659419F /* HomeViewModel.swift in Sources */,
+				DDE4CB41E69179EEAA4563AD /* KeychainSessionStore.swift in Sources */,
+				ADD9D90E12902B46DF4E3209 /* MSALAuthProvider.swift in Sources */,
 				26052E8C2B282B1480225912 /* PDFDocumentView.swift in Sources */,
 				925BAEFEE0B9F91C93135D81 /* RiskAlertCard.swift in Sources */,
 				F1C9545296AD1961E88147FF /* RootView.swift in Sources */,
@@ -414,7 +459,10 @@
 				75E9F753627275C989BF7475 /* SettingsView.swift in Sources */,
 				53C2427B76B8A9D9137F0225 /* SplashView.swift in Sources */,
 				3D07719D9DD772E9ED9D8034 /* SplashViewModel.swift in Sources */,
+				B73A290F61BCEC8B0FFBAF37 /* XQAuthOrchestrator.swift in Sources */,
 				1234AFE99D1F3064FE65B4B2 /* XQSecureWorkspacesApp.swift in Sources */,
+				7AD39045DB26E8AC62459B42 /* XQSubscriptionClient.swift in Sources */,
+				596A70409803DF3EB64AD9CD /* XQVerificationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,6 +716,17 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		570D40A9B116105B985BD703 /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		0CC04F4FFB3282DD8E58BAA4 /* XQPolicy */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -680,6 +739,11 @@
 		A2E5E61AA21D34CB7F298C45 /* XQEmailIntelligence */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = XQEmailIntelligence;
+		};
+		B40474EE04AC49D55AFA041A /* MSAL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 570D40A9B116105B985BD703 /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */;
+			productName = MSAL;
 		};
 		BB1D211C6AE9AF5984C216C1 /* XQSecurity */ = {
 			isa = XCSwiftPackageProductDependency;
