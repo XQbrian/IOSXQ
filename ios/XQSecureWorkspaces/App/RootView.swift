@@ -29,7 +29,7 @@ struct RootView: View {
         case .aiImport:
             AIImportView()
         case .emailInbox:
-            Text("Email Inbox — Coming Soon")
+            EmailInboxView()
         case .settings:
             SettingsRootView()
         case .adminPolicy:

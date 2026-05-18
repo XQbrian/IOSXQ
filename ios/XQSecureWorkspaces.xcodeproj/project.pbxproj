@@ -17,6 +17,7 @@
 		22E19988EC6E8988A30318B3 /* XQAI in Frameworks */ = {isa = PBXBuildFile; productRef = 5731E8074F9DC0528217900A /* XQAI */; };
 		23D514861ED7E3036CC496FE /* XQPolicy in Frameworks */ = {isa = PBXBuildFile; productRef = 0CC04F4FFB3282DD8E58BAA4 /* XQPolicy */; };
 		26052E8C2B282B1480225912 /* PDFDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2529EF02CD116E0D0CF12090 /* PDFDocumentView.swift */; };
+		363ABF872C75B99E811ED697 /* EmailInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86213272A4A896B496AEF84E /* EmailInboxView.swift */; };
 		3A11F9EFAFB544FC0F33CFC1 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C890D7496B7FEC9644C68335 /* AppCoordinator.swift */; };
 		3D07719D9DD772E9ED9D8034 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27571AB53AB235831AE9228 /* SplashViewModel.swift */; };
 		4825B43AAF55DECBD15EEAB4 /* XQEmailIntelligence in Frameworks */ = {isa = PBXBuildFile; productRef = A2E5E61AA21D34CB7F298C45 /* XQEmailIntelligence */; };
@@ -42,7 +43,9 @@
 		CE4258A2E3DD831A7A583995 /* AppAttestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCE49A4B4747698963A0C8D /* AppAttestService.swift */; };
 		D12D097A720ABC21DAFF31C6 /* XQRepository in Frameworks */ = {isa = PBXBuildFile; productRef = D2978032A53E53A54AA093BF /* XQRepository */; };
 		D3B7EE20CD306739C47B6779 /* EmailInboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38ED486AD678B4A4E8BB10C2 /* EmailInboxViewModel.swift */; };
+		D65FC399FC1E1DA7ADC73532 /* EmailDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D523BA0C24C797B044D8619 /* EmailDetailViewModel.swift */; };
 		DC91239930D93EC59BA7978C /* FileBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E2E737EA9B4004B1AC4E72 /* FileBrowserViewModel.swift */; };
+		DCA5297B376BC1E3480BE928 /* EmailDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E47FDF661193717D18B6178 /* EmailDetailView.swift */; };
 		DDE4CB41E69179EEAA4563AD /* KeychainSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A00376D8B3EE17853181A7 /* KeychainSessionStore.swift */; };
 		DE101EE5B7A9126311C997B9 /* XQNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = C744CAEF3D6A65BF21AACB75 /* XQNetworking */; };
 		E59920108CA8E9E692287BCB /* OnDeviceAIOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6277A0914A5C897D83FF83EE /* OnDeviceAIOrchestrator.swift */; };
@@ -69,6 +72,7 @@
 		04A995A71153C6268EEDC0ED /* FileViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewerView.swift; sourceTree = "<group>"; };
 		0FFC8DE0C56C10836B11B41B /* RiskAlertCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskAlertCard.swift; sourceTree = "<group>"; };
 		119FC4F1D13BE338C1DDC818 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		1D523BA0C24C797B044D8619 /* EmailDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailDetailViewModel.swift; sourceTree = "<group>"; };
 		20303901883C64DF159F5037 /* SecureShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureShareSheet.swift; sourceTree = "<group>"; };
 		23E2E737EA9B4004B1AC4E72 /* FileBrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBrowserViewModel.swift; sourceTree = "<group>"; };
 		2529EF02CD116E0D0CF12090 /* PDFDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDocumentView.swift; sourceTree = "<group>"; };
@@ -88,8 +92,10 @@
 		7640385CD7F67E9DE13064E8 /* FileRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRowView.swift; sourceTree = "<group>"; };
 		7C5328ED66244E1D5D879FEA /* AIImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIImportViewModel.swift; sourceTree = "<group>"; };
 		7D78ADCCD66522EF698719C5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		7E47FDF661193717D18B6178 /* EmailDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailDetailView.swift; sourceTree = "<group>"; };
 		7EDC1D2757ED9D454AFA68B9 /* DocumentContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentGenerator.swift; sourceTree = "<group>"; };
 		8617645835C9BD502BAE9BAC /* QuickLookPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookPreview.swift; sourceTree = "<group>"; };
+		86213272A4A896B496AEF84E /* EmailInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailInboxView.swift; sourceTree = "<group>"; };
 		8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQAuthOrchestrator.swift; sourceTree = "<group>"; };
 		9301973A103F7144C9F9272E /* MicrosoftGraphRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftGraphRepository.swift; sourceTree = "<group>"; };
 		9AE956187F663DBB960A8A3D /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = .; sourceTree = SOURCE_ROOT; };
@@ -281,6 +287,9 @@
 		9D95A411559BD6AB2C58E744 /* Email */ = {
 			isa = PBXGroup;
 			children = (
+				7E47FDF661193717D18B6178 /* EmailDetailView.swift */,
+				1D523BA0C24C797B044D8619 /* EmailDetailViewModel.swift */,
+				86213272A4A896B496AEF84E /* EmailInboxView.swift */,
 				38ED486AD678B4A4E8BB10C2 /* EmailInboxViewModel.swift */,
 				581189F5D7E898ACC1516919 /* EmailThreadViewModel.swift */,
 			);
@@ -458,6 +467,9 @@
 				CE4258A2E3DD831A7A583995 /* AppAttestService.swift in Sources */,
 				3A11F9EFAFB544FC0F33CFC1 /* AppCoordinator.swift in Sources */,
 				69FD996407B05B4D5623DD4B /* DocumentContentGenerator.swift in Sources */,
+				DCA5297B376BC1E3480BE928 /* EmailDetailView.swift in Sources */,
+				D65FC399FC1E1DA7ADC73532 /* EmailDetailViewModel.swift in Sources */,
+				363ABF872C75B99E811ED697 /* EmailInboxView.swift in Sources */,
 				D3B7EE20CD306739C47B6779 /* EmailInboxViewModel.swift in Sources */,
 				F0645B45EE842ACDB3996A1E /* EmailThreadViewModel.swift in Sources */,
 				0C842CB0570B632B245AE69D /* EnterpriseLoginView.swift in Sources */,

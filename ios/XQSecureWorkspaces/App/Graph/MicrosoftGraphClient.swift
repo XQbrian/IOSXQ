@@ -36,6 +36,37 @@ private struct GraphListResponse<T: Decodable>: Decodable {
     let value: [T]
 }
 
+// MARK: - Mail Response Models
+
+struct GraphMessage: Decodable, Sendable {
+    let id: String
+    let subject: String?
+    let from: GraphRecipient?
+    let toRecipients: [GraphRecipient]?
+    let ccRecipients: [GraphRecipient]?
+    let bodyPreview: String?
+    let body: GraphMessageBody?
+    let receivedDateTime: String?
+    let isRead: Bool?
+    let hasAttachments: Bool?
+    let conversationId: String?
+    let sensitivity: String?
+}
+
+struct GraphRecipient: Decodable, Sendable {
+    let emailAddress: GraphAddressInfo?
+}
+
+struct GraphAddressInfo: Decodable, Sendable {
+    let name: String?
+    let address: String?
+}
+
+struct GraphMessageBody: Decodable, Sendable {
+    let contentType: String?
+    let content: String?
+}
+
 // MARK: - Error
 
 enum GraphError: Error, LocalizedError {
@@ -106,6 +137,39 @@ actor MicrosoftGraphClient {
     func listSiteDrives(siteId: String) async throws -> [GraphDrive] {
         let url = baseURL.appendingPathComponent("sites/\(siteId)/drives")
         return try await getList(url: url, params: ["$select": "id,name,driveType"])
+    }
+
+    // MARK: - Mail
+
+    func listMessages(top: Int = 50) async throws -> [GraphMessage] {
+        let url = baseURL.appendingPathComponent("me/messages")
+        return try await getList(url: url, params: [
+            "$top": "\(top)",
+            "$orderby": "receivedDateTime desc",
+            "$select": "id,subject,from,toRecipients,ccRecipients,bodyPreview,receivedDateTime,isRead,hasAttachments,conversationId,sensitivity"
+        ])
+    }
+
+    func getMessageBody(id: String) async throws -> GraphMessageBody? {
+        let url = baseURL.appendingPathComponent("me/messages/\(id)")
+        var comps = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        comps.queryItems = [URLQueryItem(name: "$select", value: "id,body")]
+        guard let finalURL = comps.url else { throw GraphError.invalidURL }
+        var request = URLRequest(url: finalURL)
+        request.setValue("Bearer \(graphToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        let (data, response): (Data, URLResponse)
+        do { (data, response) = try await urlSession.data(for: request) }
+        catch { throw GraphError.networkUnavailable }
+        guard let http = response as? HTTPURLResponse else { throw GraphError.networkUnavailable }
+        switch http.statusCode {
+        case 200...299:
+            return try JSONDecoder().decode(GraphMessage.self, from: data).body
+        case 401: throw GraphError.unauthorized
+        case 403: throw GraphError.forbidden
+        case 429: throw GraphError.rateLimited
+        default: throw GraphError.serverError(http.statusCode)
+        }
     }
 
     // MARK: - Download
