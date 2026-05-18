@@ -8,6 +8,7 @@ struct FileViewerView: View {
     @StateObject private var vm: FileViewerViewModel
 
     @State private var showShareSheet = false
+    @State private var showQuickLook = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -141,6 +142,12 @@ struct FileViewerView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
         }
+        .fullScreenCover(isPresented: $showQuickLook) {
+            if let url = vm.quickLookURL {
+                QuickLookPreview(url: url)
+                    .ignoresSafeArea()
+            }
+        }
         .task {
             guard let session = coordinator.currentSession else { return }
             await vm.loadAndScan(session: session, repository: coordinator.repository)
@@ -152,16 +159,35 @@ struct FileViewerView: View {
     @ViewBuilder
     private var documentPreviewSection: some View {
         Group {
-            if let pdfData = vm.generatedPDFData, !pdfData.isEmpty {
+            if vm.quickLookURL != nil {
+                // Real file bytes are available — overlay a View button on the metadata card.
+                ZStack(alignment: .bottom) {
+                    genericDocumentPreview
+                    Button {
+                        showQuickLook = true
+                    } label: {
+                        Label("View Document", systemImage: "doc.viewfinder.fill")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 13)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(brandBlue)
+                            )
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 18)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .transition(.opacity)
+            } else if let pdfData = vm.generatedPDFData, !pdfData.isEmpty {
                 ZStack {
                     PDFDocumentView(data: pdfData)
                         .frame(maxWidth: .infinity)
                         .frame(height: 480)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                    // SwiftUI watermark overlay (in addition to the PDF-baked
-                    // watermark — this ensures visibility regardless of
-                    // PDFKit zoom level).
                     Text("\(vm.file.sensitivity.rawValue) · brian@xqmsg.com")
                         .font(.system(size: 22, weight: .black))
                         .foregroundColor(bannerBackground.opacity(0.08))
@@ -180,6 +206,7 @@ struct FileViewerView: View {
                     .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.25), value: vm.quickLookURL != nil)
         .animation(.easeInOut(duration: 0.25), value: vm.generatedPDFData)
         .animation(.easeInOut(duration: 0.25), value: vm.isScanning)
     }

@@ -38,6 +38,7 @@
 		B59EC124DC240706458520D6 /* AIImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5328ED66244E1D5D879FEA /* AIImportViewModel.swift */; };
 		B73A290F61BCEC8B0FFBAF37 /* XQAuthOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */; };
 		C83EB4CFACD848A0A1D927DD /* SecureShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20303901883C64DF159F5037 /* SecureShareSheet.swift */; };
+		CD9B78AF9DE7B96B25D7280C /* QuickLookPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8617645835C9BD502BAE9BAC /* QuickLookPreview.swift */; };
 		CE4258A2E3DD831A7A583995 /* AppAttestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCE49A4B4747698963A0C8D /* AppAttestService.swift */; };
 		D12D097A720ABC21DAFF31C6 /* XQRepository in Frameworks */ = {isa = PBXBuildFile; productRef = D2978032A53E53A54AA093BF /* XQRepository */; };
 		D3B7EE20CD306739C47B6779 /* EmailInboxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38ED486AD678B4A4E8BB10C2 /* EmailInboxViewModel.swift */; };
@@ -86,6 +87,7 @@
 		7C5328ED66244E1D5D879FEA /* AIImportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIImportViewModel.swift; sourceTree = "<group>"; };
 		7D78ADCCD66522EF698719C5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		7EDC1D2757ED9D454AFA68B9 /* DocumentContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentGenerator.swift; sourceTree = "<group>"; };
+		8617645835C9BD502BAE9BAC /* QuickLookPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookPreview.swift; sourceTree = "<group>"; };
 		8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQAuthOrchestrator.swift; sourceTree = "<group>"; };
 		9301973A103F7144C9F9272E /* MicrosoftGraphRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftGraphRepository.swift; sourceTree = "<group>"; };
 		9AE956187F663DBB960A8A3D /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = .; sourceTree = SOURCE_ROOT; };
@@ -225,6 +227,7 @@
 				04A995A71153C6268EEDC0ED /* FileViewerView.swift */,
 				A3837EDC33F440EF1E909E0B /* FileViewerViewModel.swift */,
 				2529EF02CD116E0D0CF12090 /* PDFDocumentView.swift */,
+				8617645835C9BD502BAE9BAC /* QuickLookPreview.swift */,
 				20303901883C64DF159F5037 /* SecureShareSheet.swift */,
 			);
 			path = FileViewer;
@@ -467,6 +470,7 @@
 				B2DDEA2E6BA1076C9FA0A3E3 /* MicrosoftGraphClient.swift in Sources */,
 				FE87EBF47554D33917997667 /* MicrosoftGraphRepository.swift in Sources */,
 				26052E8C2B282B1480225912 /* PDFDocumentView.swift in Sources */,
+				CD9B78AF9DE7B96B25D7280C /* QuickLookPreview.swift in Sources */,
 				925BAEFEE0B9F91C93135D81 /* RiskAlertCard.swift in Sources */,
 				F1C9545296AD1961E88147FF /* RootView.swift in Sources */,
 				A6760BDE3E9C2A055ECDC4C0 /* SampleDataRepository.swift in Sources */,

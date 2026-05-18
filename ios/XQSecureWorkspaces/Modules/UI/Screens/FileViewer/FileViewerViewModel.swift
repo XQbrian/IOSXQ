@@ -14,6 +14,7 @@ final class FileViewerViewModel: ObservableObject {
     @Published var isScanning = false
     @Published var decryptedPreviewData: Data? = nil
     @Published var generatedPDFData: Data? = nil
+    @Published var quickLookURL: URL? = nil
 
     private let aiOrchestrator: any AIOrchestrator
     private let policyEngine: any PolicyEngine
@@ -52,10 +53,15 @@ final class FileViewerViewModel: ObservableObject {
             }
             decryptedPreviewData = plainData
 
-            // Generate an in-memory PDF preview for PDF MIME types so the
-            // viewer can render real document content. Non-PDF formats fall
-            // back to a generic card preview in the view layer.
-            if file.mimeType == "application/pdf" {
+            if !plainData.isEmpty {
+                // Write real bytes to a temp file so QLPreviewController can open it.
+                // The original filename preserves the extension QL needs to pick the right renderer.
+                let tempURL = FileManager.default.temporaryDirectory
+                    .appendingPathComponent(file.name)
+                try? plainData.write(to: tempURL, options: .atomic)
+                quickLookURL = tempURL
+            } else if file.mimeType == "application/pdf" {
+                // Stub PDF for sample/demo files that return empty data.
                 generatedPDFData = DocumentContentGenerator.pdfData(for: file)
             }
 
