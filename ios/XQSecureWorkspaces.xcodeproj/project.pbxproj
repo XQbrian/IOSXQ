@@ -34,6 +34,7 @@
 		9DD9B27FFE34C1CDFFEB7BE6 /* XQCore in Frameworks */ = {isa = PBXBuildFile; productRef = BF089E1FD5FF6EECBF114650 /* XQCore */; };
 		A6760BDE3E9C2A055ECDC4C0 /* SampleDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDC240DAF990B44C814F624 /* SampleDataRepository.swift */; };
 		ADD9D90E12902B46DF4E3209 /* MSALAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A76EF97C95C49B6593A77F /* MSALAuthProvider.swift */; };
+		B2DDEA2E6BA1076C9FA0A3E3 /* MicrosoftGraphClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBD9672DDFFCE07A3304678 /* MicrosoftGraphClient.swift */; };
 		B59EC124DC240706458520D6 /* AIImportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5328ED66244E1D5D879FEA /* AIImportViewModel.swift */; };
 		B73A290F61BCEC8B0FFBAF37 /* XQAuthOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */; };
 		C83EB4CFACD848A0A1D927DD /* SecureShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20303901883C64DF159F5037 /* SecureShareSheet.swift */; };
@@ -49,6 +50,7 @@
 		F81BB1DA0BFA15C3092CD92A /* FileViewerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3837EDC33F440EF1E909E0B /* FileViewerViewModel.swift */; };
 		F995E687EDA98F4DE0D10960 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3920F23F8C8E6C33BFFDEB9B /* HomeView.swift */; };
 		FBFF17673B7E1FBD8F8470DB /* FileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7640385CD7F67E9DE13064E8 /* FileRowView.swift */; };
+		FE87EBF47554D33917997667 /* MicrosoftGraphRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9301973A103F7144C9F9272E /* MicrosoftGraphRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +87,7 @@
 		7D78ADCCD66522EF698719C5 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		7EDC1D2757ED9D454AFA68B9 /* DocumentContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentContentGenerator.swift; sourceTree = "<group>"; };
 		8D27D47A0842166C6A9599C3 /* XQAuthOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQAuthOrchestrator.swift; sourceTree = "<group>"; };
+		9301973A103F7144C9F9272E /* MicrosoftGraphRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftGraphRepository.swift; sourceTree = "<group>"; };
 		9AE956187F663DBB960A8A3D /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = .; sourceTree = SOURCE_ROOT; };
 		9DBE6E4033CA20336A6FF5C4 /* XQSubscriptionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XQSubscriptionClient.swift; sourceTree = "<group>"; };
 		9EDB35C5E5EF5EB880E77FF0 /* FileBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBrowserView.swift; sourceTree = "<group>"; };
@@ -97,6 +100,7 @@
 		D72E0F401DF68D375AF450B2 /* XQSecureWorkspaces.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = XQSecureWorkspaces.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E03EF8AA20A78AC78796C5C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E2E11C6648E5FCFD5DC764A9 /* SensitivityBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitivityBadge.swift; sourceTree = "<group>"; };
+		EFBD9672DDFFCE07A3304678 /* MicrosoftGraphClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftGraphClient.swift; sourceTree = "<group>"; };
 		F27571AB53AB235831AE9228 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,6 +153,15 @@
 				9DBE6E4033CA20336A6FF5C4 /* XQSubscriptionClient.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		1C5B1DB8BB3E9CD78E14B33D /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				EFBD9672DDFFCE07A3304678 /* MicrosoftGraphClient.swift */,
+				9301973A103F7144C9F9272E /* MicrosoftGraphRepository.swift */,
+			);
+			path = Graph;
 			sourceTree = "<group>";
 		};
 		1D373916BC6128365874085B = {
@@ -328,6 +341,7 @@
 				7D78ADCCD66522EF698719C5 /* RootView.swift */,
 				69E929B99B885E47B5E0FDB1 /* XQSecureWorkspacesApp.swift */,
 				14BD489A3EC5090EC7786082 /* Auth */,
+				1C5B1DB8BB3E9CD78E14B33D /* Graph */,
 			);
 			name = App;
 			path = App;
@@ -450,6 +464,8 @@
 				1392EFAB57EA7BC71659419F /* HomeViewModel.swift in Sources */,
 				DDE4CB41E69179EEAA4563AD /* KeychainSessionStore.swift in Sources */,
 				ADD9D90E12902B46DF4E3209 /* MSALAuthProvider.swift in Sources */,
+				B2DDEA2E6BA1076C9FA0A3E3 /* MicrosoftGraphClient.swift in Sources */,
+				FE87EBF47554D33917997667 /* MicrosoftGraphRepository.swift in Sources */,
 				26052E8C2B282B1480225912 /* PDFDocumentView.swift in Sources */,
 				925BAEFEE0B9F91C93135D81 /* RiskAlertCard.swift in Sources */,
 				F1C9545296AD1961E88147FF /* RootView.swift in Sources */,

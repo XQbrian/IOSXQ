@@ -33,9 +33,13 @@ final class FileBrowserViewModel: ObservableObject {
         files.filter { $0.sensitivity == .restricted }.count
     }
 
-    private let repository: any RepositoryProvider
+    private var repository: any RepositoryProvider
 
     init(repository: any RepositoryProvider = SampleDataRepository()) {
+        self.repository = repository
+    }
+
+    func configure(repository: any RepositoryProvider) {
         self.repository = repository
     }
 

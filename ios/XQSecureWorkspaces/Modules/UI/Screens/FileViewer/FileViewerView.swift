@@ -143,7 +143,7 @@ struct FileViewerView: View {
         }
         .task {
             guard let session = coordinator.currentSession else { return }
-            await vm.loadAndScan(session: session)
+            await vm.loadAndScan(session: session, repository: coordinator.repository)
         }
     }
 

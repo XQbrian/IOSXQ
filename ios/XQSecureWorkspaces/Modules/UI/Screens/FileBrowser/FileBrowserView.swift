@@ -40,6 +40,9 @@ struct FileBrowserView: View {
                 FileViewerView(file: file)
             }
             .task {
+                if let repo = coordinator.repository {
+                    vm.configure(repository: repo)
+                }
                 await vm.load(path: "/")
             }
         }

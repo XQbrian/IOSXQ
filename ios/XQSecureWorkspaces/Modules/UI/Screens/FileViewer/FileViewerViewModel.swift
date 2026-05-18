@@ -31,20 +31,25 @@ final class FileViewerViewModel: ObservableObject {
         self.xqAPI = xqAPI
     }
 
-    func loadAndScan(session: XQSession) async {
+    func loadAndScan(session: XQSession, repository: (any RepositoryProvider)? = nil) async {
         isScanning = true
         defer { isScanning = false }
 
         guard let bundle = policyEngine.currentBundle else { return }
 
         do {
-            let encryptedPayload = EncryptedPayload(
-                ciphertext: Data(),
-                iv: Data(),
-                authTag: Data(),
-                keyId: file.encryptedKeyId
-            )
-            let plainData = try await xqAPI.decryptFile(encryptedPayload, session: session)
+            let plainData: Data
+            if let repo = repository, file.sourceProvider != .xqVault && file.sourceProvider != .localVault {
+                plainData = (try? await repo.fetchFile(file)) ?? Data()
+            } else {
+                let encryptedPayload = EncryptedPayload(
+                    ciphertext: Data(),
+                    iv: Data(),
+                    authTag: Data(),
+                    keyId: file.encryptedKeyId
+                )
+                plainData = try await xqAPI.decryptFile(encryptedPayload, session: session)
+            }
             decryptedPreviewData = plainData
 
             // Generate an in-memory PDF preview for PDF MIME types so the
