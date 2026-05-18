@@ -21,6 +21,16 @@ struct FileViewerView: View {
         ))
     }
 
+    private var shareSession: XQSession {
+        coordinator.currentSession ?? XQSession(
+            userId: "local-user",
+            tenantId: "local",
+            accessToken: "",
+            expiresAt: Date(timeIntervalSinceNow: 3600),
+            apiVersion: .v3
+        )
+    }
+
     // MARK: - Classification Banner
 
     private var bannerBackground: Color {
@@ -138,9 +148,16 @@ struct FileViewerView: View {
             }
         }
         .sheet(isPresented: $showShareSheet) {
-            SecureShareSheet(isPresented: $showShareSheet)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.hidden)
+            SecureShareSheet(
+                isPresented: $showShareSheet,
+                file: vm.file,
+                rawFileData: vm.decryptedPreviewData ?? Data(),
+                classificationResult: vm.classificationResult,
+                session: shareSession,
+                graphClient: coordinator.graphToken.map { MicrosoftGraphClient(graphToken: $0) }
+            )
+            .presentationDetents([.large])
+            .presentationDragIndicator(.hidden)
         }
         .fullScreenCover(isPresented: $showQuickLook) {
             if let url = vm.quickLookURL {

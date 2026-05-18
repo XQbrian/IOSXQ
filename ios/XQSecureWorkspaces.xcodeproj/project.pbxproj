@@ -28,6 +28,7 @@
 		5C7577BCB00E07F695CD4DB9 /* XQFileIntelligence in Frameworks */ = {isa = PBXBuildFile; productRef = FAA294D956008BAF8BB2FA89 /* XQFileIntelligence */; };
 		67D8E33E2781BB5D6B9498D7 /* SensitivityBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E11C6648E5FCFD5DC764A9 /* SensitivityBadge.swift */; };
 		69FD996407B05B4D5623DD4B /* DocumentContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDC1D2757ED9D454AFA68B9 /* DocumentContentGenerator.swift */; };
+		6B8056D32837321D089C89C0 /* SecureShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7B6F72BEC62F2EE1DFC40E /* SecureShareViewModel.swift */; };
 		75E9F753627275C989BF7475 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03EF8AA20A78AC78796C5C8 /* SettingsView.swift */; };
 		7AD39045DB26E8AC62459B42 /* XQSubscriptionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBE6E4033CA20336A6FF5C4 /* XQSubscriptionClient.swift */; };
 		816450B026D0F18ED613F02D /* XQSecurity in Frameworks */ = {isa = PBXBuildFile; productRef = BB1D211C6AE9AF5984C216C1 /* XQSecurity */; };
@@ -105,6 +106,7 @@
 		A3837EDC33F440EF1E909E0B /* FileViewerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewerViewModel.swift; sourceTree = "<group>"; };
 		AF51B8C7FEF141EA8B9166BD /* AIImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIImportView.swift; sourceTree = "<group>"; };
 		B1A623CBD2CDACBC7C742364 /* XQSecureWorkspacesTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = XQSecureWorkspacesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC7B6F72BEC62F2EE1DFC40E /* SecureShareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureShareViewModel.swift; sourceTree = "<group>"; };
 		C890D7496B7FEC9644C68335 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		CBCE49A4B4747698963A0C8D /* AppAttestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAttestService.swift; sourceTree = "<group>"; };
 		D72E0F401DF68D375AF450B2 /* XQSecureWorkspaces.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = XQSecureWorkspaces.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,6 +240,7 @@
 				2529EF02CD116E0D0CF12090 /* PDFDocumentView.swift */,
 				8617645835C9BD502BAE9BAC /* QuickLookPreview.swift */,
 				20303901883C64DF159F5037 /* SecureShareSheet.swift */,
+				BC7B6F72BEC62F2EE1DFC40E /* SecureShareViewModel.swift */,
 			);
 			path = FileViewer;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 				F1C9545296AD1961E88147FF /* RootView.swift in Sources */,
 				A6760BDE3E9C2A055ECDC4C0 /* SampleDataRepository.swift in Sources */,
 				C83EB4CFACD848A0A1D927DD /* SecureShareSheet.swift in Sources */,
+				6B8056D32837321D089C89C0 /* SecureShareViewModel.swift in Sources */,
 				67D8E33E2781BB5D6B9498D7 /* SensitivityBadge.swift in Sources */,
 				75E9F753627275C989BF7475 /* SettingsView.swift in Sources */,
 				53C2427B76B8A9D9137F0225 /* SplashView.swift in Sources */,

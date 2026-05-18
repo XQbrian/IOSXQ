@@ -67,6 +67,16 @@ struct GraphMessageBody: Decodable, Sendable {
     let content: String?
 }
 
+// MARK: - Share Models
+
+private struct GraphSharingLink: Decodable {
+    let link: GraphShareLink?
+}
+
+private struct GraphShareLink: Decodable {
+    let webUrl: String?
+}
+
 // MARK: - Error
 
 enum GraphError: Error, LocalizedError {
@@ -193,6 +203,37 @@ actor MicrosoftGraphClient {
         guard let http = response as? HTTPURLResponse else { throw GraphError.downloadFailed }
         switch http.statusCode {
         case 200...299: return data
+        case 401: throw GraphError.unauthorized
+        case 403: throw GraphError.forbidden
+        case 429: throw GraphError.rateLimited
+        default: throw GraphError.serverError(http.statusCode)
+        }
+    }
+
+    // MARK: - Sharing
+
+    /// Creates an anonymous view-only sharing link for a OneDrive item.
+    func createShareLink(itemId: String, expiryDays: Int) async throws -> String {
+        let url = baseURL.appendingPathComponent("me/drive/items/\(itemId)/createLink")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(graphToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let expiry = ISO8601DateFormatter().string(from: Date(timeIntervalSinceNow: Double(expiryDays) * 86400))
+        let body: [String: Any] = ["type": "view", "scope": "anonymous", "expirationDateTime": expiry]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        let (data, response): (Data, URLResponse)
+        do { (data, response) = try await urlSession.data(for: request) }
+        catch { throw GraphError.networkUnavailable }
+
+        guard let http = response as? HTTPURLResponse else { throw GraphError.serverError(0) }
+        switch http.statusCode {
+        case 200, 201:
+            let decoded = try JSONDecoder().decode(GraphSharingLink.self, from: data)
+            guard let webUrl = decoded.link?.webUrl else { throw GraphError.serverError(0) }
+            return webUrl
         case 401: throw GraphError.unauthorized
         case 403: throw GraphError.forbidden
         case 429: throw GraphError.rateLimited

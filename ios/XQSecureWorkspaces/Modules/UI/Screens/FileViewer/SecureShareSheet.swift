@@ -1,20 +1,39 @@
 import SwiftUI
 import XQCore
+import XQFileIntelligence
 import XQPolicy
 
 struct SecureShareSheet: View {
     @Binding var isPresented: Bool
+    @StateObject private var vm: SecureShareViewModel
 
     @State private var step = 1
     @State private var recipientEmail = ""
     @State private var recipients: [String] = []
-    @State private var expiryEnabled = true
     @State private var screenshotDetection = true
     @State private var requireXQApp = true
     @State private var auditLog = true
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
     private let totalSteps = 4
+
+    init(
+        isPresented: Binding<Bool>,
+        file: SecureFile,
+        rawFileData: Data,
+        classificationResult: AIClassificationResult?,
+        session: XQSession,
+        graphClient: MicrosoftGraphClient?
+    ) {
+        _isPresented = isPresented
+        _vm = StateObject(wrappedValue: SecureShareViewModel(
+            file: file,
+            rawFileData: rawFileData,
+            classificationResult: classificationResult,
+            session: session,
+            graphClient: graphClient
+        ))
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,20 +75,45 @@ struct SecureShareSheet: View {
 
             Spacer(minLength: 0)
 
-            // Navigation buttons
+            // Navigation / action button
             if step < totalSteps {
-                Button {
-                    withAnimation { step += 1 }
-                } label: {
-                    Text(step == 1 ? "Analyze Risk" : step == 2 ? "Configure Settings" : "Send Securely")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
+                VStack(spacing: 0) {
+                    if let error = vm.sendError, step == 3 {
+                        Text(error)
+                            .font(.system(size: 12))
+                            .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 8)
+                    }
+
+                    Button {
+                        if step == 3 {
+                            Task {
+                                await vm.send(recipients: recipients, expiryDays: 7)
+                                if vm.sendSuccess { withAnimation { step = 4 } }
+                            }
+                        } else {
+                            withAnimation { step += 1 }
+                        }
+                    } label: {
+                        Group {
+                            if step == 3 && vm.isSending {
+                                ProgressView().tint(.white)
+                            } else {
+                                Text(step == 1 ? "Analyze Risk" : step == 2 ? "Configure Settings" : "Send Securely")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.white)
+                            }
+                        }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 15)
                         .background(RoundedRectangle(cornerRadius: 16).fill(brandBlue))
+                    }
+                    .disabled(step == 3 && vm.isSending)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 44)
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 44)
             }
         }
         .background(Color(.systemBackground))
@@ -136,16 +180,12 @@ struct SecureShareSheet: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
-                            .background(
-                                Capsule()
-                                    .fill(Color(red: 0.910, green: 0.918, blue: 0.992))
-                            )
+                            .background(Capsule().fill(Color(red: 0.910, green: 0.918, blue: 0.992)))
                         }
                     }
                 }
             }
 
-            // External recipient warning
             if recipients.contains(where: { !$0.hasSuffix("@xqmsg.com") }) {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -159,10 +199,7 @@ struct SecureShareSheet: View {
                     }
                 }
                 .padding(12)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(red: 1.000, green: 0.973, blue: 0.882))
-                )
+                .background(RoundedRectangle(cornerRadius: 12).fill(Color(red: 1.000, green: 0.973, blue: 0.882)))
             }
         }
     }
@@ -174,50 +211,77 @@ struct SecureShareSheet: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("AI Risk Analysis")
                     .font(.system(size: 19, weight: .bold))
-                Text("Detected sensitive content")
+                Text("Sensitive content scan results")
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
             }
             .padding(.bottom, 2)
 
-            // PHI card
-            RiskContentCard(
-                icon: "❤️‍🩹",
-                title: "PHI Detected",
-                detail: "3 patient records, SSNs, DOBs",
-                severity: .restricted
-            )
+            if let result = vm.classificationResult, !result.entities.isEmpty {
+                let uniqueTypes = result.entities.map(\.type).reduce(into: [AIEntity.EntityType]()) { arr, t in
+                    if !arr.contains(t) { arr.append(t) }
+                }
+                ForEach(uniqueTypes, id: \.self) { type in
+                    let count = result.entities.filter { $0.type == type }.count
+                    RiskContentCard(
+                        icon: entityTypeEmoji(type),
+                        title: entityTypeTitle(type) + " Detected",
+                        detail: "\(count) instance\(count == 1 ? "" : "s") found",
+                        severity: entityTypeSensitivity(type)
+                    )
+                }
 
-            // Financial data card
-            RiskContentCard(
-                icon: "💰",
-                title: "Financial Data",
-                detail: "Revenue figures, cost projections",
-                severity: .confidential
-            )
-
-            // Risk score
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Overall Risk Score")
-                        .font(.system(size: 13, weight: .semibold))
-                    Text("External sharing will be audit-logged")
-                        .font(.system(size: 11))
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Overall Risk Score")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("External sharing will be audit-logged")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Text("\(result.riskScore)")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(riskScoreColor(result.riskScore))
+                    Text("/ 100")
+                        .font(.system(size: 14))
                         .foregroundColor(.secondary)
                 }
-                Spacer()
-                Text("87")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(Color(red: 0.714, green: 0.110, blue: 0.110))
-                Text("/ 100")
-                    .font(.system(size: 14))
-                    .foregroundColor(.secondary)
+                .padding(14)
+                .background(riskScoreColor(result.riskScore).opacity(0.07))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            } else {
+                HStack(spacing: 10) {
+                    Image(systemName: "checkmark.shield.fill")
+                        .foregroundColor(.green)
+                    Text("No sensitive content detected")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.green)
+                }
+                .padding(14)
+                .background(Color.green.opacity(0.07))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Overall Risk Score")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("Audit logging enabled")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Text("0")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.green)
+                    Text("/ 100")
+                        .font(.system(size: 14))
+                        .foregroundColor(.secondary)
+                }
+                .padding(14)
+                .background(Color.green.opacity(0.07))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .padding(14)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(red: 0.988, green: 0.894, blue: 0.925))
-            )
         }
     }
 
@@ -235,40 +299,31 @@ struct SecureShareSheet: View {
             .padding(.bottom, 2)
 
             VStack(spacing: 0) {
-                ShareSettingRow(
-                    icon: "clock",
-                    title: "Expiry",
-                    detail: "7 days",
-                    isToggle: false
-                )
-
+                ShareSettingRow(icon: "clock", title: "Expiry", detail: "7 days", isToggle: false)
                 Divider().padding(.leading, 44)
-
-                ToggleSettingRow(
-                    icon: "camera.viewfinder",
-                    title: "Screenshot Detection",
-                    isOn: $screenshotDetection
-                )
-
+                ToggleSettingRow(icon: "camera.viewfinder", title: "Screenshot Detection", isOn: $screenshotDetection)
                 Divider().padding(.leading, 44)
-
-                ToggleSettingRow(
-                    icon: "lock.shield",
-                    title: "Require XQ App",
-                    isOn: $requireXQApp
-                )
-
+                ToggleSettingRow(icon: "lock.shield", title: "Require XQ App", isOn: $requireXQApp)
                 Divider().padding(.leading, 44)
-
-                ToggleSettingRow(
-                    icon: "list.clipboard",
-                    title: "Audit Log",
-                    isOn: $auditLog
-                )
+                ToggleSettingRow(icon: "list.clipboard", title: "Audit Log", isOn: $auditLog)
             }
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 1)
+
+            if !vm.hasCloudUpload {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 13))
+                        .foregroundColor(.secondary)
+                    Text("File will be encrypted locally — connect a Microsoft account to upload and share a link automatically.")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                .padding(12)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
         }
     }
 
@@ -290,22 +345,41 @@ struct SecureShareSheet: View {
             VStack(spacing: 6) {
                 Text("Shared Securely")
                     .font(.system(size: 22, weight: .bold))
-                Text("End-to-end encrypted link created")
+                Text(vm.hasCloudUpload ? "Encrypted link created in OneDrive" : "File encrypted locally — AES-256-GCM")
                     .font(.system(size: 14))
                     .foregroundColor(.secondary)
             }
 
             VStack(alignment: .leading, spacing: 10) {
                 ConfirmationDetail(label: "Encryption", value: "AES-256-GCM")
-                ConfirmationDetail(label: "Recipients", value: recipients.isEmpty ? "1 recipient" : "\(recipients.count) recipient\(recipients.count == 1 ? "" : "s")")
+                ConfirmationDetail(
+                    label: "Recipients",
+                    value: recipients.isEmpty ? "No recipients" : "\(recipients.count) recipient\(recipients.count == 1 ? "" : "s")"
+                )
                 ConfirmationDetail(label: "Expires", value: "7 days")
                 ConfirmationDetail(label: "Audit", value: "Enabled")
+                if let keyId = vm.keyId {
+                    ConfirmationDetail(label: "Key ID", value: keyId + "…")
+                }
+                if let shareURL = vm.shareURL {
+                    ConfirmationDetail(label: "Host", value: shareURL.host ?? shareURL.absoluteString)
+                }
             }
             .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.secondarySystemBackground))
-            )
+            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+
+            if let shareURL = vm.shareURL {
+                Button {
+                    UIPasteboard.general.string = shareURL.absoluteString
+                } label: {
+                    Label("Copy Share Link", systemImage: "doc.on.doc")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(brandBlue)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 13)
+                        .background(RoundedRectangle(cornerRadius: 16).stroke(brandBlue, lineWidth: 1.5))
+                }
+            }
 
             Button {
                 isPresented = false
@@ -320,6 +394,42 @@ struct SecureShareSheet: View {
 
             Spacer(minLength: 8)
         }
+    }
+
+    // MARK: - Helpers
+
+    private func entityTypeEmoji(_ type: AIEntity.EntityType) -> String {
+        switch type {
+        case .phi:        return "❤️‍🩹"
+        case .pii:        return "👤"
+        case .financial:  return "💰"
+        case .credential: return "🔑"
+        case .pciData:    return "💳"
+        }
+    }
+
+    private func entityTypeTitle(_ type: AIEntity.EntityType) -> String {
+        switch type {
+        case .phi:        return "PHI"
+        case .pii:        return "PII"
+        case .financial:  return "Financial Data"
+        case .credential: return "Credentials"
+        case .pciData:    return "PCI Data"
+        }
+    }
+
+    private func entityTypeSensitivity(_ type: AIEntity.EntityType) -> SensitivityLevel {
+        switch type {
+        case .phi, .pii:           return .restricted
+        case .financial, .pciData: return .confidential
+        case .credential:          return .confidential
+        }
+    }
+
+    private func riskScoreColor(_ score: Int) -> Color {
+        if score >= 75 { return Color(red: 0.714, green: 0.110, blue: 0.110) }
+        if score >= 40 { return .orange }
+        return .green
     }
 }
 
@@ -346,10 +456,7 @@ private struct RiskContentCard: View {
             SensitivityBadge(sensitivity: severity)
         }
         .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.secondarySystemBackground))
-        )
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
     }
 }
 
@@ -415,11 +522,8 @@ private struct ConfirmationDetail: View {
             Spacer()
             Text(value)
                 .font(.system(size: 13, weight: .medium))
+                .lineLimit(1)
+                .truncationMode(.middle)
         }
     }
-}
-
-#Preview {
-    SecureShareSheet(isPresented: .constant(true))
-        .presentationDetents([.large])
 }
