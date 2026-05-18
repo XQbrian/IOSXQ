@@ -136,6 +136,35 @@ actor MicrosoftGraphClient {
         }
     }
 
+    // MARK: - Upload
+
+    /// Simple upload (≤4 MB). Graph returns a DriveItem JSON on 200/201.
+    func uploadFileContent(data: Data, name: String, mimeType: String) async throws -> GraphDriveItem {
+        let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? name
+        guard let url = URL(string: "\(baseURL.absoluteString)/me/drive/root:/\(encodedName):/content")
+        else { throw GraphError.invalidURL }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("Bearer \(graphToken)", forHTTPHeaderField: "Authorization")
+        request.setValue(mimeType, forHTTPHeaderField: "Content-Type")
+        request.httpBody = data
+
+        let (responseData, response): (Data, URLResponse)
+        do { (responseData, response) = try await urlSession.data(for: request) }
+        catch { throw GraphError.networkUnavailable }
+
+        guard let http = response as? HTTPURLResponse else { throw GraphError.serverError(0) }
+        switch http.statusCode {
+        case 200, 201:
+            return try JSONDecoder().decode(GraphDriveItem.self, from: responseData)
+        case 401: throw GraphError.unauthorized
+        case 403: throw GraphError.forbidden
+        case 429: throw GraphError.rateLimited
+        default: throw GraphError.serverError(http.statusCode)
+        }
+    }
+
     // MARK: - Helpers
 
     private func getList<T: Decodable>(url: URL, params: [String: String] = [:]) async throws -> [T] {

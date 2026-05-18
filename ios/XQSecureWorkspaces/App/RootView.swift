@@ -11,11 +11,12 @@ struct RootView: View {
             SplashView()
         case .welcome:
             EnterpriseLoginView()
-        case .xqVerification(let email, let idToken, let msalAccountIdentifier):
+        case .xqVerification(let email, let idToken, let msalAccountIdentifier, let graphToken):
             XQVerificationView(
                 email: email,
                 idToken: idToken,
-                msalAccountIdentifier: msalAccountIdentifier
+                msalAccountIdentifier: msalAccountIdentifier,
+                graphToken: graphToken
             )
         case .home:
             FileBrowserView()
@@ -26,7 +27,7 @@ struct RootView: View {
                 FileViewerView(file: file)
             }
         case .aiImport:
-            Text("AI Import — Coming Soon")
+            AIImportView()
         case .emailInbox:
             Text("Email Inbox — Coming Soon")
         case .settings:

@@ -30,7 +30,9 @@ final class MicrosoftGraphRepository: RepositoryProvider, @unchecked Sendable {
     }
 
     func uploadFile(data: Data, name: String, path: String, session: XQSession) async throws -> SecureFile {
-        throw RepositoryError.encryptionRequiredBeforeUpload
+        let mimeType = mimeTypeFromName(name)
+        let item = try await client.uploadFileContent(data: data, name: name, mimeType: mimeType)
+        return graphItemToSecureFile(item, driveId: nil, source: .sharePoint)
     }
 
     func deleteFile(_ file: SecureFile, session: XQSession) async throws {

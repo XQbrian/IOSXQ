@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import XQCore
 import XQAI
 import XQPolicy
@@ -6,20 +7,19 @@ import XQPolicy
 struct AIImportView: View {
     @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var vm = AIImportViewModel(
-        aiOrchestrator: StubImportAIOrchestrator(),
+        aiOrchestrator: OnDeviceAIOrchestrator(),
         policyEngine: StubImportPolicyEngine()
     )
 
-    @State private var scanBarOffset: CGFloat = 0
-    @State private var animating = false
+    @State private var showFilePicker = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
-    private let sourceOptions: [(icon: String, title: String, subtitle: String)] = [
-        ("📁", "Files App", "Browse device & iCloud"),
-        ("📷", "Camera", "Scan physical document"),
-        ("☁️", "iCloud Drive", "Select from iCloud"),
-        ("📡", "AirDrop", "Receive from nearby device")
+    private let sourceOptions: [(icon: String, title: String, subtitle: String, usesPicker: Bool)] = [
+        ("📁", "Files App", "Browse device & iCloud", true),
+        ("📷", "Camera", "Scan physical document", false),
+        ("☁️", "iCloud Drive", "Select from iCloud", true),
+        ("📡", "AirDrop", "Receive from nearby device", false)
     ]
 
     var body: some View {
@@ -50,7 +50,11 @@ struct AIImportView: View {
                                         title: option.title,
                                         subtitle: option.subtitle
                                     ) {
-                                        vm.startScan()
+                                        if option.usesPicker {
+                                            showFilePicker = true
+                                        } else {
+                                            vm.startScan()
+                                        }
                                     }
                                 }
                             }
@@ -75,11 +79,6 @@ struct AIImportView: View {
                                     }
                                     .transition(.opacity.combined(with: .move(edge: .bottom)))
                                 }
-                                if let last = vm.scanSteps.last, last != vm.scanSteps.last {
-                                    // processing indicator for current step
-                                    ProgressView()
-                                        .scaleEffect(0.7)
-                                }
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(16)
@@ -96,32 +95,70 @@ struct AIImportView: View {
                             ResultCard(result: result)
                                 .padding(.horizontal, 16)
 
-                            Button {
-                                // Encrypt and save action
-                            } label: {
-                                Label("Encrypt & Save to Vault", systemImage: "lock.fill")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
+                            if vm.uploadSuccess {
+                                VStack(spacing: 8) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.system(size: 44))
+                                        .foregroundColor(Color(red: 0.204, green: 0.780, blue: 0.349))
+                                    Text("Saved to Vault")
+                                        .font(.system(size: 16, weight: .semibold))
+                                    Text("Navigating back…")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.secondary)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 24)
+                                .onAppear {
+                                    Task {
+                                        try? await Task.sleep(nanoseconds: 1_200_000_000)
+                                        coordinator.navigate(to: .home)
+                                    }
+                                }
+                            } else {
+                                if let error = vm.uploadError {
+                                    Text(error)
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.red)
+                                        .padding(.horizontal, 16)
+                                }
+
+                                Button {
+                                    guard let session = coordinator.currentSession,
+                                          let repo = coordinator.repository else { return }
+                                    Task { await vm.upload(session: session, repository: repo) }
+                                } label: {
+                                    Group {
+                                        if vm.isUploading {
+                                            ProgressView()
+                                                .tint(.white)
+                                        } else {
+                                            Label("Encrypt & Save to Vault", systemImage: "lock.fill")
+                                                .font(.system(size: 16, weight: .semibold))
+                                                .foregroundColor(.white)
+                                        }
+                                    }
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 15)
                                     .background(RoundedRectangle(cornerRadius: 16).fill(brandBlue))
-                            }
-                            .padding(.horizontal, 16)
+                                }
+                                .disabled(vm.isUploading)
+                                .padding(.horizontal, 16)
 
-                            Button {
-                                vm.startScan()
-                            } label: {
-                                Text("Reclassify")
-                                    .font(.system(size: 15, weight: .semibold))
-                                    .foregroundColor(brandBlue)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 14)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .stroke(brandBlue, lineWidth: 1.5)
-                                    )
+                                Button {
+                                    showFilePicker = true
+                                } label: {
+                                    Text("Reclassify")
+                                        .font(.system(size: 15, weight: .semibold))
+                                        .foregroundColor(brandBlue)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 14)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 16)
+                                                .stroke(brandBlue, lineWidth: 1.5)
+                                        )
+                                }
+                                .padding(.horizontal, 16)
                             }
-                            .padding(.horizontal, 16)
                         }
                     }
 
@@ -138,6 +175,15 @@ struct AIImportView: View {
                     }
                     .foregroundColor(brandBlue)
                 }
+            }
+            .fileImporter(
+                isPresented: $showFilePicker,
+                allowedContentTypes: [.data],
+                allowsMultipleSelection: false
+            ) { result in
+                guard case .success(let urls) = result, let url = urls.first else { return }
+                vm.setPickedFile(url: url)
+                vm.startScan()
             }
         }
     }
@@ -179,15 +225,12 @@ private struct SourceCard: View {
 private struct ScanAnimationBox: View {
     let isAnimating: Bool
 
-    @State private var gradientOffset: CGFloat = -1.0
-
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
     var body: some View {
         ZStack {
             Color.black
 
-            // Grid overlay
             Canvas { context, size in
                 let spacing: CGFloat = 20
                 var path = Path()
@@ -206,7 +249,6 @@ private struct ScanAnimationBox: View {
                 context.stroke(path, with: .color(brandBlue.opacity(0.15)), lineWidth: 1)
             }
 
-            // Animated scan bar
             GeometryReader { geo in
                 LinearGradient(
                     colors: [.clear, brandBlue, .clear],
@@ -227,7 +269,7 @@ private struct ScanAnimationBox: View {
                 Text("AI Scanning…")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)
-                Text("On-device CoreML · No cloud")
+                Text("On-device NER · No cloud")
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.5))
             }
@@ -261,6 +303,32 @@ private struct ResultCard: View {
                 ResultStat(label: "Model", value: result.wasCloudProcessed ? "Cloud" : "Local")
             }
 
+            if !result.entities.isEmpty {
+                Divider()
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(result.entities.prefix(4)) { entity in
+                        HStack(spacing: 6) {
+                            Circle()
+                                .fill(entityColor(entity.type))
+                                .frame(width: 6, height: 6)
+                            Text(entity.value)
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                            Spacer()
+                            Text(String(format: "%.0f%%", entity.confidence * 100))
+                                .font(.system(size: 10))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    if result.entities.count > 4 {
+                        Text("+ \(result.entities.count - 4) more")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+
             HStack(spacing: 8) {
                 Image(systemName: "cpu")
                     .font(.system(size: 12))
@@ -278,6 +346,16 @@ private struct ResultCard: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 1)
+    }
+
+    private func entityColor(_ type: AIEntity.EntityType) -> Color {
+        switch type {
+        case .phi:        return .red
+        case .pciData:    return .orange
+        case .credential: return .purple
+        case .pii:        return .blue
+        case .financial:  return .green
+        }
     }
 }
 
@@ -297,25 +375,7 @@ private struct ResultStat: View {
     }
 }
 
-// MARK: - Stubs
-
-private final class StubImportAIOrchestrator: AIOrchestrator {
-    func provider(for sensitivity: SensitivityLevel, policy: PolicyBundle) -> any AIProvider {
-        StubImportAIProvider()
-    }
-    func scanAndClassify(fileData: Data, mimeType: String, policy: PolicyBundle) async throws -> AIClassificationResult {
-        AIClassificationResult(fileId: UUID(), sensitivity: .restricted, riskScore: 87, entities: [], modelVersion: "CoreML-3.1", processingMs: 2340, wasCloudProcessed: false)
-    }
-}
-
-private final class StubImportAIProvider: AIProvider {
-    var isLocalOnly: Bool { true }
-    func classify(fileData: Data, mimeType: String, policy: PolicyBundle) async throws -> AIClassificationResult {
-        AIClassificationResult(fileId: UUID(), sensitivity: .restricted, riskScore: 87, entities: [], modelVersion: "CoreML-3.1", processingMs: 2340, wasCloudProcessed: false)
-    }
-    func extractEntities(from text: String, policy: PolicyBundle) async throws -> [AIEntity] { [] }
-    func scoreRisk(file: SecureFile, entities: [AIEntity], policy: PolicyBundle) async throws -> Int { 87 }
-}
+// MARK: - Stub policy engine
 
 private final class StubImportPolicyEngine: PolicyEngine {
     var currentBundle: PolicyBundle? { nil }
