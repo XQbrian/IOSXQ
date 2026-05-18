@@ -15,7 +15,7 @@ struct FileViewerView: View {
     init(file: SecureFile) {
         _vm = StateObject(wrappedValue: FileViewerViewModel(
             file: file,
-            aiOrchestrator: StubAIOrchestrator(),
+            aiOrchestrator: OnDeviceAIOrchestrator(),
             policyEngine: StubFileViewerPolicyEngine(),
             xqAPI: StubXQSecureAPI()
         ))
