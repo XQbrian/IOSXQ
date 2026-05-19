@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XQ Secure Workspaces — Interactive Prototype</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
   :root {
     --brand: #3D5AFE; --brand-dark: #6979F8; --brand-light: #E8EAFD;
@@ -28,6 +29,28 @@
     --con-bg:#2A1F00;--con-t:#FFD54F;
     --res-bg:#2A0012;--res-t:#FF6E9E;
   }
+  /* ── Earth theme ── */
+  .earth {
+    --bg:#071013;--card:#112128;--nav:rgba(11,23,28,.96);--tab:rgba(11,23,28,.96);
+    --t1:#F0F4F8;--t2:#94A3B8;--t3:#4A6070;
+    --sep:#233743;
+    --brand:#FF7A59;--brand-dark:#E56040;--brand-light:rgba(255,122,89,.15);
+    --ok:#2A9D8F;--warn:#F4A261;--danger:#E76F51;
+    --pub-bg:#071B18;--pub-t:#2A9D8F;
+    --int-bg:#071B24;--int-t:#00B4D8;
+    --con-bg:#1E1800;--con-t:#E9C46A;
+    --res-bg:#1E0C08;--res-t:#FF7A59;
+    --earth-surface:#1A303A;--earth-teal:#00B4D8;--earth-accent:#E9C46A;
+  }
+  .earth .ra{background:linear-gradient(135deg,#1E0C08,#0E0400);border-color:#E76F51;}
+  .earth .ra-t{color:#FF7A59;}
+  .earth .inp{background:#0B171C;}
+  /* ── Theme swatch buttons ── */
+  .theme-btn{background:var(--card);border:1.5px solid var(--sep);border-radius:var(--r12);padding:10px 8px 9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;flex:1;transition:border-color .15s;}
+  .theme-btn .tswatch{width:100%;height:32px;border-radius:7px;flex-shrink:0;}
+  .theme-btn .tlabel{font-size:11px;font-weight:600;color:var(--t1);}
+  .theme-btn.ton{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand);}
+  .theme-btn.ton .tlabel{color:var(--brand);}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;background:#1A1A2E;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;overflow-x:hidden;}
   /* header */
@@ -69,8 +92,14 @@
   .tabs{background:var(--tab);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:8px 0 28px;display:flex;align-items:center;flex-shrink:0;}
   .ti{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;}
   .ti-ic{font-size:21px;}
+  .ti-ic .bi{font-size:22px;line-height:1;color:var(--t2);display:block;}
+  .ti.on .ti-ic .bi{color:var(--brand);}
   .ti-lb{font-size:10px;font-weight:500;color:var(--t3);}
   .ti.on .ti-lb{color:var(--brand);}
+  /* flat icon sizing helpers */
+  .ic-sm .bi{font-size:14px;}
+  .ic-md .bi{font-size:18px;}
+  .ic-lg .bi{font-size:24px;}
   /* card */
   .card{background:var(--card);border-radius:var(--r16);box-shadow:var(--sh1);overflow:hidden;}
   .cr{padding:13px 16px;display:flex;align-items:center;gap:12px;border-bottom:.5px solid var(--sep);}
@@ -183,6 +212,19 @@
   .ag-chip{background:rgba(61,90,254,.1);color:var(--brand);border:1px solid rgba(61,90,254,.2);border-radius:var(--rfull);padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;}
   .ag-chip:hover,.ag-chip.used{background:rgba(61,90,254,.18);}
   @keyframes agTyping{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+  .help-fab{position:absolute;bottom:100px;right:14px;z-index:150;width:46px;height:46px;border-radius:23px;background:linear-gradient(135deg,#3D5AFE,#6979F8);border:none;box-shadow:0 4px 18px rgba(61,90,254,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;}
+  .help-overlay{position:absolute;inset:0;z-index:300;background:var(--bg);display:none;flex-direction:column;animation:sIn .2s ease;}
+  .help-overlay.open{display:flex;}
+  .help-hdr{background:linear-gradient(135deg,#3D5AFE,#6979F8);padding:52px 18px 14px;flex-shrink:0;display:flex;align-items:center;gap:11px;}
+  .help-msgs{flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:10px;}
+  .help-msgs::-webkit-scrollbar{display:none;}
+  .hbubble-ai{background:var(--card);border-radius:4px 16px 16px 16px;padding:10px 13px;max-width:84%;font-size:13px;color:var(--t1);line-height:1.55;box-shadow:var(--sh1);}
+  .hbubble-user{background:var(--brand);border-radius:16px 4px 16px 16px;padding:10px 13px;max-width:84%;font-size:13px;color:#fff;line-height:1.55;}
+  .hchip{background:var(--brand-light);color:var(--brand);border:1px solid rgba(61,90,254,.25);border-radius:var(--rfull);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .help-tinput{flex:1;background:var(--bg);border:1px solid var(--sep);border-radius:22px;padding:9px 14px;font-size:14px;color:var(--t1);outline:none;font-family:inherit;}
+  .htyping span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--t3);animation:agTyping 1s infinite;margin:0 1px;}
+  .htyping span:nth-child(2){animation-delay:.2s;}
+  .htyping span:nth-child(3){animation-delay:.4s;}
 </style>
 </head>
 <body>
@@ -244,18 +286,31 @@
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div class="nb"><span class="nb-back" onclick="go('s-welcome')">← Back</span><span class="nb-title">Connect Workspace</span><span></span></div>
   <div class="sc p16">
-    <p class="t2c mb20" style="line-height:1.5;">Choose your enterprise file repository. All data stays encrypted end-to-end.</p>
-    <div style="display:flex;flex-direction:column;gap:11px;">
-      <div class="card cr" style="cursor:pointer;border:2px solid var(--brand);border-radius:var(--r16);" onclick="go('s-workgroup-select')">
-        <span style="font-size:26px;">☁️</span><div class="col"><div class="t1c semi">SharePoint / OneDrive</div><div class="t3c">Microsoft 365 · OAuth PKCE</div></div><span style="color:var(--brand);font-size:18px;">›</span>
+    <p class="t2c mb20" style="line-height:1.5;">Choose your file repository. All data stays encrypted end-to-end.</p>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:20px;">
+      <!-- Local Files — default selection -->
+      <div id="repo-local" class="card cr" style="cursor:pointer;border:2px solid var(--brand);border-radius:var(--r16);background:linear-gradient(135deg,rgba(61,90,254,.05),transparent);" onclick="selectRepo('local')">
+        <span style="font-size:26px;color:var(--brand);"><i class="bi bi-device-hdd-fill"></i></span>
+        <div class="col"><div class="t1c semi">Local Files</div><div class="t3c">On-device vault · No cloud required</div></div>
+        <span id="repo-check-local" style="color:var(--brand);font-size:18px;font-weight:700;">✓</span>
       </div>
-      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-workgroup-select')">
-        <span style="font-size:26px;">🖥️</span><div class="col"><div class="t1c semi">SMB Network Drive</div><div class="t3c">Corporate LAN / VPN</div></div><span style="color:var(--t3);font-size:18px;">›</span>
+      <div id="repo-sharepoint" class="card cr" style="cursor:pointer;border:2px solid transparent;border-radius:var(--r16);" onclick="selectRepo('sharepoint')">
+        <span style="font-size:26px;color:#0078D4;"><i class="bi bi-microsoft"></i></span>
+        <div class="col"><div class="t1c semi">SharePoint / OneDrive</div><div class="t3c">Microsoft 365 · OAuth PKCE</div></div>
+        <span id="repo-check-sharepoint" style="color:transparent;font-size:18px;font-weight:700;">✓</span>
       </div>
-      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-workgroup-select')">
-        <span style="font-size:26px;">📁</span><div class="col"><div class="t1c semi">Google Drive</div><div class="t3c">Google Workspace · OAuth 2.0</div></div><span style="color:var(--t3);font-size:18px;">›</span>
+      <div id="repo-smb" class="card cr" style="cursor:pointer;border:2px solid transparent;border-radius:var(--r16);" onclick="selectRepo('smb')">
+        <span style="font-size:26px;color:var(--t2);"><i class="bi bi-hdd-network-fill"></i></span>
+        <div class="col"><div class="t1c semi">SMB Network Drive</div><div class="t3c">Corporate LAN / VPN</div></div>
+        <span id="repo-check-smb" style="color:transparent;font-size:18px;font-weight:700;">✓</span>
+      </div>
+      <div id="repo-gdrive" class="card cr" style="cursor:pointer;border:2px solid transparent;border-radius:var(--r16);" onclick="selectRepo('gdrive')">
+        <span style="font-size:26px;color:#4285F4;"><i class="bi bi-cloud-fill"></i></span>
+        <div class="col"><div class="t1c semi">Google Drive</div><div class="t3c">Google Workspace · OAuth 2.0</div></div>
+        <span id="repo-check-gdrive" style="color:transparent;font-size:18px;font-weight:700;">✓</span>
       </div>
     </div>
+    <button class="btn bp mb8" onclick="go('s-workgroup-select')">Continue →</button>
   </div>
 </div>
 
@@ -285,7 +340,7 @@
     <!-- Permission rows -->
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
       <div class="card p16 row" style="gap:13px;">
-        <div style="width:42px;height:42px;background:#F0F4FF;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔒</div>
+        <div style="width:42px;height:42px;background:#F0F4FF;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#3D5AFE;"><i class="bi bi-shield-lock-fill"></i></div>
         <div class="col">
           <div class="t1c semi">Face ID / Touch ID</div>
           <div class="t3c" style="margin-top:2px;">Required for Secure Enclave key access</div>
@@ -293,7 +348,7 @@
         <div class="tog on"><div class="tog-k"></div></div>
       </div>
       <div class="card p16 row" style="gap:13px;">
-        <div style="width:42px;height:42px;background:#FFF3E0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔔</div>
+        <div style="width:42px;height:42px;background:#FFF3E0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#FF9500;"><i class="bi bi-bell-fill"></i></div>
         <div class="col">
           <div class="t1c semi">Notifications</div>
           <div class="t3c" style="margin-top:2px;">Policy alerts and security events</div>
@@ -301,7 +356,7 @@
         <div class="tog on"><div class="tog-k"></div></div>
       </div>
       <div class="card p16 row" style="gap:13px;">
-        <div style="width:42px;height:42px;background:#E8F5E9;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📂</div>
+        <div style="width:42px;height:42px;background:#E8F5E9;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#2E7D32;"><i class="bi bi-folder2-open"></i></div>
         <div class="col">
           <div class="t1c semi">Files Access</div>
           <div class="t3c" style="margin-top:2px;">Import from Files app and iCloud</div>
@@ -310,7 +365,7 @@
       </div>
       <!-- Email connect row -->
       <div class="card p16 row" style="gap:13px;border:1.5px dashed rgba(61,90,254,.25);">
-        <div style="width:42px;height:42px;background:#E8EAFD;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✉️</div>
+        <div style="width:42px;height:42px;background:#E8EAFD;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:#3D5AFE;"><i class="bi bi-envelope-fill"></i></div>
         <div class="col">
           <div class="t1c semi">Connect Email</div>
           <div class="t3c" style="margin-top:2px;">Encrypt outbound emails automatically</div>
@@ -348,7 +403,7 @@
   <div class="lt">
     <div class="lt-text">Home</div>
     <div class="row" style="gap:8px;padding-bottom:8px;">
-      <button class="ibtn" onclick="go('s-notifications')">🔔</button>
+      <button class="ibtn" onclick="go('s-notifications')" style="font-size:18px;color:var(--t1);"><i class="bi bi-bell-fill"></i></button>
       <div class="av">BW</div>
     </div>
   </div>
@@ -370,13 +425,13 @@
         <div class="sh" style="padding:0 0 9px;">Quick Actions</div>
         <!-- Primary: Files + Email -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;">
-          <div class="card" style="padding:16px 12px;text-align:center;cursor:pointer;" onclick="go('s-file-browser')"><div style="font-size:28px;">📁</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-top:5px;">Files</div><div style="font-size:10px;color:var(--t3);margin-top:2px;">Browse &amp; share</div></div>
-          <div class="card" style="padding:16px 12px;text-align:center;cursor:pointer;" onclick="go('s-email-inbox')"><div style="font-size:28px;">✉️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-top:5px;">Email</div><div style="font-size:10px;color:var(--t3);margin-top:2px;">Secure inbox</div></div>
+          <div class="card" style="padding:16px 12px;text-align:center;cursor:pointer;" onclick="go('s-file-browser')"><div style="font-size:28px;color:var(--brand);"><i class="bi bi-folder-fill"></i></div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-top:5px;">Files</div><div style="font-size:10px;color:var(--t3);margin-top:2px;">Browse &amp; share</div></div>
+          <div class="card" style="padding:16px 12px;text-align:center;cursor:pointer;" onclick="go('s-email-inbox')"><div style="font-size:28px;color:var(--brand);"><i class="bi bi-envelope-fill"></i></div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-top:5px;">Email</div><div style="font-size:10px;color:var(--t3);margin-top:2px;">Secure inbox</div></div>
         </div>
         <!-- Secondary: AI Import + Sharing -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
-          <div style="background:var(--card);border-radius:var(--r12);padding:9px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:var(--sh1);" onclick="go('s-ai-import')"><span style="font-size:18px;">🤖</span><span style="font-size:12px;font-weight:600;color:var(--t2);">AI Import</span></div>
-          <div style="background:var(--card);border-radius:var(--r12);padding:9px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:var(--sh1);" onclick="go('s-sharing')"><span style="font-size:18px;">🔗</span><span style="font-size:12px;font-weight:600;color:var(--t2);">Sharing</span></div>
+          <div style="background:var(--card);border-radius:var(--r12);padding:9px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:var(--sh1);" onclick="go('s-ai-import')"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-stars"></i></span><span style="font-size:12px;font-weight:600;color:var(--t2);">AI Import</span></div>
+          <div style="background:var(--card);border-radius:var(--r12);padding:9px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:var(--sh1);" onclick="go('s-sharing')"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-share-fill"></i></span><span style="font-size:12px;font-weight:600;color:var(--t2);">Sharing</span></div>
         </div>
       </div>
       <div>
@@ -412,21 +467,21 @@
     </div>
   </div>
   <div class="tabs">
-    <div class="ti on" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb" style="color:var(--brand);">Home</div></div>
-    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti on" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
 <!-- ══ S6 FILE BROWSER ══ -->
 <div class="scr" id="s-file-browser" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="lt"><div class="lt-text">Files</div><div class="row" style="gap:8px;padding-bottom:8px;"><button class="ibtn" onclick="go('s-ai-import')">➕</button><button class="ibtn">⋯</button></div></div>
+  <div class="lt"><div class="lt-text">Files</div><div class="row" style="gap:8px;padding-bottom:8px;"><button class="ibtn" onclick="go('s-ai-import')" style="font-size:16px;color:var(--brand);"><i class="bi bi-plus-lg"></i></button><button class="ibtn" style="font-size:16px;color:var(--t2);"><i class="bi bi-three-dots"></i></button></div></div>
   <div style="padding:6px 16px 4px;" onclick="go('s-semantic-search')">
     <div style="background:var(--card);border-radius:var(--r12);padding:9px 14px;display:flex;gap:8px;align-items:center;cursor:pointer;">
-      <span style="font-size:14px;">🔍</span>
+      <span style="font-size:15px;color:var(--brand);"><i class="bi bi-search"></i></span>
       <span style="flex:1;color:var(--t3);font-size:14px;">Ask AI: show contracts expiring this quarter…</span>
       <span style="background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✦ AI</span>
     </div>
@@ -534,11 +589,11 @@
     </div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -548,7 +603,7 @@
   <div class="nb" style="background:rgba(26,26,26,.95);border-color:#333;">
     <span class="nb-back" onclick="go('s-file-browser')">← Files</span>
     <span class="nb-title" style="color:#fff;font-size:14px;">Q4-Financial-Report.pdf</span>
-    <span class="nb-act" style="font-size:18px;" onclick="showSheet()">⤴</span>
+    <span class="nb-act" style="font-size:18px;" onclick="showSheet()"><i class="bi bi-box-arrow-up"></i></span>
   </div>
   <div id="phi-banner" class="panel-phi" style="background:#7B0033;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
     <div style="display:flex;align-items:center;gap:8px;"><span>🚫</span><div style="color:#fff;font-size:11px;font-weight:700;letter-spacing:.4px;">RESTRICTED — PHI DETECTED</div></div>
@@ -743,7 +798,7 @@
           <div style="font-size:8px;color:#6AABFF;margin-top:1px;">Escalate →</div>
         </div>
       </div>
-      <button style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;" onclick="showSheet()">Share ⤴</button>
+      <button style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;" onclick="showSheet()">Share <i class="bi bi-box-arrow-up"></i></button>
     </div>
   </div>
   <!-- Share sheet -->
@@ -873,11 +928,11 @@
     </div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -895,7 +950,7 @@
       <span style="background:var(--con-bg);color:var(--con-t);font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--rfull);">2 Action</span>
       <span style="background:var(--int-bg);color:var(--int-t);font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--rfull);">1 FYI</span>
     </div>
-    <span style="font-size:9px;color:var(--t3);">🔒 On-device</span>
+    <span style="font-size:9px;color:var(--t3);"><i class="bi bi-lock-fill"></i> On-device</span>
   </div>
   <div class="sc">
     <div class="card ph16">
@@ -950,11 +1005,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
-    <div class="ti on" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb" style="color:var(--brand);">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti on" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -995,7 +1050,7 @@
       <!-- Encryption + From -->
       <div style="display:flex;gap:8px;align-items:center;padding:8px 16px;">
         <span style="font-size:12px;color:var(--t2);width:32px;flex-shrink:0;">Enc:</span>
-        <div style="display:flex;align-items:center;gap:5px;flex:1;"><span>🔒</span><span style="font-size:12px;color:var(--ok);font-weight:600;">AES-256-GCM · E2E</span></div>
+        <div style="display:flex;align-items:center;gap:5px;flex:1;"><span style="color:var(--ok);"><i class="bi bi-lock-fill"></i></span><span style="font-size:12px;color:var(--ok);font-weight:600;">AES-256-GCM · E2E</span></div>
         <span style="font-size:11px;color:var(--t3);">brian@xqmsg.com ▾</span>
       </div>
     </div>
@@ -1019,7 +1074,7 @@
         <span style="background:#E8F5E9;color:#1B5E20;font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">Concise ✓</span>
         <span style="background:var(--con-bg);color:var(--con-t);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">⚠ Commitment</span>
       </div>
-      <span style="font-size:9px;color:var(--t3);">🔒 On-device</span>
+      <span style="font-size:9px;color:var(--t3);"><i class="bi bi-lock-fill"></i> On-device</span>
     </div>
     <!-- Commitment Detection Banner (Capability #3) -->
     <div style="background:linear-gradient(135deg,rgba(255,149,0,.12),rgba(255,149,0,.05));border-bottom:1px solid rgba(255,149,0,.3);padding:9px 16px;flex-shrink:0;">
@@ -1062,7 +1117,7 @@
       <div id="css-steps" style="padding:16px 20px;">
         <!-- Step 1 -->
         <div class="css-step" id="css-1" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
-          <div id="css-ic1" style="width:28px;height:28px;border-radius:50%;background:var(--brand-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">🔍</div>
+          <div id="css-ic1" style="width:28px;height:28px;border-radius:50%;background:var(--brand-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--brand);"><i class="bi bi-search"></i></div>
           <div>
             <div style="font-size:13px;font-weight:600;color:var(--t1);">PHI Classification</div>
             <div id="css-d1" style="font-size:11px;color:var(--t2);margin-top:2px;">Scanning for protected health information…</div>
@@ -1130,11 +1185,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti on" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb" style="color:var(--brand);">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti on" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -1149,14 +1204,14 @@
     </div>
     <div class="sh">Security</div>
     <div class="card ph16 mb16">
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">🔒</span><div class="t1c">Biometric Lock</div></div><div class="tog on"><div class="tog-k"></div></div></div>
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">⏱️</span><div class="t1c">Auto-lock</div></div><div style="color:var(--brand);font-size:13px;font-weight:500;">2 min</div></div>
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">📜</span><div class="t1c">Certificate Pinning</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">Active</div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#3D5AFE;"><i class="bi bi-shield-lock-fill"></i></span><div class="t1c">Biometric Lock</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--t2);"><i class="bi bi-clock-fill"></i></span><div class="t1c">Auto-lock</div></div><div style="color:var(--brand);font-size:13px;font-weight:500;">2 min</div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--ok);"><i class="bi bi-patch-check-fill"></i></span><div class="t1c">Certificate Pinning</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">Active</div></div>
     </div>
     <div class="sh">Enterprise Admin</div>
     <div class="card ph16 mb16" style="border:1.5px solid var(--brand);">
       <div class="cr rjb" style="padding:13px 0;cursor:pointer;" onclick="go('s-policy')">
-        <div class="row" style="gap:11px;"><div style="width:38px;height:38px;background:var(--brand-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🏛️</div><div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Policy Management</div><div class="t3c">PHI rules · Share controls · AI gates</div></div></div>
+        <div class="row" style="gap:11px;"><div style="width:38px;height:38px;background:var(--brand-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--brand);"><i class="bi bi-shield-fill-check"></i></div><div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">Policy Management</div><div class="t3c">PHI rules · Share controls · AI gates</div></div></div>
         <span style="color:var(--brand);font-size:17px;">›</span>
       </div>
       <div class="cr rjb" style="padding:13px 0;"><div class="col"><div style="font-size:13px;font-weight:500;color:var(--t1);">Cloud AI (globally off)</div><div class="t3c">CUI/PHI always local-only</div></div><div class="tog off"><div class="tog-k"></div></div></div>
@@ -1164,10 +1219,28 @@
     </div>
     <div class="sh">Notifications</div>
     <div class="card ph16 mb16">
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">🎣</span><div class="col"><div class="t1c">Phishing Alerts</div><div class="t3c">Risk banners on email threads</div></div></div><div id="tog-notif-phishing" class="tog on" style="cursor:pointer;" onclick="toggleNotif('phishing')"><div class="tog-k"></div></div></div>
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">🚫</span><div class="col"><div class="t1c">PHI Detection Banners</div><div class="t3c">Classification alerts on documents</div></div></div><div id="tog-notif-phi" class="tog on" style="cursor:pointer;" onclick="toggleNotif('phi')"><div class="tog-k"></div></div></div>
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">⚖️</span><div class="col"><div class="t1c">Policy &amp; Compliance Panels</div><div class="t3c">Cited controls on files and email</div></div></div><div id="tog-notif-policy" class="tog on" style="cursor:pointer;" onclick="toggleNotif('policy')"><div class="tog-k"></div></div></div>
-      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;">✦</span><div class="col"><div class="t1c">AI Intelligence Panels</div><div class="t3c">Content analysis panels on files &amp; email</div></div></div><div id="tog-notif-ai" class="tog on" style="cursor:pointer;" onclick="toggleNotif('ai')"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--warn);"><i class="bi bi-exclamation-triangle-fill"></i></span><div class="col"><div class="t1c">Phishing Alerts</div><div class="t3c">Risk banners on email threads</div></div></div><div id="tog-notif-phishing" class="tog on" style="cursor:pointer;" onclick="toggleNotif('phishing')"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--danger);"><i class="bi bi-shield-exclamation"></i></span><div class="col"><div class="t1c">PHI Detection Banners</div><div class="t3c">Classification alerts on documents</div></div></div><div id="tog-notif-phi" class="tog on" style="cursor:pointer;" onclick="toggleNotif('phi')"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-file-earmark-text-fill"></i></span><div class="col"><div class="t1c">Policy &amp; Compliance Panels</div><div class="t3c">Cited controls on files and email</div></div></div><div id="tog-notif-policy" class="tog on" style="cursor:pointer;" onclick="toggleNotif('policy')"><div class="tog-k"></div></div></div>
+      <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-cpu-fill"></i></span><div class="col"><div class="t1c">AI Intelligence Panels</div><div class="t3c">Content analysis panels on files &amp; email</div></div></div><div id="tog-notif-ai" class="tog on" style="cursor:pointer;" onclick="toggleNotif('ai')"><div class="tog-k"></div></div></div>
+    </div>
+    <div class="sh">Appearance</div>
+    <div class="card p16 mb16">
+      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:10px;letter-spacing:.2px;">Theme</div>
+      <div style="display:flex;gap:8px;">
+        <button id="theme-btn-light" class="theme-btn ton" onclick="setTheme('light')">
+          <div class="tswatch" style="background:linear-gradient(135deg,#F2F2F7 50%,#3D5AFE 50%);"></div>
+          <span class="tlabel">Light</span>
+        </button>
+        <button id="theme-btn-dark" class="theme-btn" onclick="setTheme('dark')">
+          <div class="tswatch" style="background:linear-gradient(135deg,#000 50%,#6979F8 50%);"></div>
+          <span class="tlabel">Dark</span>
+        </button>
+        <button id="theme-btn-earth" class="theme-btn" onclick="setTheme('earth')">
+          <div class="tswatch" style="background:linear-gradient(135deg,#071013 50%,#FF7A59 50%);"></div>
+          <span class="tlabel">Earth</span>
+        </button>
+      </div>
     </div>
     <div class="sh">About</div>
     <div class="card ph16 mb20">
@@ -1179,11 +1252,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti on" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb" style="color:var(--brand);">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti on" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Settings</div></div>
   </div>
 </div>
 
@@ -1192,7 +1265,7 @@
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div class="nb"><span class="nb-back" onclick="go('s-settings')">← Settings</span><span class="nb-title">Policy Management</span><span class="nb-act">Save</span></div>
   <div class="sc p16">
-    <div class="ra mb16" style="padding:11px 13px;"><span style="font-size:18px;flex-shrink:0;">🔏</span><div><div class="ra-t" style="font-size:11px;">Policy Bundle Signed</div><div class="ra-d" style="font-size:11px;">Last sync 4 min ago · HSM signature verified · v2.1.4</div></div></div>
+    <div class="ra mb16" style="padding:11px 13px;"><span style="font-size:18px;flex-shrink:0;color:var(--ok);"><i class="bi bi-patch-check-fill"></i></span><div><div class="ra-t" style="font-size:11px;">Policy Bundle Signed</div><div class="ra-d" style="font-size:11px;">Last sync 4 min ago · HSM signature verified · v2.1.4</div></div></div>
     <div class="sh" style="padding:0 0 9px;">Classification Rules</div>
     <div class="card mb16">
       <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">PHI Auto-detection</div><div class="t3c">AI flags patient health info</div></div><div class="tog on"><div class="tog-k"></div></div></div>
@@ -1237,7 +1310,7 @@
     <!-- AI Thread Summary (Capability #2) -->
     <div id="email-ai-summary" class="panel-ai" style="background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(0,0,0,0));border-bottom:.5px solid var(--sep);padding:13px 16px;flex-shrink:0;">
       <div class="pnl-hdr" style="margin-bottom:9px;">
-        <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;">🤖</span><div style="font-size:12px;font-weight:700;color:var(--t1);">AI Thread Summary</div><span style="font-size:9px;color:var(--t3);">🔒 On-device CoreML</span></div>
+        <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;">🤖</span><div style="font-size:12px;font-weight:700;color:var(--t1);">AI Thread Summary</div><span style="font-size:9px;color:var(--t3);"><i class="bi bi-lock-fill"></i> On-device CoreML</span></div>
         <div style="display:flex;gap:8px;align-items:center;">
           <span id="sum-toggle" style="font-size:12px;color:var(--brand);cursor:pointer;" onclick="expandSummary()">▼ Show</span>
           <button class="pnl-btn" onclick="dismissPanel('email-ai-summary')" title="Dismiss">×</button>
@@ -1410,7 +1483,7 @@
   <div class="nb"><span class="nb-back" onclick="go('s-file-browser')">← Files</span><span class="nb-title">AI File Search</span><span style="font-size:10px;font-weight:700;color:var(--brand);">✦ AI</span></div>
   <div style="padding:10px 16px 4px;">
     <div style="background:var(--card);border-radius:var(--r12);padding:10px 14px;display:flex;gap:10px;align-items:center;">
-      <span style="font-size:16px;">🔍</span>
+      <span style="font-size:16px;color:var(--brand);"><i class="bi bi-search"></i></span>
       <input id="ai-search-inp" style="flex:1;background:none;border:none;outline:none;color:var(--t1);font-size:14px;" placeholder="Ask anything about your files…" value="contracts expiring this quarter">
       <span style="background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0;">✦ AI</span>
     </div>
@@ -1464,11 +1537,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -1540,11 +1613,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
   <!-- Agent authorization overlay -->
   <div id="agent-auth-sheet" class="ov hide">
@@ -1673,11 +1746,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti on" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -2072,11 +2145,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti on"><div class="ti-ic">🔗</div><div class="ti-lb" style="color:var(--brand);">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti on"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb" style="color:var(--brand);">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -2137,11 +2210,11 @@
     <div style="height:16px;"></div>
   </div>
   <div class="tabs">
-    <div class="ti" onclick="go('s-home')"><div class="ti-ic">🏠</div><div class="ti-lb">Home</div></div>
-    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic">📁</div><div class="ti-lb">Files</div></div>
-    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
-    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
-    <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
   </div>
 </div>
 
@@ -2229,6 +2302,32 @@
     </div>
     <button class="btn bp mb8" onclick="go('s-groups')">Join Workspace</button>
     <button class="btn bo mb16" onclick="go('s-notifications')" style="color:var(--danger);border-color:var(--danger);">Decline Invitation</button>
+  </div>
+</div>
+
+<!-- ══ GLOBAL HELP CHAT (phone) ══ -->
+<button class="help-fab" id="help-fab" onclick="toggleHelp('phone')" title="Help" style="font-size:20px;"><i class="bi bi-chat-dots-fill"></i></button>
+<div class="help-overlay" id="help-chat">
+  <div class="help-hdr">
+    <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;">✦</div>
+    <div style="flex:1;">
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.2;">XQ AI Help</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6);">On-device · always available</div>
+    </div>
+    <button style="background:rgba(255,255,255,.18);border:none;border-radius:50%;width:32px;height:32px;color:#fff;font-size:18px;cursor:pointer;line-height:1;" onclick="toggleHelp('phone')">×</button>
+  </div>
+  <div class="help-msgs" id="help-msgs"></div>
+  <div id="help-chips-area" style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0;">
+    <button class="hchip" onclick="helpChip('How do I encrypt a file?')">Encrypt a file</button>
+    <button class="hchip" onclick="helpChip('How do I share securely?')">Share securely</button>
+    <button class="hchip" onclick="helpChip('What is risk scoring?')">Risk scoring</button>
+    <button class="hchip" onclick="helpChip('How does Face ID work?')">Face ID & keys</button>
+    <button class="hchip" onclick="helpChip('Can I work offline?')">Offline use</button>
+    <button class="hchip" onclick="helpChip('How do I revoke access?')">Revoke access</button>
+  </div>
+  <div style="background:var(--card);border-top:.5px solid var(--sep);padding:9px 12px 36px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
+    <input class="help-tinput" id="help-input" type="text" placeholder="Ask anything about XQ…" onkeydown="if(event.key==='Enter')sendHelpMsg()">
+    <button style="width:36px;height:36px;border-radius:18px;background:var(--brand);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;" onclick="sendHelpMsg()">↑</button>
   </div>
 </div>
 
@@ -2396,6 +2495,31 @@
       </div>
     </div>
   </div>
+  <!-- Help FAB for iPad -->
+  <button class="help-fab" id="help-fab-ipad" style="bottom:20px;font-size:20px;" onclick="toggleHelp('ipad')" title="Help"><i class="bi bi-chat-dots-fill"></i></button>
+  <div class="help-overlay" id="help-chat-ipad">
+    <div class="help-hdr">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;">✦</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.2;">XQ AI Help</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);">On-device · always available</div>
+      </div>
+      <button style="background:rgba(255,255,255,.18);border:none;border-radius:50%;width:32px;height:32px;color:#fff;font-size:18px;cursor:pointer;line-height:1;" onclick="toggleHelp('ipad')">×</button>
+    </div>
+    <div class="help-msgs" id="help-msgs-ipad"></div>
+    <div id="help-chips-area-ipad" style="padding:0 12px 8px;display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0;">
+      <button class="hchip" onclick="helpChipIpad('How do I encrypt a file?')">Encrypt a file</button>
+      <button class="hchip" onclick="helpChipIpad('How do I share securely?')">Share securely</button>
+      <button class="hchip" onclick="helpChipIpad('What is risk scoring?')">Risk scoring</button>
+      <button class="hchip" onclick="helpChipIpad('How does Face ID work?')">Face ID & keys</button>
+      <button class="hchip" onclick="helpChipIpad('Can I work offline?')">Offline use</button>
+      <button class="hchip" onclick="helpChipIpad('How do I revoke access?')">Revoke access</button>
+    </div>
+    <div style="background:var(--card);border-top:.5px solid var(--sep);padding:9px 12px 20px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
+      <input class="help-tinput" id="help-input-ipad" type="text" placeholder="Ask anything about XQ…" onkeydown="if(event.key==='Enter')sendHelpMsgIpad()">
+      <button style="width:36px;height:36px;border-radius:18px;background:var(--brand);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;" onclick="sendHelpMsgIpad()">↑</button>
+    </div>
+  </div>
 </div>
 
 </div><!-- /page-wrap -->
@@ -2490,10 +2614,26 @@ function resetScan() {
   document.getElementById('result-box').style.display = 'none';
 }
 
+function setTheme(theme) {
+  const phone = document.getElementById('phone');
+  const ipad  = document.getElementById('ipad-inner');
+  const targets = [phone, ipad].filter(Boolean);
+  targets.forEach(el => { el.classList.remove('dm','earth'); });
+  if (theme === 'dark')  targets.forEach(el => el.classList.add('dm'));
+  if (theme === 'earth') targets.forEach(el => el.classList.add('earth'));
+  // Update swatch buttons
+  ['light','dark','earth'].forEach(t => {
+    const btn = document.getElementById('theme-btn-' + t);
+    if (btn) btn.classList.toggle('ton', t === theme);
+  });
+  // Keep ctrl strip button in sync
+  const ctrlBtn = document.querySelector('[onclick="toggleDark()"]');
+  if (ctrlBtn) ctrlBtn.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+}
+
 function toggleDark() {
-  document.getElementById('phone').classList.toggle('dm');
-  document.querySelector('[onclick="toggleDark()"]').textContent =
-    document.getElementById('phone').classList.contains('dm') ? '☀️ Light' : '🌙 Dark';
+  const isDark = document.getElementById('phone')?.classList.contains('dm');
+  setTheme(isDark ? 'light' : 'dark');
 }
 
 function ssTab(tab) {
@@ -2722,6 +2862,144 @@ function docAIAssist() {
 
 window.addEventListener('load', () => splash());
 
+// ── Help Chat ──────────────────────────────────────────────────────────────
+
+const HELP_KB = [
+  { keys:['encrypt','encryption','aes','cipher'],
+    ans:"To encrypt a file, open it in the File Browser and tap Share → Secure Share. XQ applies AES-256-GCM encryption before the file leaves your device — the key lives in your Secure Enclave hardware chip. Even XQ servers can't read the content." },
+  { keys:['share','send file','forward','recipient'],
+    ans:"Tap any file → Share Securely. Add recipient emails, choose an expiry window, and hit Send. XQ uploads only ciphertext to SharePoint/OneDrive. Recipients need the XQ app to decrypt — the key exchange uses a zero-knowledge protocol." },
+  { keys:['risk','score','dashboard','danger','threat'],
+    ans:"The AI Risk Score scans your files on-device for credential leaks, PHI, stale permissions, and policy drift — entirely locally, no content leaves your device. Tap the risk banner in the Files screen to open the full Risk Dashboard with per-issue remediation." },
+  { keys:['phi','hipaa','health','patient','medical','record'],
+    ans:"XQ detects PHI (patient IDs, SSNs, diagnoses) using an on-device NER model. Files with PHI are auto-classified Restricted. Sharing them externally requires your explicit HIPAA §164.502 acknowledgement before send — this is always audit-logged." },
+  { keys:['face id','touch id','biometric','fingerprint','face'],
+    ans:"Face ID/Touch ID unlocks your Secure Enclave key — the hardware chip that holds your root encryption key. Without biometric, files stay encrypted even if someone steals your device. Your biometric template never leaves the chip, ever." },
+  { keys:['revoke','remove access','permission','stale','offboard'],
+    ans:"Open Files → Risk Dashboard → Stale Permissions. You'll see active shares with departed employees or old public links. Tap Revoke to remove access instantly. The AI Agent can batch-revoke multiple issues at once if you authorize it." },
+  { keys:['workspace','workgroup','team','org'],
+    ans:"A workspace is a shared encrypted space managed by your org. Each workspace can have different classification defaults — Restricted for Clinical, Confidential for Legal, etc. Switch workspaces anytime in Settings → Workspaces, or from the onboarding screen." },
+  { keys:['email','compose','send email','outlook','gmail','mail'],
+    ans:"Open the Email tab and tap Compose. XQ scans the body for PHI on-device before send, verifies the recipient's XQ public key, then encrypts the whole message with AES-256-GCM. The recipient must have XQ installed to read it. You can connect email in Settings → Integrations." },
+  { keys:['notification','alert','push','badge'],
+    ans:"Notifications surface policy violations, expiring shares, and security events. Critical events (credential exposure, HIPAA violations) always notify. Configure which alerts you receive in Settings → Notifications — but critical events cannot be muted." },
+  { keys:['policy','compliance','rule','regulation','law'],
+    ans:"Policies are set by your org admin and enforced locally by XQ. They define classification rules, retention windows, and sharing restrictions. The Fuzzy Policy Engine scores files against these rules even when you're fully offline." },
+  { keys:['key','enclave','secure enclave','crypto','cryptography'],
+    ans:"Your root key is generated in the Secure Enclave on first launch and never leaves the hardware chip. All AES-256-GCM operations happen inside the chip. Migrating to a new device requires biometric re-authentication on both devices simultaneously." },
+  { keys:['offline','no network','airplane','vpn','internet'],
+    ans:"XQ works fully offline for any file already in your Vault. Classification, policy enforcement, and the AI risk engine all run on-device. Syncing to SharePoint or OneDrive needs connectivity, but your local vault is always accessible and searchable." },
+  { keys:['import','add file','upload','bring in'],
+    ans:"Tap + in the Files screen to import. You can pull from SharePoint, SMB drives, Google Drive, or the iOS Files app. XQ classifies and encrypts each file on import — plaintext never touches the filesystem at any point." },
+  { keys:['classification','sensitivity','label','tag','confidential','restricted','internal','public'],
+    ans:"XQ uses four sensitivity levels: Public, Internal, Confidential, and Restricted. Files are classified automatically by on-device AI on import. You can override the label manually. Classification controls what sharing and cloud-AI actions are permitted." },
+  { keys:['ai','intelligent','machine learning','model','on-device'],
+    ans:"XQ's AI features (classification, risk scoring, semantic search, email analysis) all run on-device using local models. No file content is ever sent to cloud AI. Cloud AI is an opt-in feature for metadata-only operations, and requires your admin to enable it." },
+  { keys:['semantic search','search','find','query'],
+    ans:"Tap the sparkle-magnifier icon in Files for AI semantic search. Type a natural-language query like 'contracts expiring this quarter' or 'files with PHI shared externally' and XQ searches across content, metadata, and classifications — all on-device." },
+  { keys:['jailbreak','security','rooted','compromised'],
+    ans:"XQ runs a jailbreak integrity check on every launch. If the device risk score exceeds 40, the session is refused entirely — no partial access. This protects your Secure Enclave keys even if the OS is compromised." },
+  { keys:['pin','password','passcode'],
+    ans:"If biometrics aren't available, XQ falls back to a 6-digit PIN. The PIN unlocks a software key — less secure than Secure Enclave, but still encrypted. We strongly recommend enabling Face ID or Touch ID in Settings." },
+];
+
+let helpReady = false;
+
+function findHelpAnswer(input) {
+  const q = input.toLowerCase();
+  for (const item of HELP_KB) {
+    if (item.keys.some(k => q.includes(k))) return item.ans;
+  }
+  return "I can help with encrypting files, sharing, risk scores, permissions, workspaces, email security, and more. Could you give me a bit more detail about what you're trying to do?";
+}
+
+function addHelpMsg(msgsEl, text, role) {
+  const isAI = role === 'ai';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = isAI ? 'display:flex;align-items:flex-start;gap:8px;' : 'display:flex;justify-content:flex-end;';
+  if (isAI) {
+    wrap.innerHTML = `<div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:800;flex-shrink:0;margin-top:2px;">✦</div><div class="hbubble-ai">${text}</div>`;
+  } else {
+    wrap.innerHTML = `<div class="hbubble-user">${text}</div>`;
+  }
+  msgsEl.appendChild(wrap);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  return wrap;
+}
+
+function addTypingBubble(msgsEl) {
+  const wrap = document.createElement('div');
+  wrap.id = 'h-typing-' + msgsEl.id;
+  wrap.style.cssText = 'display:flex;align-items:flex-start;gap:8px;';
+  wrap.innerHTML = `<div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:800;flex-shrink:0;margin-top:2px;">✦</div><div class="hbubble-ai htyping"><span></span><span></span><span></span></div>`;
+  msgsEl.appendChild(wrap);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  return wrap;
+}
+
+function helpRespond(msgsEl, chipsArea, question) {
+  if (chipsArea) chipsArea.style.display = 'none';
+  addHelpMsg(msgsEl, question, 'user');
+  const typing = addTypingBubble(msgsEl);
+  const answer = findHelpAnswer(question);
+  setTimeout(() => {
+    typing.remove();
+    addHelpMsg(msgsEl, answer, 'ai');
+  }, 850 + Math.random() * 350);
+}
+
+function toggleHelp(ctx) {
+  const chatId  = ctx === 'ipad' ? 'help-chat-ipad' : 'help-chat';
+  const fabId   = ctx === 'ipad' ? 'help-fab-ipad'  : 'help-fab';
+  const msgsId  = ctx === 'ipad' ? 'help-msgs-ipad' : 'help-msgs';
+  const chipsId = ctx === 'ipad' ? 'help-chips-area-ipad' : 'help-chips-area';
+  const chat = document.getElementById(chatId);
+  const fab  = document.getElementById(fabId);
+  if (!chat) return;
+  const opening = !chat.classList.contains('open');
+  chat.classList.toggle('open', opening);
+  if (fab) fab.style.display = opening ? 'none' : 'flex';
+  if (opening && !chat.dataset.inited) {
+    chat.dataset.inited = '1';
+    const msgsEl = document.getElementById(msgsId);
+    if (msgsEl) addHelpMsg(msgsEl, "Hi! I'm your XQ guide. I can help with encrypting files, sharing, risk scores, permissions, workspaces, or anything else. What do you need?", 'ai');
+  }
+}
+
+function helpChip(q) {
+  const msgsEl  = document.getElementById('help-msgs');
+  const chipsEl = document.getElementById('help-chips-area');
+  if (msgsEl) helpRespond(msgsEl, chipsEl, q);
+}
+
+function helpChipIpad(q) {
+  const msgsEl  = document.getElementById('help-msgs-ipad');
+  const chipsEl = document.getElementById('help-chips-area-ipad');
+  if (msgsEl) helpRespond(msgsEl, chipsEl, q);
+}
+
+function sendHelpMsg() {
+  const inp = document.getElementById('help-input');
+  if (!inp) return;
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  const msgsEl  = document.getElementById('help-msgs');
+  const chipsEl = document.getElementById('help-chips-area');
+  if (msgsEl) helpRespond(msgsEl, chipsEl, text);
+}
+
+function sendHelpMsgIpad() {
+  const inp = document.getElementById('help-input-ipad');
+  if (!inp) return;
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  const msgsEl  = document.getElementById('help-msgs-ipad');
+  const chipsEl = document.getElementById('help-chips-area-ipad');
+  if (msgsEl) helpRespond(msgsEl, chipsEl, text);
+}
+
 function composeSend() {
   const sheet = document.getElementById('compose-send-sheet');
   if (!sheet) return;
@@ -2796,6 +3074,16 @@ function revokePermission(type) {
       btn.style.borderColor = 'var(--ok)';
     }, 900);
   }
+}
+
+function selectRepo(id) {
+  ['local','sharepoint','smb','gdrive'].forEach(r => {
+    const card  = document.getElementById('repo-' + r);
+    const check = document.getElementById('repo-check-' + r);
+    const active = r === id;
+    if (card)  { card.style.border = active ? '2px solid var(--brand)' : '2px solid transparent'; card.style.background = active ? 'linear-gradient(135deg,rgba(61,90,254,.05),transparent)' : ''; }
+    if (check) { check.style.color = active ? 'var(--brand)' : 'transparent'; }
+  });
 }
 
 const AG_ANSWERS = {
