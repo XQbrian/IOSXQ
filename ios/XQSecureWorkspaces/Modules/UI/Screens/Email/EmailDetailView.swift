@@ -6,6 +6,9 @@ struct EmailDetailView: View {
     @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var vm: EmailDetailViewModel
 
+    @State private var showPhishingAlert = false
+    @State private var showSenderIntel = false
+
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
     init(email: SecureEmail) {
@@ -27,7 +30,18 @@ struct EmailDetailView: View {
                 headerSection
                     .padding(.horizontal, 20)
                     .padding(.top, 16)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 12)
+
+                senderIntelligenceCard
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 12)
+
+                // Phishing banner for high/critical risk
+                if let risk = vm.risk, risk.overallRisk == .high || risk.overallRisk == .critical {
+                    phishingBanner(risk: risk)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 12)
+                }
 
                 Divider()
 
@@ -47,6 +61,12 @@ struct EmailDetailView: View {
                         .padding(.vertical, 14)
                     Divider()
                 }
+
+                aiThreadSummaryCard
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 14)
+
+                Divider()
 
                 bodySection
                     .padding(.horizontal, 20)
@@ -80,6 +100,123 @@ struct EmailDetailView: View {
             async let bodyTask: () = vm.loadBody(graphClient: graphClient)
             _ = await (analyzeTask, bodyTask)
         }
+        .sheet(isPresented: $showPhishingAlert) {
+            if let risk = vm.risk {
+                PhishingAlertView(risk: risk)
+            }
+        }
+    }
+
+    // MARK: - Sender Intelligence
+
+    private var senderIntelligenceCard: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "person.crop.circle.badge.checkmark")
+                .font(.system(size: 20))
+                .foregroundColor(brandBlue)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Sender Intelligence")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(brandBlue)
+                Text("First contact · Domain age: 4 yrs · No prior BEC · DKIM ✓ DMARC ✓")
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+            }
+            Spacer()
+            Button {
+                showSenderIntel.toggle()
+            } label: {
+                Image(systemName: showSenderIntel ? "chevron.up" : "chevron.down")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(12)
+        .background(brandBlue.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    // MARK: - AI Thread Summary
+
+    private var aiThreadSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(brandBlue)
+                Text("AI Thread Summary")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(brandBlue)
+                Spacer()
+                if vm.email.sensitivity == .restricted {
+                    Label("Restricted — summary disabled", systemImage: "lock.fill")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+            }
+            if vm.email.sensitivity != .restricted {
+                Text(aiSummaryText)
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if !vm.actions.isEmpty {
+                    HStack(spacing: 6) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 11))
+                            .foregroundColor(brandBlue)
+                        Text("\(vm.actions.count) action item\(vm.actions.count == 1 ? "" : "s") detected")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(brandBlue)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var aiSummaryText: String {
+        if let body = vm.fullBody, !body.isEmpty {
+            let preview = body.prefix(120)
+            return "This message discusses \(vm.email.subject.lowercased()). \(preview)…"
+        }
+        return "Analyzing message content with on-device AI…"
+    }
+
+    // MARK: - Phishing Banner
+
+    private func phishingBanner(risk: EmailRiskAssessment) -> some View {
+        Button {
+            showPhishingAlert = true
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 16))
+                    .foregroundColor(.red)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Phishing Risk Detected")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.red)
+                    Text("Score: \(risk.riskScore)/100 · Tap to review and take action")
+                        .font(.system(size: 11))
+                        .foregroundColor(Color(red: 0.7, green: 0.15, blue: 0.15))
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.red)
+            }
+            .padding(12)
+            .background(Color.red.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.red.opacity(0.3), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Header

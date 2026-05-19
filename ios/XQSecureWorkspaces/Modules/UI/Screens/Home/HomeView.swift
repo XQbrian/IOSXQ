@@ -8,6 +8,11 @@ struct HomeView: View {
         policyEngine: StubPolicyEngine()
     )
 
+    @State private var showNotifications = false
+    @State private var showWorkgroupSelect = false
+    @State private var selectedFile: SecureFile?
+    @State private var showAIImport = false
+
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
     var body: some View {
@@ -23,7 +28,7 @@ struct HomeView: View {
                             actionLabel: "Review file →",
                             action: {
                                 if let file = vm.recentFiles.first(where: { $0.sensitivity == .restricted }) {
-                                    coordinator.navigate(to: .fileViewer(file))
+                                    selectedFile = file
                                 }
                             }
                         )
@@ -45,16 +50,16 @@ struct HomeView: View {
                             spacing: 9
                         ) {
                             QuickActionCard(icon: "📁", label: "Files") {
-                                coordinator.navigate(to: .fileBrowser)
+                                coordinator.selectedTab = .files
                             }
                             QuickActionCard(icon: "🤖", label: "AI Import") {
-                                coordinator.navigate(to: .aiImport)
+                                showAIImport = true
                             }
                             QuickActionCard(icon: "✉️", label: "Email") {
-                                coordinator.navigate(to: .emailInbox)
+                                coordinator.selectedTab = .email
                             }
                             QuickActionCard(icon: "🔗", label: "Sharing") {
-                                coordinator.navigate(to: .fileBrowser)
+                                coordinator.selectedTab = .sharing
                             }
                         }
                         .padding(.horizontal, 16)
@@ -79,7 +84,7 @@ struct HomeView: View {
                             VStack(spacing: 0) {
                                 ForEach(vm.recentFiles.prefix(5)) { file in
                                     Button {
-                                        coordinator.navigate(to: .fileViewer(file))
+                                        selectedFile = file
                                     } label: {
                                         FileRowView(file: file)
                                             .background(Color(.systemBackground))
@@ -148,7 +153,7 @@ struct HomeView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 8) {
                         Button {
-                            // notifications
+                            showNotifications = true
                         } label: {
                             Image(systemName: "bell")
                                 .font(.system(size: 16))
@@ -156,7 +161,7 @@ struct HomeView: View {
                         }
 
                         Button {
-                            coordinator.navigate(to: .settings)
+                            coordinator.selectedTab = .settings
                         } label: {
                             ZStack {
                                 Circle()
@@ -172,6 +177,18 @@ struct HomeView: View {
             }
             .task {
                 await vm.loadDashboard()
+            }
+            .sheet(isPresented: $showNotifications) {
+                NotificationsView()
+            }
+            .sheet(isPresented: $showWorkgroupSelect) {
+                WorkgroupSelectView()
+            }
+            .sheet(item: $selectedFile) { file in
+                NavigationStack { FileViewerView(file: file) }
+            }
+            .sheet(isPresented: $showAIImport) {
+                AIImportView()
             }
         }
     }

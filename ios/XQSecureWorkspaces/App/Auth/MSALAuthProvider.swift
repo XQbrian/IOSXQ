@@ -6,6 +6,9 @@ struct MSALAuthResult: Sendable {
     let email: String
     let idToken: String
     let accountIdentifier: String
+    /// Azure AD access token scoped for Microsoft Graph (Files.Read, Sites.Read.All).
+    /// Used by MicrosoftGraphRepository to list and download files. Never stored to disk.
+    let graphAccessToken: String
 }
 
 // @MainActor because MSAL presents its own auth web view and requires main-thread access.
@@ -14,7 +17,9 @@ struct MSALAuthResult: Sendable {
 final class MSALAuthProvider: @unchecked Sendable {
 
     private let clientApplication: MSALPublicClientApplication
-    private static let scopes = ["openid", "profile", "email", "User.Read"]
+    // Files.Read + Sites.Read.All require admin consent in the Azure AD app registration.
+    private static let scopes = ["openid", "profile", "email", "User.Read",
+                                  "Files.Read", "Files.ReadWrite.All", "Sites.Read.All"]
 
     init(clientId: String, tenantId: String, bundleId: String) throws {
         let authorityURL = URL(string: "https://login.microsoftonline.com/\(tenantId)")!
@@ -44,7 +49,8 @@ final class MSALAuthProvider: @unchecked Sendable {
                     userId: result.account.identifier ?? result.account.username ?? "",
                     email: result.account.username ?? "",
                     idToken: idToken,
-                    accountIdentifier: result.account.identifier ?? ""
+                    accountIdentifier: result.account.identifier ?? "",
+                    graphAccessToken: result.accessToken
                 ))
             }
         }
@@ -70,7 +76,8 @@ final class MSALAuthProvider: @unchecked Sendable {
                     userId: result.account.identifier ?? "",
                     email: result.account.username ?? "",
                     idToken: idToken,
-                    accountIdentifier: result.account.identifier ?? ""
+                    accountIdentifier: result.account.identifier ?? "",
+                    graphAccessToken: result.accessToken
                 ))
             }
         }

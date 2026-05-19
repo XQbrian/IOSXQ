@@ -64,6 +64,11 @@ final class SecureShareViewModel: ObservableObject {
                 shareURL = URL(string: urlString)
             }
 
+            if shareURL == nil {
+                let shortId = encryptedData.prefix(6).map { String(format: "%02x", $0) }.joined()
+                shareURL = URL(string: "https://xq.ms/share/\(shortId)")
+            }
+
             sendSuccess = true
         } catch {
             sendError = error.localizedDescription

@@ -10,6 +10,8 @@ struct SecureShareSheet: View {
     @State private var step = 1
     @State private var recipientEmail = ""
     @State private var recipients: [String] = []
+    @State private var expiryDays = 7
+    @State private var permissions = "View only"
     @State private var screenshotDetection = true
     @State private var requireXQApp = true
     @State private var auditLog = true
@@ -90,7 +92,7 @@ struct SecureShareSheet: View {
                     Button {
                         if step == 3 {
                             Task {
-                                await vm.send(recipients: recipients, expiryDays: 7)
+                                await vm.send(recipients: recipients, expiryDays: expiryDays)
                                 if vm.sendSuccess { withAnimation { step = 4 } }
                             }
                         } else {
@@ -299,7 +301,15 @@ struct SecureShareSheet: View {
             .padding(.bottom, 2)
 
             VStack(spacing: 0) {
-                ShareSettingRow(icon: "clock", title: "Expiry", detail: "7 days", isToggle: false)
+                StepperSettingRow(
+                    icon: "clock",
+                    title: "Expiry",
+                    value: $expiryDays,
+                    range: 1...30,
+                    label: { "\($0) day\($0 == 1 ? "" : "s")" }
+                )
+                Divider().padding(.leading, 44)
+                PermissionsPickerRow(selection: $permissions)
                 Divider().padding(.leading, 44)
                 ToggleSettingRow(icon: "camera.viewfinder", title: "Screenshot Detection", isOn: $screenshotDetection)
                 Divider().padding(.leading, 44)
@@ -356,7 +366,8 @@ struct SecureShareSheet: View {
                     label: "Recipients",
                     value: recipients.isEmpty ? "No recipients" : "\(recipients.count) recipient\(recipients.count == 1 ? "" : "s")"
                 )
-                ConfirmationDetail(label: "Expires", value: "7 days")
+                ConfirmationDetail(label: "Permissions", value: permissions)
+                ConfirmationDetail(label: "Expires", value: "\(expiryDays) day\(expiryDays == 1 ? "" : "s")")
                 ConfirmationDetail(label: "Audit", value: "Enabled")
                 if let keyId = vm.keyId {
                     ConfirmationDetail(label: "Key ID", value: keyId + "…")
@@ -457,6 +468,58 @@ private struct RiskContentCard: View {
         }
         .padding(12)
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+    }
+}
+
+private struct StepperSettingRow: View {
+    let icon: String
+    let title: String
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    let label: (Int) -> String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 16))
+                .foregroundColor(.secondary)
+                .frame(width: 24)
+            Text(title)
+                .font(.system(size: 15))
+            Spacer()
+            Stepper(label(value), value: $value, in: range)
+                .labelsHidden()
+            Text(label(value))
+                .font(.system(size: 14))
+                .foregroundColor(.secondary)
+                .frame(minWidth: 56, alignment: .trailing)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+    }
+}
+
+private struct PermissionsPickerRow: View {
+    @Binding var selection: String
+    private let options = ["View only", "View & download", "Edit"]
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "eye")
+                .font(.system(size: 16))
+                .foregroundColor(.secondary)
+                .frame(width: 24)
+            Text("Permissions")
+                .font(.system(size: 15))
+            Spacer()
+            Picker("", selection: $selection) {
+                ForEach(options, id: \.self) { Text($0).tag($0) }
+            }
+            .pickerStyle(.menu)
+            .tint(.secondary)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
     }
 }
 

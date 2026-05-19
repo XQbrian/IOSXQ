@@ -7,6 +7,7 @@ struct XQVerificationView: View {
     let email: String
     let idToken: String
     let msalAccountIdentifier: String
+    let graphToken: String
 
     @State private var pin = ""
     @State private var isVerifying = false
@@ -139,7 +140,7 @@ struct XQVerificationView: View {
                 pin: pin,
                 msalAccountIdentifier: msalAccountIdentifier
             )
-            coordinator.completeAuthentication(session: session)
+            coordinator.completeAuthentication(session: session, graphToken: graphToken)
         } catch {
             errorMessage = "Invalid code. Check your email and try again."
             pin = ""

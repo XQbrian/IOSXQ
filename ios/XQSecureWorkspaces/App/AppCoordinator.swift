@@ -10,7 +10,7 @@ final class AppCoordinator: ObservableObject {
     enum AppRoute {
         case splash
         case welcome
-        case xqVerification(email: String, idToken: String, msalAccountIdentifier: String)
+        case xqVerification(email: String, idToken: String, msalAccountIdentifier: String, graphToken: String)
         case home
         case fileBrowser
         case fileViewer(SecureFile)
@@ -19,10 +19,21 @@ final class AppCoordinator: ObservableObject {
         case settings
         case adminPolicy
         case securityFailure(JailbreakAssessment)
+        case onboarding
+    }
+
+    enum AppTab: String, Hashable {
+        case home, files, email, sharing, settings
     }
 
     @Published var route: AppRoute = .splash
+    @Published var selectedTab: AppTab = .home
     @Published var currentSession: XQSession? = nil
+    @Published var graphToken: String? = nil
+
+    /// Active file repository — nil until authentication completes.
+    /// Both FileBrowserViewModel and FileViewerViewModel read from here.
+    var repository: (any RepositoryProvider)?
 
     let authOrchestrator: XQAuthOrchestrator
     private let jailbreakDetector: any JailbreakDetector
@@ -56,10 +67,21 @@ final class AppCoordinator: ObservableObject {
         Task { await runStartupChecks() }
     }
 
+    private static let onboardingKey = "xq.hasOnboarded"
+
     func navigate(to route: AppRoute) { self.route = route }
 
-    func completeAuthentication(session: XQSession) {
+    func completeAuthentication(session: XQSession, graphToken: String) {
         currentSession = session
+        self.graphToken = graphToken
+        repository = MicrosoftGraphRepository(graphToken: graphToken)
+        selectedTab = .home
+        let hasOnboarded = UserDefaults.standard.bool(forKey: Self.onboardingKey)
+        route = hasOnboarded ? .home : .onboarding
+    }
+
+    func completeOnboarding() {
+        UserDefaults.standard.set(true, forKey: Self.onboardingKey)
         route = .home
     }
 
@@ -67,6 +89,8 @@ final class AppCoordinator: ObservableObject {
         Task {
             await authOrchestrator.signOut()
             currentSession = nil
+            graphToken = nil
+            repository = nil
             route = .welcome
         }
     }

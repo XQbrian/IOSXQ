@@ -9,6 +9,8 @@ struct FileViewerView: View {
 
     @State private var showShareSheet = false
     @State private var showQuickLook = false
+    @State private var showDataLineage = false
+    @State private var showDocumentEditor = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -138,12 +140,28 @@ struct FileViewerView: View {
         .navigationBarBackButtonHidden(false)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showShareSheet = true
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 16))
-                        .foregroundColor(brandBlue)
+                HStack(spacing: 4) {
+                    Button {
+                        showDocumentEditor = true
+                    } label: {
+                        Image(systemName: "pencil.and.outline")
+                            .font(.system(size: 16))
+                            .foregroundColor(brandBlue)
+                    }
+                    Button {
+                        showDataLineage = true
+                    } label: {
+                        Image(systemName: "arrow.triangle.branch")
+                            .font(.system(size: 16))
+                            .foregroundColor(brandBlue)
+                    }
+                    Button {
+                        showShareSheet = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 16))
+                            .foregroundColor(brandBlue)
+                    }
                 }
             }
         }
@@ -158,6 +176,12 @@ struct FileViewerView: View {
             )
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
+        }
+        .sheet(isPresented: $showDataLineage) {
+            DataLineageView(file: vm.file)
+        }
+        .sheet(isPresented: $showDocumentEditor) {
+            DocumentEditorView(file: vm.file)
         }
         .fullScreenCover(isPresented: $showQuickLook) {
             if let url = vm.quickLookURL {

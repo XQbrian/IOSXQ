@@ -102,7 +102,8 @@ struct EnterpriseLoginView: View {
             coordinator.navigate(to: .xqVerification(
                 email: msalResult.email,
                 idToken: msalResult.idToken,
-                msalAccountIdentifier: msalResult.accountIdentifier
+                msalAccountIdentifier: msalResult.accountIdentifier,
+                graphToken: msalResult.graphAccessToken
             ))
         } catch {
             errorMessage = error.localizedDescription

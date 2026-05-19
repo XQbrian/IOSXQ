@@ -6,6 +6,7 @@ import XQPolicy
 struct EmailInboxView: View {
     @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var vm: EmailInboxViewModel
+    @State private var showCompose = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -48,34 +49,31 @@ struct EmailInboxView: View {
             .navigationTitle(titleText)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        coordinator.navigate(to: .home)
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 14, weight: .semibold))
-                            Text("Home")
-                                .font(.system(size: 15))
-                        }
-                        .foregroundColor(brandBlue)
-                    }
-                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        Task { await vm.runAITriage(policy: defaultPolicy()) }
-                    } label: {
-                        if vm.isTriaging {
-                            ProgressView().scaleEffect(0.8)
-                        } else {
-                            Label("Triage", systemImage: "sparkles")
-                                .font(.system(size: 14, weight: .semibold))
+                    HStack(spacing: 12) {
+                        Button {
+                            showCompose = true
+                        } label: {
+                            Image(systemName: "square.and.pencil")
+                                .font(.system(size: 17))
                                 .foregroundColor(brandBlue)
                         }
+                        Button {
+                            Task { await vm.runAITriage(policy: defaultPolicy()) }
+                        } label: {
+                            if vm.isTriaging {
+                                ProgressView().scaleEffect(0.8)
+                            } else {
+                                Label("Triage", systemImage: "sparkles")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(brandBlue)
+                            }
+                        }
+                        .disabled(vm.isTriaging || vm.emails.isEmpty)
                     }
-                    .disabled(vm.isTriaging || vm.emails.isEmpty)
                 }
             }
+            .sheet(isPresented: $showCompose) { EmailComposeView() }
         }
         .task {
             guard let session = coordinator.currentSession else { return }

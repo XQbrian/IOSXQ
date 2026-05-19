@@ -19,7 +19,7 @@ struct RootView: View {
                 graphToken: graphToken
             )
         case .home:
-            FileBrowserView()
+            MainTabView()
         case .fileBrowser:
             FileBrowserView()
         case .fileViewer(let file):
@@ -31,32 +31,13 @@ struct RootView: View {
         case .emailInbox:
             EmailInboxView()
         case .settings:
-            SettingsRootView()
+            SettingsView()
         case .adminPolicy:
-            Text("Admin Policy — Coming Soon")
+            AdminPolicyView()
+        case .onboarding:
+            OnboardingView()
         case .securityFailure(let assessment):
             SecurityFailureView(assessment: assessment)
-        }
-    }
-}
-
-// MARK: - Settings (sign-out entry point)
-
-private struct SettingsRootView: View {
-    @EnvironmentObject var coordinator: AppCoordinator
-
-    var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    Button(role: .destructive) {
-                        coordinator.signOut()
-                    } label: {
-                        Label("Sign Out", systemImage: "arrow.right.square")
-                    }
-                }
-            }
-            .navigationTitle("Settings")
         }
     }
 }

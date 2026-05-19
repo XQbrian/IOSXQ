@@ -7,8 +7,15 @@ struct SettingsView: View {
 
     @State private var biometricLock = true
     @State private var cloudAIEnabled = false
+    @State private var phishingAlerts = true
+    @State private var phiDetectionBanners = true
+    @State private var policyPanels = true
+    @State private var aiIntelPanels = true
+    @State private var showSignOutConfirm = false
+    @State private var showWorkspaces = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
+    private let green = Color(red: 0.204, green: 0.780, blue: 0.349)
 
     var body: some View {
         NavigationStack {
@@ -58,7 +65,7 @@ struct SettingsView: View {
                         Spacer()
                         Toggle("", isOn: $biometricLock)
                             .labelsHidden()
-                            .tint(Color(red: 0.204, green: 0.780, blue: 0.349))
+                            .tint(green)
                     }
 
                     HStack {
@@ -75,20 +82,55 @@ struct SettingsView: View {
                         Label("Certificate Pinning", systemImage: "shield.checkerboard")
                         Spacer()
                         HStack(spacing: 5) {
-                            Circle()
-                                .fill(Color(red: 0.204, green: 0.780, blue: 0.349))
-                                .frame(width: 7, height: 7)
-                            Text("Active")
-                                .foregroundColor(Color(red: 0.204, green: 0.780, blue: 0.349))
-                                .font(.system(size: 14))
+                            Circle().fill(green).frame(width: 7, height: 7)
+                            Text("Active").foregroundColor(green).font(.system(size: 14))
                         }
                     }
                 } header: {
                     Text("Security")
                 }
 
+                // MARK: Notifications Section
+                Section {
+                    HStack {
+                        Label("Phishing Alerts", systemImage: "exclamationmark.triangle.fill")
+                        Spacer()
+                        Toggle("", isOn: $phishingAlerts).labelsHidden().tint(green)
+                    }
+                    HStack {
+                        Label("PHI Detection Banners", systemImage: "cross.fill")
+                        Spacer()
+                        Toggle("", isOn: $phiDetectionBanners).labelsHidden().tint(green)
+                    }
+                    HStack {
+                        Label("Policy & Compliance Panels", systemImage: "doc.badge.gearshape")
+                        Spacer()
+                        Toggle("", isOn: $policyPanels).labelsHidden().tint(green)
+                    }
+                    HStack {
+                        Label("AI Intelligence Panels", systemImage: "brain")
+                        Spacer()
+                        Toggle("", isOn: $aiIntelPanels).labelsHidden().tint(green)
+                    }
+                } header: {
+                    Text("Notifications")
+                }
+
                 // MARK: Enterprise Admin Section
                 Section {
+                    Button {
+                        showWorkspaces = true
+                    } label: {
+                        HStack {
+                            Label("My Workspaces", systemImage: "person.3.fill")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(Color(.tertiaryLabel))
+                        }
+                    }
+
                     Button {
                         coordinator.navigate(to: .adminPolicy)
                     } label: {
@@ -105,16 +147,13 @@ struct SettingsView: View {
                     HStack {
                         Label("Cloud AI Processing", systemImage: "brain")
                         Spacer()
-                        Toggle("", isOn: $cloudAIEnabled)
-                            .labelsHidden()
-                            .tint(Color(red: 0.204, green: 0.780, blue: 0.349))
+                        Toggle("", isOn: $cloudAIEnabled).labelsHidden().tint(green)
                     }
 
                     HStack {
                         Label("Enterprise Tenants", systemImage: "building.2")
                         Spacer()
-                        Text("142")
-                            .foregroundColor(.secondary)
+                        Text("142").foregroundColor(.secondary)
                     }
                 } header: {
                     Text("Enterprise Admin")
@@ -128,43 +167,53 @@ struct SettingsView: View {
                     HStack {
                         Label("Version", systemImage: "info.circle")
                         Spacer()
-                        Text("1.0.0")
-                            .foregroundColor(.secondary)
+                        Text("1.0.0").foregroundColor(.secondary)
                     }
-
                     HStack {
                         Label("XQ API", systemImage: "network")
                         Spacer()
-                        Text("v3")
-                            .foregroundColor(.secondary)
+                        Text("v3").foregroundColor(.secondary)
                     }
-
                     HStack {
                         Label("Secure Enclave", systemImage: "cpu.fill")
                         Spacer()
                         HStack(spacing: 5) {
-                            Circle()
-                                .fill(Color(red: 0.204, green: 0.780, blue: 0.349))
-                                .frame(width: 7, height: 7)
-                            Text("Active")
-                                .foregroundColor(Color(red: 0.204, green: 0.780, blue: 0.349))
-                                .font(.system(size: 14))
+                            Circle().fill(green).frame(width: 7, height: 7)
+                            Text("Active").foregroundColor(green).font(.system(size: 14))
                         }
                     }
-
                     HStack {
                         Label("CoreML Models", systemImage: "sparkles")
                         Spacer()
-                        Text("3 models")
-                            .foregroundColor(.secondary)
+                        Text("3 models").foregroundColor(.secondary)
                     }
                 } header: {
                     Text("About")
                 }
 
+                // MARK: Sign Out
+                Section {
+                    Button(role: .destructive) {
+                        showSignOutConfirm = true
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("Sign Out").font(.system(size: 16, weight: .semibold))
+                            Spacer()
+                        }
+                    }
+                }
+
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
+            .alert("Sign Out", isPresented: $showSignOutConfirm) {
+                Button("Sign Out", role: .destructive) { coordinator.signOut() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("You will be signed out of your enterprise account.")
+            }
+            .sheet(isPresented: $showWorkspaces) { WorkspacesGroupsView() }
         }
     }
 }

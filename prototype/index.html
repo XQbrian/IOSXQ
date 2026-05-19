@@ -180,6 +180,9 @@
   .etbtn:hover,.etbtn.on{background:var(--brand-light);color:var(--brand);}
   .wgroup-card{background:var(--card);border-radius:var(--r16);padding:16px;display:flex;gap:12px;align-items:center;cursor:pointer;}
   .wgroup-card.active{border:2px solid var(--brand);background:linear-gradient(135deg,rgba(61,90,254,.07),rgba(105,121,248,.03));}
+  .ag-chip{background:rgba(61,90,254,.1);color:var(--brand);border:1px solid rgba(61,90,254,.2);border-radius:var(--rfull);padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;}
+  .ag-chip:hover,.ag-chip.used{background:rgba(61,90,254,.18);}
+  @keyframes agTyping{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
 </style>
 </head>
 <body>
@@ -198,6 +201,7 @@
   <button class="fbtn" onclick="flow(7)">⑦ Notifications</button>
   <button class="fbtn" onclick="flow(8)">⑧ Email Intelligence</button>
   <button class="fbtn" onclick="flow(9)">⑨ File Intelligence</button>
+  <button class="fbtn" onclick="flow(10)">⑩ Received Share</button>
   <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleDark()">🌙 Dark</button>
   <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleIPad()">📱 iPad</button>
 </div>
@@ -228,7 +232,7 @@
     <div style="font-size:27px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:10px;">Zero Trust. Every File.</div>
     <p style="font-size:14px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;margin-bottom:40px;">Encryption follows your data across every device, cloud, and collaboration.</p>
     <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
-      <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="go('s-permissions')">Start for Free</button>
+      <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="go('s-repo-setup')">Start for Free</button>
       <button class="btn" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);" onclick="go('s-enterprise-auth')">Connect Enterprise Workspace</button>
     </div>
   </div>
@@ -242,13 +246,13 @@
   <div class="sc p16">
     <p class="t2c mb20" style="line-height:1.5;">Choose your enterprise file repository. All data stays encrypted end-to-end.</p>
     <div style="display:flex;flex-direction:column;gap:11px;">
-      <div class="card cr" style="cursor:pointer;border:2px solid var(--brand);border-radius:var(--r16);" onclick="go('s-permissions')">
+      <div class="card cr" style="cursor:pointer;border:2px solid var(--brand);border-radius:var(--r16);" onclick="go('s-workgroup-select')">
         <span style="font-size:26px;">☁️</span><div class="col"><div class="t1c semi">SharePoint / OneDrive</div><div class="t3c">Microsoft 365 · OAuth PKCE</div></div><span style="color:var(--brand);font-size:18px;">›</span>
       </div>
-      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-permissions')">
+      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-workgroup-select')">
         <span style="font-size:26px;">🖥️</span><div class="col"><div class="t1c semi">SMB Network Drive</div><div class="t3c">Corporate LAN / VPN</div></div><span style="color:var(--t3);font-size:18px;">›</span>
       </div>
-      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-permissions')">
+      <div class="card cr" style="cursor:pointer;border-radius:var(--r16);" onclick="go('s-workgroup-select')">
         <span style="font-size:26px;">📁</span><div class="col"><div class="t1c semi">Google Drive</div><div class="t3c">Google Workspace · OAuth 2.0</div></div><span style="color:var(--t3);font-size:18px;">›</span>
       </div>
     </div>
@@ -258,32 +262,83 @@
 <!-- ══ S4 PERMISSIONS ══ -->
 <div class="scr" id="s-permissions" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="nb"><span></span><span class="nb-title">Allow Access</span><span></span></div>
-  <div class="sc p16" style="padding-top:20px;">
-    <div class="tc mb20">
-      <div style="font-size:52px;">🛡️</div>
-      <div style="font-size:20px;font-weight:700;color:var(--t1);margin-top:10px;">Secure Your Workspace</div>
-      <p class="t2c" style="margin-top:6px;line-height:1.5;padding:0 12px;">These permissions enable zero-trust features. No data leaves your device without your key.</p>
+  <div class="nb"><span class="nb-back" onclick="go('s-workgroup-select')">← Back</span><span class="nb-title">Allow Access</span><span></span></div>
+  <div class="sc p16" style="padding-top:14px;">
+    <!-- AI Setup Guide -->
+    <div id="ag-perm" style="background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(105,121,248,.05));border:1px solid rgba(61,90,254,.18);border-radius:var(--r16);padding:14px;margin-bottom:18px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
+        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff;font-weight:800;">✦</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:700;color:var(--brand);letter-spacing:.3px;margin-bottom:3px;">XQ SETUP GUIDE</div>
+          <div id="ag-perm-msg" style="font-size:13px;color:var(--t1);line-height:1.55;">Last step — I need a few device permissions to keep your files secure. Each one is optional, but skipping them limits what XQ can protect.</div>
+        </div>
+      </div>
+      <div id="ag-perm-response" style="display:none;background:var(--card);border-radius:var(--r8);padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--brand);">
+        <div style="font-size:12px;color:var(--t1);line-height:1.55;" id="ag-perm-response-text"></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <button class="ag-chip" onclick="agAsk('perm',1)">Why Face ID?</button>
+        <button class="ag-chip" onclick="agAsk('perm',2)">Is my email safe?</button>
+        <button class="ag-chip" onclick="agAsk('perm',3)">Can I skip all?</button>
+      </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+    <!-- Permission rows -->
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
       <div class="card p16 row" style="gap:13px;">
         <div style="width:42px;height:42px;background:#F0F4FF;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔒</div>
-        <div class="col"><div class="t1c semi">Face ID / Touch ID</div><div class="t3c" style="margin-top:2px;">Required for Secure Enclave key access</div></div>
+        <div class="col">
+          <div class="t1c semi">Face ID / Touch ID</div>
+          <div class="t3c" style="margin-top:2px;">Required for Secure Enclave key access</div>
+        </div>
         <div class="tog on"><div class="tog-k"></div></div>
       </div>
       <div class="card p16 row" style="gap:13px;">
         <div style="width:42px;height:42px;background:#FFF3E0;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔔</div>
-        <div class="col"><div class="t1c semi">Notifications</div><div class="t3c" style="margin-top:2px;">Policy alerts and security events</div></div>
+        <div class="col">
+          <div class="t1c semi">Notifications</div>
+          <div class="t3c" style="margin-top:2px;">Policy alerts and security events</div>
+        </div>
         <div class="tog on"><div class="tog-k"></div></div>
       </div>
       <div class="card p16 row" style="gap:13px;">
         <div style="width:42px;height:42px;background:#E8F5E9;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📂</div>
-        <div class="col"><div class="t1c semi">Files Access</div><div class="t3c" style="margin-top:2px;">Import from Files app and iCloud</div></div>
+        <div class="col">
+          <div class="t1c semi">Files Access</div>
+          <div class="t3c" style="margin-top:2px;">Import from Files app and iCloud</div>
+        </div>
         <div class="tog on"><div class="tog-k"></div></div>
       </div>
+      <!-- Email connect row -->
+      <div class="card p16 row" style="gap:13px;border:1.5px dashed rgba(61,90,254,.25);">
+        <div style="width:42px;height:42px;background:#E8EAFD;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✉️</div>
+        <div class="col">
+          <div class="t1c semi">Connect Email</div>
+          <div class="t3c" style="margin-top:2px;">Encrypt outbound emails automatically</div>
+        </div>
+        <div id="email-tog" class="tog" style="cursor:pointer;" onclick="toggleEmailConnect()"><div class="tog-k"></div></div>
+      </div>
+      <!-- Email provider picker (hidden by default) -->
+      <div id="email-provider-picker" style="display:none;background:var(--card);border-radius:var(--r12);overflow:hidden;">
+        <div style="padding:10px 14px;font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.3px;border-bottom:.5px solid var(--sep);">CHOOSE EMAIL PROVIDER</div>
+        <div class="cr" style="cursor:pointer;gap:12px;" onclick="selectEmailProvider(this,'Microsoft 365')">
+          <span style="font-size:22px;">📧</span>
+          <div class="col"><div style="font-size:13px;font-weight:600;color:var(--t1);">Microsoft 365 / Outlook</div><div class="t3c">OAuth · Exchange Online</div></div>
+          <div id="ep-ms" style="width:20px;height:20px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+        </div>
+        <div class="cr" style="cursor:pointer;gap:12px;" onclick="selectEmailProvider(this,'Gmail')">
+          <span style="font-size:22px;">📬</span>
+          <div class="col"><div style="font-size:13px;font-weight:600;color:var(--t1);">Gmail / Google Workspace</div><div class="t3c">OAuth 2.0 · IMAP bridge</div></div>
+          <div id="ep-gm" style="width:20px;height:20px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+        </div>
+        <div class="cr" style="cursor:pointer;gap:12px;border-bottom:none;" onclick="selectEmailProvider(this,'IMAP/SMTP')">
+          <span style="font-size:22px;">⚙️</span>
+          <div class="col"><div style="font-size:13px;font-weight:600;color:var(--t1);">Custom IMAP / SMTP</div><div class="t3c">Any mail server · manual config</div></div>
+          <div id="ep-im" style="width:20px;height:20px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
+        </div>
+      </div>
     </div>
-    <button class="btn bp mb8" onclick="go('s-home')">Continue</button>
-    <p class="t3c tc">You can change these anytime in Settings</p>
+    <button class="btn bp mb8" onclick="go('s-home')">Finish Setup</button>
+    <p class="t3c tc" style="margin-bottom:16px;">You can change these anytime in Settings</p>
   </div>
 </div>
 
@@ -906,7 +961,7 @@
 <!-- ══ S10 COMPOSE ══ -->
 <div class="scr" id="s-email-compose" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="nb"><span class="nb-back" onclick="go('s-email-inbox')">← Cancel</span><span class="nb-title">New Secure Message</span><span class="nb-act">Send</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-email-inbox')">← Cancel</span><span class="nb-title">New Secure Message</span><span class="nb-act" onclick="composeSend()">Send</span></div>
   <div style="background:#FFF8E1;border-bottom:1px solid #FFD54F;padding:9px 16px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
     <span>⚠️</span><div style="font-size:11px;color:#6D4C00;line-height:1.4;">External recipient. XQ encrypts end-to-end. Recipient must have XQ.</div>
   </div>
@@ -992,7 +1047,61 @@
     <div style="height:16px;"></div>
   </div>
   <div style="background:var(--tab);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:11px 20px 36px;flex-shrink:0;">
-    <button class="btn bp" onclick="go('s-email-inbox')">Send Encrypted Message 🔒</button>
+    <button class="btn bp" onclick="composeSend()">Send Encrypted Message 🔒</button>
+  </div>
+  <!-- Pre-send AI classification overlay -->
+  <div id="compose-send-sheet" class="ov hide" onclick="if(event.target===this){}">
+    <div class="bs-panel" style="padding:0;overflow:hidden;">
+      <div style="padding:16px 20px 12px;border-bottom:.5px solid var(--sep);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:16px;font-weight:700;color:var(--t1);">Pre-Send Security Scan</div>
+          <span style="font-size:20px;color:var(--t3);cursor:pointer;line-height:1;" onclick="document.getElementById('compose-send-sheet').classList.add('hide')">×</span>
+        </div>
+        <div style="font-size:12px;color:var(--t2);margin-top:2px;">On-device AI scan before transmitting</div>
+      </div>
+      <div id="css-steps" style="padding:16px 20px;">
+        <!-- Step 1 -->
+        <div class="css-step" id="css-1" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+          <div id="css-ic1" style="width:28px;height:28px;border-radius:50%;background:var(--brand-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">🔍</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1);">PHI Classification</div>
+            <div id="css-d1" style="font-size:11px;color:var(--t2);margin-top:2px;">Scanning for protected health information…</div>
+          </div>
+        </div>
+        <!-- Step 2 -->
+        <div class="css-step" id="css-2" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;opacity:.35;">
+          <div id="css-ic2" style="width:28px;height:28px;border-radius:50%;background:var(--sep);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">🔐</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1);">Recipient Verification</div>
+            <div id="css-d2" style="font-size:11px;color:var(--t2);margin-top:2px;">Checking XQ key for carol.thomas@hospital.org</div>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div class="css-step" id="css-3" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;opacity:.35;">
+          <div id="css-ic3" style="width:28px;height:28px;border-radius:50%;background:var(--sep);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">🔑</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1);">AES-256-GCM Encryption</div>
+            <div id="css-d3" style="font-size:11px;color:var(--t2);margin-top:2px;">Encrypting in Secure Enclave…</div>
+          </div>
+        </div>
+        <!-- Step 4: PHI gate -->
+        <div id="css-phi-gate" style="display:none;background:var(--res-bg);border:1px solid var(--res-d);border-radius:var(--r12);padding:12px;margin-bottom:14px;">
+          <div style="font-size:12px;font-weight:700;color:var(--res-t);margin-bottom:6px;">⚠ PHI Detected — Compliance Required</div>
+          <div style="font-size:11px;color:var(--res-t);line-height:1.5;margin-bottom:10px;">8 patient identifiers found. External share to carol.thomas@hospital.org requires your compliance acknowledgement under HIPAA §164.502.</div>
+          <label style="display:flex;gap:8px;align-items:flex-start;cursor:pointer;margin-bottom:10px;">
+            <input type="checkbox" id="phi-ack" style="margin-top:2px;accent-color:var(--brand);">
+            <span style="font-size:11px;color:var(--t1);line-height:1.5;">I confirm I am authorized to share this PHI with the named recipient. This action will be audit-logged.</span>
+          </label>
+          <button id="phi-confirm-btn" class="btn bp" style="padding:10px;font-size:12px;" onclick="confirmPhiSend()">Acknowledge &amp; Send 🔒</button>
+        </div>
+        <!-- Success state -->
+        <div id="css-success" style="display:none;text-align:center;padding:8px 0 4px;">
+          <div style="font-size:32px;margin-bottom:8px;">✅</div>
+          <div style="font-size:15px;font-weight:700;color:var(--t1);">Message Sent</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:4px;">End-to-end encrypted · HIPAA compliant · Audit logged</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1403,13 +1512,19 @@
     <!-- Stale Permissions & Drift -->
     <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;">🔓 Stale Permissions &amp; Drift</div>
     <div class="card mb16">
-      <div class="cr">
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">3 files shared with departed employee</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">j.kim@acme.com — offboarded Dec 2025, share still active</div></div>
-        <span style="background:#FF9500;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">HIGH</span>
+      <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;width:100%;">
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">3 files shared with departed employee</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">j.kim@acme.com — offboarded Dec 2025, share still active</div></div>
+          <span style="background:#FF9500;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">HIGH</span>
+        </div>
+        <button id="revoke-employee-btn" class="btn bo" style="padding:6px 14px;font-size:11px;color:var(--danger);border-color:var(--danger);width:auto;" onclick="revokePermission('employee')">Revoke Access</button>
       </div>
-      <div class="cr">
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">Public link active on restricted file</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Budget-Planning-FY26.xlsx — link created 47 days ago</div></div>
-        <span style="background:#FFCC00;color:#000;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">MEDIUM</span>
+      <div class="cr" style="flex-direction:column;align-items:flex-start;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;width:100%;">
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">Public link active on restricted file</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Budget-Planning-FY26.xlsx — link created 47 days ago</div></div>
+          <span style="background:#FFCC00;color:#000;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;">MEDIUM</span>
+        </div>
+        <button id="revoke-link-btn" class="btn bo" style="padding:6px 14px;font-size:11px;color:var(--warn);border-color:var(--warn);width:auto;" onclick="revokePermission('link')">Disable Link</button>
       </div>
       <div class="cr">
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--t1);">42 files exceed retention window</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Policy: 90 days. Oldest file: 312 days old.</div></div>
@@ -1420,7 +1535,7 @@
     <div style="background:var(--brand-light);border-radius:var(--r16);padding:14px;margin-bottom:16px;border:1px solid rgba(106,171,255,.2);">
       <div style="font-size:11px;font-weight:700;color:var(--brand);margin-bottom:6px;">✦ Autonomous File Agent</div>
       <div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px;">AI agent can auto-quarantine the exposed API key and revoke the departed employee share. Requires your approval. All actions audit-logged on-device.</div>
-      <button class="btn bp" style="padding:10px;font-size:12px;">Review &amp; Authorize Agent →</button>
+      <button class="btn bp" style="padding:10px;font-size:12px;" onclick="document.getElementById('agent-auth-sheet').classList.remove('hide')">Review &amp; Authorize Agent →</button>
     </div>
     <div style="height:16px;"></div>
   </div>
@@ -1430,6 +1545,53 @@
     <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic">✉️</div><div class="ti-lb">Email</div></div>
     <div class="ti" onclick="go('s-sharing')"><div class="ti-ic">🔗</div><div class="ti-lb">Sharing</div></div>
     <div class="ti" onclick="go('s-settings')"><div class="ti-ic">⚙️</div><div class="ti-lb">Settings</div></div>
+  </div>
+  <!-- Agent authorization overlay -->
+  <div id="agent-auth-sheet" class="ov hide">
+    <div class="bs-panel" style="padding:0;overflow:hidden;">
+      <div style="padding:16px 20px 12px;border-bottom:.5px solid var(--sep);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:16px;font-weight:700;color:var(--t1);">Authorize AI Agent</div>
+          <span style="font-size:20px;color:var(--t3);cursor:pointer;line-height:1;" onclick="document.getElementById('agent-auth-sheet').classList.add('hide')">×</span>
+        </div>
+        <div style="font-size:12px;color:var(--t2);margin-top:2px;">Review proposed actions before granting permission</div>
+      </div>
+      <div style="padding:16px 20px;" id="agent-auth-content">
+        <div style="background:var(--brand-light);border-radius:var(--r8);padding:10px 12px;margin-bottom:14px;font-size:11px;color:var(--brand);line-height:1.5;">✦ All actions are reversible within 24h and audit-logged on-device. The agent cannot access file content — only metadata and sharing permissions.</div>
+        <!-- Action 1 -->
+        <div id="agent-act1" style="background:var(--card);border-radius:var(--r12);padding:12px;margin-bottom:10px;border:1px solid var(--sep);">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:var(--res-bg);border-radius:6px;padding:5px 7px;flex-shrink:0;font-size:14px;">🗂</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--t1);">Revoke j.kim@acme.com share</div>
+              <div style="font-size:11px;color:var(--t2);margin-top:3px;line-height:1.4;">Removes access to 3 files shared with departed employee. Audit record retained.</div>
+            </div>
+            <label style="display:flex;align-items:center;cursor:pointer;flex-shrink:0;">
+              <input type="checkbox" id="agent-ck1" checked style="accent-color:var(--brand);width:16px;height:16px;">
+            </label>
+          </div>
+        </div>
+        <!-- Action 2 -->
+        <div id="agent-act2" style="background:var(--card);border-radius:var(--r12);padding:12px;margin-bottom:10px;border:1px solid var(--sep);">
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="background:var(--res-bg);border-radius:6px;padding:5px 7px;flex-shrink:0;font-size:14px;">🔑</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--t1);">Quarantine Dev-Notes-Internal.txt</div>
+              <div style="font-size:11px;color:var(--t2);margin-top:3px;line-height:1.4;">Moves file to restricted vault, removes from shared locations. AWS key fragment isolated.</div>
+            </div>
+            <label style="display:flex;align-items:center;cursor:pointer;flex-shrink:0;">
+              <input type="checkbox" id="agent-ck2" checked style="accent-color:var(--brand);width:16px;height:16px;">
+            </label>
+          </div>
+        </div>
+        <div id="agent-auth-success" style="display:none;text-align:center;padding:12px 0 4px;">
+          <div style="font-size:32px;margin-bottom:8px;">🤖</div>
+          <div style="font-size:15px;font-weight:700;color:var(--t1);">Agent Authorized</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5;">Running now · Estimated 2 min · Audit log will update when complete</div>
+        </div>
+        <button id="agent-run-btn" class="btn bp" style="padding:11px;font-size:13px;margin-top:4px;" onclick="authorizeAgent()">Authorize &amp; Run Agent →</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1558,9 +1720,26 @@
 <!-- ══ S15 WORKGROUP SELECT ══ -->
 <div class="scr" id="s-workgroup-select" style="background:var(--bg);flex-direction:column;">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="nb"><span></span><span class="nb-title">Select Workspace</span><span class="nb-act" onclick="go('s-home')">Skip</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-repo-setup')">← Back</span><span class="nb-title">Select Workspace</span><span class="nb-act" onclick="go('s-permissions')">Skip</span></div>
   <div class="sc p16">
-    <p class="t2c mb16" style="line-height:1.5;">You belong to multiple workspaces. Choose your active workspace or work across all of them.</p>
+    <!-- AI Setup Guide -->
+    <div id="ag-wg" style="background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(105,121,248,.05));border:1px solid rgba(61,90,254,.18);border-radius:var(--r16);padding:14px;margin-bottom:18px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
+        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff;font-weight:800;">✦</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:700;color:var(--brand);letter-spacing:.3px;margin-bottom:3px;">XQ SETUP GUIDE</div>
+          <div id="ag-wg-msg" style="font-size:13px;color:var(--t1);line-height:1.55;">Your connected workspace is where XQ will protect files. You can join multiple workspaces — pick the one you use most, or skip for now and add them later.</div>
+        </div>
+      </div>
+      <div id="ag-wg-response" style="display:none;background:var(--card);border-radius:var(--r8);padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--brand);">
+        <div style="font-size:12px;color:var(--t1);line-height:1.55;" id="ag-wg-response-text"></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <button class="ag-chip" onclick="agAsk('wg',1)">What's a workspace?</button>
+        <button class="ag-chip" onclick="agAsk('wg',2)">Can I add more later?</button>
+        <button class="ag-chip" onclick="agAsk('wg',3)">Which should I pick?</button>
+      </div>
+    </div>
     <div class="sh" style="padding:0 0 9px;">Personal</div>
     <div id="wg-personal" class="wgroup-card active mb12" onclick="selectWorkgroup('wg-personal')">
       <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🔐</div>
@@ -1601,8 +1780,10 @@
         <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
       </div>
     </div>
-    <button class="btn bp mb8" onclick="go('s-home')">Open Selected Workspace</button>
-    <button class="btn bs" onclick="go('s-home')">Access All Workspaces</button>
+    <button class="btn bp mb8" onclick="go('s-permissions')">Continue →</button>
+    <button class="btn bs mb8" onclick="go('s-permissions')">Access All Workspaces</button>
+    <button class="btn bo" style="color:var(--t3);border-color:var(--sep);" onclick="go('s-permissions')">Skip for now</button>
+    <div style="height:16px;"></div>
   </div>
 </div>
 
@@ -2234,7 +2415,7 @@ function go(id) {
 }
 
 function flow(n) {
-  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread',9:'s-file-risk-dashboard'};
+  const map = {1:'s-splash',2:'s-home',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread',9:'s-file-risk-dashboard',10:'s-received-share'};
   go(map[n]);
   document.querySelectorAll('.fbtn').forEach((b,i) => b.classList.toggle('on', i+1===n));
   if (n===1) splash();
@@ -2540,6 +2721,163 @@ function docAIAssist() {
 }
 
 window.addEventListener('load', () => splash());
+
+function composeSend() {
+  const sheet = document.getElementById('compose-send-sheet');
+  if (!sheet) return;
+  // Reset state
+  ['css-2','css-3'].forEach(id => { const e=document.getElementById(id); if(e) e.style.opacity='.35'; });
+  document.getElementById('css-d1').textContent = 'Scanning for protected health information…';
+  document.getElementById('css-d2').textContent = 'Checking XQ key for carol.thomas@hospital.org';
+  document.getElementById('css-d3').textContent = 'Encrypting in Secure Enclave…';
+  document.getElementById('css-ic1').textContent = '🔍';
+  document.getElementById('css-ic2').textContent = '🔐';
+  document.getElementById('css-ic3').textContent = '🔑';
+  document.getElementById('css-phi-gate').style.display = 'none';
+  document.getElementById('css-success').style.display = 'none';
+  const phiAck = document.getElementById('phi-ack');
+  if (phiAck) phiAck.checked = false;
+  sheet.classList.remove('hide');
+  // Step 1: PHI scan
+  setTimeout(() => {
+    document.getElementById('css-d1').textContent = '8 patient identifiers detected — PHI present';
+    document.getElementById('css-ic1').textContent = '⚠️';
+    const s2 = document.getElementById('css-2'); if(s2) s2.style.opacity='1';
+  }, 900);
+  // Step 2: Recipient check
+  setTimeout(() => {
+    document.getElementById('css-d2').textContent = '✓ XQ public key verified · HIPAA recipient confirmed';
+    document.getElementById('css-ic2').textContent = '✅';
+    // Show PHI gate requiring acknowledgement
+    document.getElementById('css-phi-gate').style.display = 'block';
+  }, 1900);
+}
+
+function confirmPhiSend() {
+  const ack = document.getElementById('phi-ack');
+  if (!ack || !ack.checked) {
+    ack.style.outline = '2px solid var(--danger)';
+    setTimeout(() => { ack.style.outline = ''; }, 1200);
+    return;
+  }
+  document.getElementById('css-phi-gate').style.display = 'none';
+  const s3 = document.getElementById('css-3'); if(s3) s3.style.opacity='1';
+  document.getElementById('css-d3').textContent = 'Encrypting in Secure Enclave…';
+  setTimeout(() => {
+    document.getElementById('css-d3').textContent = '✓ AES-256-GCM · Keys never leave Secure Enclave';
+    document.getElementById('css-ic3').textContent = '✅';
+    document.getElementById('css-success').style.display = 'block';
+  }, 1100);
+  setTimeout(() => {
+    document.getElementById('compose-send-sheet').classList.add('hide');
+    go('s-email-inbox');
+  }, 2600);
+}
+
+function revokePermission(type) {
+  if (type === 'employee') {
+    const btn = document.getElementById('revoke-employee-btn');
+    if (!btn) return;
+    btn.disabled = true;
+    btn.textContent = 'Revoking…';
+    setTimeout(() => {
+      btn.textContent = '✓ Access Revoked';
+      btn.style.color = 'var(--ok)';
+      btn.style.borderColor = 'var(--ok)';
+    }, 1100);
+  } else if (type === 'link') {
+    const btn = document.getElementById('revoke-link-btn');
+    if (!btn) return;
+    btn.disabled = true;
+    btn.textContent = 'Disabling…';
+    setTimeout(() => {
+      btn.textContent = '✓ Link Disabled';
+      btn.style.color = 'var(--ok)';
+      btn.style.borderColor = 'var(--ok)';
+    }, 900);
+  }
+}
+
+const AG_ANSWERS = {
+  wg: {
+    1: "A workspace is a shared encrypted folder managed by your org — like a secure team drive. XQ enforces classification rules set by your admin, so every file inside is automatically protected.",
+    2: "Yes, easily. Go to Settings → Workspaces anytime to add, switch, or remove workspaces. You can even be active in multiple workspaces simultaneously.",
+    3: "If you're in a clinical or legal role, pick the workspace matching your highest-sensitivity work — encryption defaults will be set appropriately. Personal Vault is a good start if you're unsure."
+  },
+  perm: {
+    1: "Face ID is used to unlock your Secure Enclave key — the hardware chip that stores your encryption root. Without it, XQ can't decrypt files even if someone steals your device. Your biometric never leaves the device.",
+    2: "XQ reads email metadata to detect PHI and classify sensitivity before sending. Your email content is processed entirely on-device — never uploaded to any server. Only encrypted ciphertext leaves your phone.",
+    3: "You can skip any permission, but here's what you'll lose: no Face ID means a weaker PIN fallback; no notifications means you won't be alerted to policy violations; no email means manual encryption only."
+  }
+};
+
+function agAsk(screen, n) {
+  const responseEl = document.getElementById('ag-' + screen + '-response');
+  const textEl = document.getElementById('ag-' + screen + '-response-text');
+  if (!responseEl || !textEl) return;
+  // Mark chip as used
+  const chips = document.querySelectorAll('#ag-' + screen + ' .ag-chip');
+  if (chips[n-1]) chips[n-1].classList.add('used');
+  // Show typing indicator
+  responseEl.style.display = 'block';
+  textEl.innerHTML = '<span style="animation:agTyping 1s infinite;">●</span> <span style="animation:agTyping 1s infinite .2s;">●</span> <span style="animation:agTyping 1s infinite .4s;">●</span>';
+  const answer = (AG_ANSWERS[screen] || {})[n] || '';
+  setTimeout(() => {
+    textEl.textContent = answer;
+    // Update the guide message to acknowledge
+    const msgEl = document.getElementById('ag-' + screen + '-msg');
+    if (msgEl && screen === 'wg') msgEl.textContent = 'Great question. Here\'s what you need to know:';
+    if (msgEl && screen === 'perm') msgEl.textContent = 'Good to ask — here\'s exactly what\'s happening:';
+  }, 820);
+}
+
+function toggleEmailConnect() {
+  const tog = document.getElementById('email-tog');
+  const picker = document.getElementById('email-provider-picker');
+  if (!tog || !picker) return;
+  const isOn = tog.classList.toggle('on');
+  picker.style.display = isOn ? 'block' : 'none';
+  if (isOn) {
+    picker.scrollIntoView({behavior:'smooth', block:'nearest'});
+    // Update AI guide message
+    const msgEl = document.getElementById('ag-perm-msg');
+    if (msgEl) msgEl.textContent = 'Great choice — connecting email lets XQ automatically encrypt everything you send. Tap a provider to authenticate.';
+  }
+}
+
+function selectEmailProvider(row, name) {
+  ['ep-ms','ep-gm','ep-im'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.background=''; el.style.borderColor='var(--sep)'; el.innerHTML=''; }
+  });
+  const checkEl = row.querySelector('[id^="ep-"]');
+  if (checkEl) {
+    checkEl.style.background = 'var(--brand)';
+    checkEl.style.borderColor = 'var(--brand)';
+    checkEl.innerHTML = '<span style="color:#fff;font-size:12px;font-weight:800;">✓</span>';
+  }
+  const msgEl = document.getElementById('ag-perm-msg');
+  if (msgEl) msgEl.textContent = name + ' selected. Tap "Finish Setup" — XQ will open the ' + name + ' auth prompt to complete the connection.';
+}
+
+function authorizeAgent() {
+  const btn = document.getElementById('agent-run-btn');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = 'Authorizing…';
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('agent-auth-success').style.display = 'block';
+    // Mark action rows as running
+    ['agent-act1','agent-act2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.opacity = '.5';
+    });
+    setTimeout(() => {
+      document.getElementById('agent-auth-sheet').classList.add('hide');
+    }, 2400);
+  }, 1200);
+}
 </script>
 </body>
 </html>

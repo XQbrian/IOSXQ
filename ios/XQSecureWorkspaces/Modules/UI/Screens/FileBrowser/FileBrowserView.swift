@@ -8,6 +8,9 @@ struct FileBrowserView: View {
     @StateObject private var vm = FileBrowserViewModel()
 
     @State private var navigationPath = NavigationPath()
+    @State private var showSemanticSearch = false
+    @State private var showRiskDashboard = false
+    @State private var showAIImport = false
     @FocusState private var searchFocused: Bool
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
@@ -27,17 +30,42 @@ struct FileBrowserView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        coordinator.navigate(to: .aiImport)
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(brandBlue)
+                    HStack(spacing: 4) {
+                        Button {
+                            showSemanticSearch = true
+                        } label: {
+                            Image(systemName: "sparkles.magnifyingglass")
+                                .font(.system(size: 17))
+                                .foregroundColor(brandBlue)
+                        }
+                        Button {
+                            showRiskDashboard = true
+                        } label: {
+                            Image(systemName: "chart.bar.xaxis")
+                                .font(.system(size: 17))
+                                .foregroundColor(brandBlue)
+                        }
+                        Button {
+                            showAIImport = true
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundColor(brandBlue)
+                        }
                     }
                 }
             }
             .navigationDestination(for: SecureFile.self) { file in
                 FileViewerView(file: file)
+            }
+            .sheet(isPresented: $showSemanticSearch) {
+                SemanticSearchView()
+            }
+            .sheet(isPresented: $showRiskDashboard) {
+                FileRiskDashboardView()
+            }
+            .sheet(isPresented: $showAIImport) {
+                AIImportView()
             }
             .task {
                 if let repo = coordinator.repository {
@@ -64,7 +92,8 @@ struct FileBrowserView: View {
 
             AISemanticSearchBar(
                 text: $vm.searchQuery,
-                isFocused: $searchFocused
+                isFocused: $searchFocused,
+                onSubmit: { showSemanticSearch = true }
             )
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
@@ -269,6 +298,7 @@ private struct OrgRiskBanner: View {
 private struct AISemanticSearchBar: View {
     @Binding var text: String
     var isFocused: FocusState<Bool>.Binding
+    var onSubmit: (() -> Void)? = nil
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -291,6 +321,7 @@ private struct AISemanticSearchBar: View {
                     .submitLabel(.search)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .onSubmit { onSubmit?() }
             }
 
             if !text.isEmpty {
