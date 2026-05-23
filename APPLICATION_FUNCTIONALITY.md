@@ -23,73 +23,86 @@ The product bet: **security is ambient.** The on-device AI continuously classifi
 | -------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Consumer             | Protect sensitive personal files without setup. Share selectively. Stay offline-safe.           | Local-first onboarding (under 60s), encrypted vault, revocable shares.          |
 | Enterprise user      | Open SharePoint files on mobile under the same governance rules as desktop. Don't think about it. | SSO login, automatic SharePoint mount, AI-applied sharing controls.              |
-| Enterprise admin     | Define classification schemas, enforce DLP, audit everything, revoke instantly.                 | Policy management screen, full event log, revocation that reaches offline caches. |
+| Enterprise admin     | Define classification schemas, enforce DLP, audit everything, revoke instantly.                 | Policy management embedded in Profile > Admin, full event log, revocation that reaches offline caches. |
 
 ---
 
 ## 3. Navigation Model
 
-The app uses a **5-tab bottom navigation** as its primary surface:
+The app uses a **3-tab bottom navigation** plus a **top-right avatar** for Profile:
 
-| Tab      | Screen ID            | Purpose                                                  |
-| -------- | -------------------- | -------------------------------------------------------- |
-| Home     | `s-home`             | AI briefing, priority actions, workspace insights.       |
-| Files    | `s-file-browser`     | Folder/recent/shared/vault views of all protected files. |
-| Email    | `s-email-inbox`      | Secure, policy-reviewed mail with phishing/PHI scanning. |
-| Sharing  | `s-sharing`          | Outgoing shares, expirations, revocations.               |
-| Settings | `s-settings`         | Policy, security, AI model config, theme, display mode.  |
+| Tab      | Screen ID            | Purpose                                                                          |
+| -------- | -------------------- | -------------------------------------------------------------------------------- |
+| Files    | `s-file-browser`     | Folder / Recent / Shared / Vault views of all protected files.                   |
+| Messages | `s-email-inbox`      | Secure, policy-reviewed mail with phishing/PHI scanning. Includes Sharing.       |
+| Now      | `s-notifications`    | Dashboard-style alerts feed + embedded AI assistant + activity + security feeds. |
 
-Secondary screens (file viewer, doc editor, compose, semantic search, risk dashboard, lineage, notifications, etc.) are reached from these tabs.
+**Top-right `BW` avatar** on every top-level screen opens **Profile** (`s-profile`) — the single entry point for account, security, notifications, integrations, workspace info, devices, billing, and admin (see §10). Settings as a separate tab no longer exists.
+
+Secondary screens (file viewer, doc editor, compose, risk dashboard, lineage, sharing, etc.) are reached from the three tabs. The old dedicated AI tab and Semantic Search screen have been merged into Now → **Ask** sub-tab; `go('s-ai-assistant')` and `go('s-semantic-search')` automatically route there.
 
 ---
 
 ## 4. Onboarding
 
-Two parallel paths, surfaced on the **Welcome** screen (`s-welcome`):
+Two parallel paths, surfaced on the **Welcome** screen (`s-welcome`). The path chosen is persisted in `localStorage` (`xq.onbPath`) so back-navigation behaves correctly.
 
-### 4.1 Local-First (Consumer)
-1. `s-welcome` → "Start for Free"
+### 4.1 Local-First (Personal / Consumer)
+1. `s-welcome` → "Start for Free" → `onbStart('personal')`
 2. `s-repo-setup` — choose where files live (local vault default; iCloud Drive optional).
 3. `s-permissions` — Photos, Files, Notifications, Biometrics. AI guidance explains *why* each permission is needed.
-4. Land on `s-home`. No account created. No data leaves the device.
+4. Land on the Now tab. No account created. No data leaves the device.
+
+> The Select Workspace screen is **skipped** entirely for personal onboarding.
 
 ### 4.2 Enterprise (SSO)
-1. `s-welcome` → "Connect Enterprise Workspace"
+1. `s-welcome` → "Connect Enterprise Workspace" → `onbStart('enterprise')`
 2. `s-enterprise-auth` — Entra / Okta SSO flow.
 3. `s-workgroup-select` — pick from organizational workspaces returned by directory.
 4. `s-permissions` — same as above plus enterprise data scopes.
-5. SharePoint sites auto-mount; user lands on `s-home`.
+5. SharePoint sites auto-mount; user lands on the Now tab.
 
 ---
 
-## 5. Home — AI-Driven Operational Surface (`s-home`)
+## 5. Now — The Home Surface (`s-notifications`)
 
-The home screen is **not** a launcher — it's an actionable digest:
+"Now" is the default landing screen and serves as the actionable dashboard. It uses **four sub-tabs**:
 
-- **XQ AI Assistant command bar** — natural-language entry into semantic search and quick actions ("Files at risk", "Pending approvals", "Revoke shares", "Cleanup").
-- **AI Daily Briefing** — a 1–3 sentence summary of overnight events: expiring shares, drafts needing policy review, unrecognized-device accesses.
-- **Priority Actions** — color-coded cards (Restricted/Confidential/Internal) that link directly to the screen where the action lives.
-- **AI Workspace Insights** — counters: vault files, unread secure messages, high-risk shares, vault health status.
-- **Quick Access** — fast paths to Files, Email, AI Import, Sharing.
-- **Recent Files** — last opened items with classification badge.
+### 5.1 Overview
+- **Trust status pill** — "Workspace protected · scanned just now" with item counts.
+- **Today feed** — chronological recent events (encrypted files added, secure email, vault scan, policy bundle updates).
+- **Needs Your Attention** — single-row action cards (expiring shares, incoming received shares, externally shared docs to review).
+- **Suggested** — AI-proposed actions (apply labels, etc.) with a "See all →" link into Activity.
+
+### 5.2 Ask (✦)
+The AI assistant lives here. Sub-tab contains:
+- Gradient ✦ icon + "XQ AI Assistant" header.
+- "Encrypted workspace intelligence" intro.
+- Three capability cards (File Intelligence, Risk Analysis, Email Compliance).
+- Four "Try Asking" prompt buttons (Which files contain PHI?, Show files expiring this week, Summarize my security posture, Who can access my Q4 Report?).
+- Chat scroll area (`#ai-messages`) with sticky chat input at the bottom — Enter-to-send.
+
+All inference runs **on-device** via CoreML/ONNX models. Search bars in Files and Email also route here.
+
+### 5.3 Activity
+File / share / access events feed.
+
+### 5.4 Security
+Policy violations, unrecognized devices, phishing flags.
 
 ---
 
 ## 6. File Vault (`s-file-browser`, `s-folder-view`, `s-file-viewer`)
 
 ### 6.1 Browser
-Four sub-tabs inside Files:
-- **Folders** — workspace-organized view (e.g., *Finance & Legal*, *Personal*).
-- **Recent** — chronological access list.
-- **Shared** — files shared with the user.
-- **Vault** — the encrypted local-only container.
+Four sub-tabs inside Files: **Folders / Recent / Shared / Vault**. A search bar at the top routes to the AI assistant (Now → Ask) for natural-language find. AI-generated smart folders ("AI Organize", `s-ai-organize`) propose groupings the user can accept.
 
-Grid view is the default; list view available. AI-generated smart folders ("AI Organize", `s-ai-organize`) propose groupings the user can accept.
+Defaults to All Sources + Grid view (the legacy smart-view chip row and grid/list/tree toggle were removed for visual calm).
 
 ### 6.2 File Viewer (`s-file-viewer`)
 - **Secure container** — screenshots blocked (`s-screenshot-block` interstitial appears on attempted capture).
 - **Security Intelligence Panel (SIP)** — collapsible bar showing:
-  - Classification (Restricted / Confidential / Internal / Public — default minimized per current setting).
+  - Classification (Restricted / Confidential / Internal / Public — default minimized per current Display Mode setting).
   - Threat scan results.
   - **Data lineage** (`s-data-lineage`) — full provenance: source, edits, who accessed, where.
 - **Share Securely** action → opens the secure share sheet (AES-256-GCM, key in Secure Enclave).
@@ -104,16 +117,13 @@ Grid view is the default; list view available. AI-generated smart folders ("AI O
 ### 6.5 AI Risk Dashboard (`s-file-risk-dashboard`)
 - On-device scan results: credential leaks, PHI, stale permissions, policy drift — with per-issue remediation.
 
-### 6.6 Semantic Search (`s-semantic-search`)
-- Natural language: *"show me Q4 budget docs I shared externally"* — runs against on-device embeddings.
-
 ---
 
 ## 7. Email (`s-email-inbox`, `s-email-thread`, `s-email-compose`, `s-phishing-alert`)
 
 A **secure mail client** layered on top of the user's existing inbox:
 
-- **Inbox** — threaded view with classification badges per message.
+- **Inbox** — threaded view with classification badges per message. Search bar routes to the AI assistant (Now → Ask).
 - **Thread view** — message history with inline risk context.
 - **Phishing alert / Risk Analysis** (`s-phishing-alert`) — AI flags suspicious senders, malicious links, and credential-harvesting patterns. Drill-down view explains the signal.
 - **Secure compose** (`s-email-compose`) — pre-send AI scan for:
@@ -127,92 +137,128 @@ A **secure mail client** layered on top of the user's existing inbox:
 
 ## 8. Sharing (`s-sharing`, `s-received-share`, `s-group-invite`)
 
-The Sharing tab is the **control surface for what's left the device**:
+The Sharing screen (reachable from Messages and from Now's action cards) is the **control surface for what's left the device**:
 
 - List of outgoing shares with: recipient, expiration, file, classification, geofence (if any), view-only flag.
 - **Renew / Revoke** actions per share.
 - **Received Share** view (`s-received-share`) — what others sent to you (decryption requires the XQ app).
 - **Group invite** flow (`s-group-invite`) — accept/decline workgroup invitations with policy preview.
 
-Sharing rules are AI-applied based on file classification and recipient — user does not pick controls manually unless overriding.
+Sharing rules are AI-applied based on file classification and recipient — the user does not pick controls manually unless overriding.
 
 ---
 
-## 9. Notifications (`s-notifications`)
+## 9. Workgroups (`s-groups`, `s-workgroup-select`)
 
-Five sub-tabs:
-- **Overview** — combined feed.
-- **Activity** — file/share/access events.
-- **Security** — policy violations, unrecognized devices, phishing flags.
-- **Shared** — incoming share notifications.
-- **AI Actions** — pending or completed AI-suggested operations (cleanup, reclassification, expiry rotation).
+A user can belong to multiple workspaces (e.g., *Acme Health — Clinical*, *Acme Legal*, *Acme Finance*, *Personal Vault*). Workgroup management lives under **Profile → Workspace** (§10.5). The in-app workspace switcher screen (`s-workgroup-select`) lets the user change active workspace at any time; during onboarding it's only used by the enterprise path.
 
 ---
 
-## 10. Settings (`s-settings`, `s-policy`)
+## 10. Profile (`s-profile`) — Command Center
 
-- **Display Mode** — Expanded vs **Minimized** (default). Minimized collapses AI/security banners into compact pills; tap to expand inline.
-- **Policy Management** (`s-policy`, admin variant) — classification schemas, sharing defaults, geofencing, external recipient rules.
-- **Security** — biometric lock, jailbreak detection state, AES-256-GCM / Secure Enclave status, CoreML model version (e.g., *3 loaded · 80 MB*).
-- **Theme** — light / dark / system.
+Reached from the **top-right `BW` avatar** on every top-level screen (Files, Messages, Now, and the AI assistant inside Now).
+
+The screen is laid out as a single vertical column:
+
+1. **Identity card** — avatar, name, title ("Enterprise Admin · Compliance"), org ("Acme Health Systems"), Verified + Ent-Admin badges, last login (device + city).
+2. **Security Health card** — four mini-tiles: MFA Enabled · Active Sessions · Policy Compliant · Encryption OK.
+3. **Quick Actions** — Change Password · Manage Devices · Configure MFA · Audit Logs (each deep-links to the right subsection).
+4. **Sticky quick-nav chip bar** — sticks to the top of the Profile scroll container once the identity block scrolls past. Used for fast jumps between subsections; chips smooth-scroll to anchors.
+5. **Stacked subsections** — all subsections render in a single scrollable column, each with a heading. Last-viewed subsection is persisted in `localStorage` (`xq.profileSection`) and restored on re-entry.
+
+The eight Profile subsections:
+
+### 10.1 General
+Account name / email / role / language / time zone. Theme picker (Light / Dark / Earth). Display Mode toggle (Expanded vs **Minimized** — minimized is the default; collapses AI/security banners into compact pills users can tap to expand). About (Version, XQ API status, Secure Enclave state, CoreML model count). Help Center / Contact Support / Privacy Policy entries.
+
+### 10.2 Security
+Multi-Factor Auth (Authenticator + TouchID). Biometric Lock. Auto-lock timer. Change Password. Recovery Codes. Transport & Storage status: Certificate Pinning, AES-256-GCM at rest, Secure Enclave key custody, Jailbreak Detection.
+
+### 10.3 Notifications
+In-app banner toggles for Phishing / PHI / Policy & Compliance / AI Intelligence panels. Channel toggles: Push, Email Digest (Weekly), Critical Alerts via SMS.
+
+### 10.4 Integrations
+Connected services: SharePoint, OneDrive, Entra ID (SSO), Outlook 365, Slack, Okta. Each shows connection state with a Connect/Disconnect/Manage action. API Keys & Access Tokens: personal API key (rotatable), audit-log export token, "Create New Token" button.
+
+### 10.5 Workspace
+Organization name, tenant ID, plan tier (ENTERPRISE), data residency, compliance posture (HIPAA · SOC 2 Type II). Workgroups list with member counts and policy badges; "Create Workgroup" action.
+
+### 10.6 Devices
+This device callout (iPhone 15 Pro, marked CURRENT). Other active sessions with per-session Revoke. "Sign out everywhere else" destructive action.
+
+### 10.7 Billing
+Subscription (Plan, Seats, Billing Cycle, Next Renewal). License Entitlements list (On-Device AI, Policy Management, SharePoint Connector, Advanced Audit Export). Payment: card on file, Invoices & Receipts.
+
+### 10.8 Admin
+Visible to Enterprise Admin role. Policy bundle signed-status banner. **Classification Rules** toggles (PHI / PII / Financial Data auto-detection). **Share Enforcement** (Block External PHI, Max Share Expiry, Require XQ for Recipients, Screenshot Detection). **AI Policy Gates** (Cloud AI Processing toggle + hardcoded CUI/PHI = Local-Only rule). **Tenant**: user count, Audit Log Export (Download CSV), link to the detailed policy editor (`s-policy`). Publish / Discard policy buttons.
 
 ---
 
-## 11. AI Assistant (`s-ai-assistant`)
+## 11. Security Model (Surfaced to the User)
 
-A standalone conversational surface (also embedded in the Home command bar) for:
-- Workspace Q&A ("which files have I shared externally this month?").
-- Performing actions on request ("revoke all shares to dr.chen@acme.com").
-- Explaining security decisions ("why is this file marked Restricted?").
-
-All inference runs **on-device** via CoreML/ONNX models — no content sent to a server for classification.
-
----
-
-## 12. Security Model (Surfaced to the User)
-
-| Capability                | User-visible signal                                              |
-| ------------------------- | --------------------------------------------------------------- |
-| AES-256-GCM at rest       | "Vault Secured" tile on Home; SIP on each file.                  |
-| Secure Enclave key custody | Mentioned in Help Chat and Settings.                             |
-| Screenshot blocking       | `s-screenshot-block` interstitial.                               |
-| Jailbreak detection       | Surface in Settings; can fail-closed per enterprise policy.     |
-| Offline queue             | Actions taken offline persist and replay on reconnect.           |
-| Revocation reaches cache  | Receiving devices invalidate cached ciphertext on revoke.        |
+| Capability                | User-visible signal                                                |
+| ------------------------- | ------------------------------------------------------------------ |
+| AES-256-GCM at rest       | Security Health card in Profile; SIP on each file.                  |
+| Secure Enclave key custody | Profile → Security · Profile → General → About.                    |
+| Screenshot blocking       | `s-screenshot-block` interstitial.                                  |
+| Jailbreak detection       | Profile → Security; can fail-closed per enterprise policy.          |
+| Offline queue             | Actions taken offline persist and replay on reconnect.              |
+| Revocation reaches cache  | Receiving devices invalidate cached ciphertext on revoke.           |
 | Zero-knowledge share keys | Key exchange detail noted in Help Chat; server holds only ciphertext. |
 
 ---
 
-## 13. Help Chat
+## 12. Help Chat
 
 A persistent help surface (knowledge-base backed) that answers questions like *"how do I encrypt a file?"*, *"what is a risk score?"*, *"how do I revoke a share?"* using the same vocabulary the UI uses, so users learn the app by using it.
 
 ---
 
-## 14. Module-to-Feature Mapping (Swift)
+## 13. Module-to-Feature Mapping (Swift)
 
-The native iOS code lives under `ios/XQSecureWorkspaces/Modules/`. Top-level module folders correspond roughly to the functional areas above:
+The native iOS code lives under `ios/XQSecureWorkspaces/Modules/`. Top-level module folders correspond roughly to the functional areas above. (The Swift `Settings` module remains in source but now hosts the Profile UI — the prototype consolidated Settings + Policy into the single Profile surface; the native side will follow as it lands.)
 
-| Module folder              | Functionality                                          |
-| -------------------------- | ----------------------------------------------------- |
-| `UI/Screens/Home`          | Home dashboard, AI briefing, priority cards.          |
-| `UI/Screens/FileBrowser`   | File grid/list, folder views, sub-tabs.               |
-| `UI/Screens/FileViewer`    | Secure viewer, SIP, secure share sheet.               |
-| `UI/Screens/Email`         | Inbox, thread, compose with policy scanning.          |
-| `UI/Screens/Sharing`       | Outgoing share management, revocation.                |
-| `UI/Screens/AIImport`      | Classify-on-import flow.                              |
-| `UI/Screens/AI`            | AI assistant surface.                                 |
-| `UI/Screens/Auth`          | SSO and local onboarding entry.                       |
-| `UI/Screens/Onboarding`    | Welcome, repo setup, permissions.                     |
-| `UI/Screens/Workgroup`     | Workgroup selection and invites.                      |
-| `UI/Screens/Notifications` | Activity / security / shared / AI action feeds.       |
-| `UI/Screens/Settings`      | Policy, security, AI model, display mode.             |
-| `Security`                 | Jailbreak detection, key custody, crypto operations.  |
-| `FileIntelligence`         | On-device classification, data lineage, risk scan.    |
-| `Repository/Providers`     | Local vault, SharePoint, offline queue.               |
-| `Networking/Adapters`      | XQ API v3 adapter and related transport.              |
-| `Core/Models`              | Shared domain models.                                 |
-| `Core/Protocols`           | Security & API contracts.                             |
+| Module folder              | Functionality                                                  |
+| -------------------------- | ------------------------------------------------------------- |
+| `UI/Screens/FileBrowser`   | File grid/list, folder views, sub-tabs.                       |
+| `UI/Screens/FileViewer`    | Secure viewer, SIP, secure share sheet.                       |
+| `UI/Screens/Email`         | Inbox, thread, compose with policy scanning.                  |
+| `UI/Screens/Sharing`       | Outgoing share management, revocation.                        |
+| `UI/Screens/AIImport`      | Classify-on-import flow.                                      |
+| `UI/Screens/AI`            | AI assistant surface (rendered inside the Now > Ask sub-tab). |
+| `UI/Screens/Notifications` | Now dashboard: Overview / Ask / Activity / Security feeds.    |
+| `UI/Screens/Settings`      | Profile screen (account, security, notifications, integrations, workspace, devices, billing, admin). |
+| `UI/Screens/Auth`          | SSO and local onboarding entry.                               |
+| `UI/Screens/Onboarding`    | Welcome, repo setup, permissions.                             |
+| `UI/Screens/Workgroup`     | Workgroup selection and invites.                              |
+| `UI/Screens/Home`          | Legacy home dashboard (now folded into Notifications).        |
+| `Security`                 | Jailbreak detection, key custody, crypto operations.          |
+| `FileIntelligence`         | On-device classification, data lineage, risk scan.            |
+| `Repository/Providers`     | Local vault, SharePoint, offline queue.                       |
+| `Networking/Adapters`      | XQ API v3 adapter and related transport.                      |
+| `Core/Models`              | Shared domain models.                                         |
+| `Core/Protocols`           | Security & API contracts.                                     |
+
+---
+
+## 14. Routing & Persistence Cheat Sheet
+
+The prototype consolidates several legacy entry points via `go()` aliases — every prior link still works:
+
+| Calls `go(...)` with | Actually shows                                  |
+| -------------------- | ----------------------------------------------- |
+| `s-home`             | `s-notifications` (Now tab is the home).        |
+| `s-settings`         | `s-profile`.                                    |
+| `s-ai-assistant`     | `s-notifications` + auto-switch to Ask sub-tab. |
+| `s-semantic-search`  | `s-notifications` + auto-switch to Ask sub-tab. |
+
+`localStorage` keys used by the prototype:
+
+| Key                  | Values                                                                     | Purpose                                       |
+| -------------------- | -------------------------------------------------------------------------- | --------------------------------------------- |
+| `xq.notifMode`       | `expanded` \| `minimized` (default `minimized`)                             | Display Mode for in-context banners/pills.   |
+| `xq.profileSection`  | `general` \| `security` \| `notifications` \| `integrations` \| `workspace` \| `devices` \| `billing` \| `admin` | Last-viewed Profile subsection.              |
+| `xq.onbPath`         | `personal` \| `enterprise`                                                  | Active onboarding path; controls back-nav from Permissions and whether workspace-select is shown. |
 
 ---
 
@@ -222,10 +268,10 @@ The native iOS code lives under `ios/XQSecureWorkspaces/Modules/`. Top-level mod
 
 - Multi-user real-time co-editing of documents.
 - Cross-platform clients (macOS, Windows, Android) — iOS only in Phase 1.
-- Admin web console — admin UX is the policy management screen embedded in the same app.
+- Admin web console — admin UX is the Profile → Admin subsection embedded in the same app.
 - Backup/restore of the local vault to a non-XQ destination.
 - Generative content (drafting/rewriting) inside Email or Docs beyond risk analysis.
 
 ---
 
-*Last updated: 2026-05-22.*
+*Last updated: 2026-05-23.*
