@@ -368,6 +368,23 @@
   /* ── AI assistant prompt buttons ── */
   .ai-prompt-btn{background:var(--card);border:1px solid var(--sep);border-radius:11px;padding:11px 14px;text-align:left;font-size:13px;color:var(--t1);cursor:pointer;width:100%;font-family:inherit;}
   .ai-prompt-btn:hover{background:var(--brand-light);border-color:var(--brand);}
+  /* ── Profile screen (single-column stack) ── */
+  .prf-quicknav{position:sticky;top:0;z-index:3;background:var(--bg);padding:8px 16px;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-bottom:.5px solid var(--sep);}
+  .prf-quicknav::-webkit-scrollbar{display:none;}
+  .prf-chip{background:var(--card);border:none;border-radius:var(--rfull);padding:6px 13px;font-size:11px;font-weight:600;color:var(--t2);cursor:pointer;flex-shrink:0;font-family:inherit;white-space:nowrap;transition:background .15s,color .15s;}
+  .prf-chip:hover{background:var(--brand-light);color:var(--brand);}
+  .prf-chip.prf-chip-active{background:var(--brand);color:#fff;}
+  .dm .prf-chip.prf-chip-active{background:#6979F8;}
+  .prf-stack{padding:14px 16px 0;display:flex;flex-direction:column;gap:18px;}
+  .prf-sec{display:block;scroll-margin-top:60px;}
+  .prf-sec-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:10px;letter-spacing:-.2px;}
+  .prf-h{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin:4px 0 8px;padding:0 2px;}
+  .prf-qa{background:var(--card);border:none;border-radius:11px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:inherit;color:var(--t2);font-size:9px;font-weight:600;text-align:center;line-height:1.1;transition:background .15s;}
+  .prf-qa:hover{background:var(--brand-light);}
+  /* Top-right avatar button on top-level screens */
+  .av-nav{cursor:pointer;transition:transform .12s ease;}
+  .av-nav:hover{transform:scale(1.06);}
+  .av-nav:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -547,7 +564,7 @@
     <div class="lt-text">Home</div>
     <div class="row" style="gap:8px;padding-bottom:8px;">
       <button class="ibtn" onclick="go('s-notifications')" style="font-size:18px;color:var(--t1);"><i class="bi bi-bell-fill"></i></button>
-      <div class="av">BW</div>
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;">BW</button>
     </div>
   </div>
   <div class="sc">
@@ -653,7 +670,7 @@
           <div style="font-size:11px;font-weight:600;color:var(--t1);">High-Risk Shares</div>
           <div style="font-size:10px;color:var(--t3);margin-top:2px;">External · expiring today</div>
         </div>
-        <div style="background:var(--card);border-radius:13px;padding:13px;cursor:pointer;" onclick="go('s-settings')">
+        <div style="background:var(--card);border-radius:13px;padding:13px;cursor:pointer;" onclick="goProfile('security')">
           <div style="font-size:22px;font-weight:800;color:var(--ok);margin-bottom:4px;">✓</div>
           <div style="font-size:11px;font-weight:600;color:var(--t1);">Vault Secured</div>
           <div style="font-size:10px;color:var(--t3);margin-top:2px;">AES-256-GCM · Enclave OK</div>
@@ -723,10 +740,11 @@
   <!-- Large title + actions -->
   <div style="padding:4px 20px 0;display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;">
     <div style="font-size:33px;font-weight:700;letter-spacing:-.5px;color:var(--t1);line-height:1.1;padding-bottom:6px;">Files</div>
-    <div style="display:flex;gap:4px;padding-bottom:10px;">
+    <div style="display:flex;gap:6px;align-items:center;padding-bottom:10px;">
       <button class="ibtn" onclick="go('s-ai-import')" style="font-size:18px;color:var(--brand);"><i class="bi bi-plus-circle-fill"></i></button>
       <button class="ibtn" style="font-size:16px;color:var(--t2);" onclick="document.getElementById('risk-overlay').classList.remove('hide')"><i class="bi bi-shield-exclamation"></i></button>
       <button class="ibtn" style="font-size:16px;color:var(--t2);"><i class="bi bi-ellipsis-horizontal-circle"></i></button>
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
     </div>
   </div>
   <!-- AI Search bar -->
@@ -1697,8 +1715,9 @@
   <!-- Apple Mail large-title header -->
   <div class="lt">
     <div class="lt-text">Inbox</div>
-    <div style="padding-bottom:8px;display:flex;align-items:center;gap:4px;">
+    <div style="padding-bottom:8px;display:flex;align-items:center;gap:6px;">
       <button class="ibtn" style="background:none;border:none;font-size:22px;color:var(--brand);cursor:pointer;" onclick="go('s-email-compose')"><i class="bi bi-pencil-square"></i></button>
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
     </div>
   </div>
   <!-- iOS-native search bar -->
@@ -1975,7 +1994,12 @@
 <!-- ══ S11 SHARING CENTER ══ -->
 <div class="scr" id="s-sharing" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="lt"><div class="lt-text">Sharing</div></div>
+  <div class="lt">
+    <div class="lt-text">Sharing</div>
+    <div style="padding-bottom:8px;">
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
+    </div>
+  </div>
   <div class="sc p16">
     <div style="display:flex;gap:11px;margin-bottom:18px;">
       <div class="card tc" style="flex:1;padding:14px;"><div style="font-size:21px;font-weight:800;color:var(--brand);">8</div><div class="t3c">Active</div></div>
@@ -2105,9 +2129,344 @@
       <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Cloud AI Processing</div><div class="t3c">Enterprise opt-in (currently OFF)</div></div><div class="tog off"><div class="tog-k"></div></div></div>
       <div class="cr"><span style="font-size:15px;color:var(--danger);"><i class="bi bi-exclamation-triangle-fill"></i></span><div class="col"><div style="font-size:12px;color:var(--res-t);font-weight:600;">CUI / PHI = Local Only Always</div><div class="t3c">Hardcoded. Cannot be overridden by any policy.</div></div></div>
     </div>
-    <button class="btn bp mb8" onclick="go('s-settings')">Publish Policy Update</button>
-    <button class="btn bo mb20" onclick="go('s-settings')">Discard Changes</button>
+    <button class="btn bp mb8" onclick="goProfile('admin')">Publish Policy Update</button>
+    <button class="btn bo mb20" onclick="goProfile('admin')">Discard Changes</button>
   </div>
+</div>
+
+<!-- ══ S13B PROFILE — Identity & Command Center ══ -->
+<div class="scr" id="s-profile" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt">
+    <div class="lt-text">Profile</div>
+    <div style="padding-bottom:8px;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:10px;color:var(--ok);font-weight:600;">● Compliant</span>
+    </div>
+  </div>
+  <div class="sc" style="padding:0 0 16px;">
+
+    <!-- Identity card -->
+    <div style="padding:4px 16px 12px;">
+      <div style="background:var(--card);border-radius:16px;padding:16px;display:flex;gap:13px;align-items:center;">
+        <div class="av" style="width:58px;height:58px;font-size:18px;flex-shrink:0;">BW</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:17px;font-weight:700;color:var(--t1);line-height:1.2;">Brian Wane</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:1px;">Enterprise Admin · Compliance</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:1px;">Acme Health Systems</div>
+          <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;">
+            <span style="background:var(--pub-bg);color:var(--ok);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">● Verified</span>
+            <span style="background:#E8EAFD;color:var(--brand);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">ENT ADMIN</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--t3);margin-top:6px;padding:0 4px;">Last login: Today 9:14 AM · iPhone 15 Pro · San Francisco, CA</div>
+    </div>
+
+    <!-- Security Health card -->
+    <div style="padding:0 16px 12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;padding:0 2px;">Security Health</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:var(--card);border-radius:12px;padding:11px 12px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+            <span style="font-size:14px;color:var(--ok);"><i class="bi bi-shield-lock-fill"></i></span>
+            <div style="font-size:11px;font-weight:600;color:var(--t1);">MFA Enabled</div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);">Authenticator app · TouchID</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:11px 12px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+            <span style="font-size:14px;color:var(--brand);"><i class="bi bi-laptop"></i></span>
+            <div style="font-size:11px;font-weight:600;color:var(--t1);">3 Active Sessions</div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);">iPhone · MacBook · iPad</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:11px 12px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+            <span style="font-size:14px;color:var(--ok);"><i class="bi bi-patch-check-fill"></i></span>
+            <div style="font-size:11px;font-weight:600;color:var(--t1);">Policy Compliant</div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);">All 12 controls passing</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:11px 12px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+            <span style="font-size:14px;color:var(--ok);"><i class="bi bi-shield-fill-check"></i></span>
+            <div style="font-size:11px;font-weight:600;color:var(--t1);">Encryption OK</div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);">AES-256-GCM · Enclave</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="padding:0 16px 14px;">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;padding:0 2px;">Quick Actions</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+        <button class="prf-qa" onclick="goProfile('security')">
+          <span style="font-size:17px;color:var(--brand);"><i class="bi bi-key-fill"></i></span>
+          <span>Change<br>Password</span>
+        </button>
+        <button class="prf-qa" onclick="goProfile('devices')">
+          <span style="font-size:17px;color:var(--brand);"><i class="bi bi-laptop"></i></span>
+          <span>Manage<br>Devices</span>
+        </button>
+        <button class="prf-qa" onclick="goProfile('security')">
+          <span style="font-size:17px;color:var(--brand);"><i class="bi bi-shield-lock-fill"></i></span>
+          <span>Configure<br>MFA</span>
+        </button>
+        <button class="prf-qa" onclick="goProfile('admin')">
+          <span style="font-size:17px;color:var(--brand);"><i class="bi bi-download"></i></span>
+          <span>Audit<br>Logs</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sticky quick-nav: scrolls the matching section into view -->
+    <nav class="prf-quicknav" role="tablist" aria-label="Jump to Profile section">
+      <button class="prf-chip prf-chip-active" data-section="general"       onclick="goProfile('general')"       role="tab" aria-selected="true">General</button>
+      <button class="prf-chip"                 data-section="security"      onclick="goProfile('security')"      role="tab" aria-selected="false">Security</button>
+      <button class="prf-chip"                 data-section="notifications" onclick="goProfile('notifications')" role="tab" aria-selected="false">Notifications</button>
+      <button class="prf-chip"                 data-section="integrations"  onclick="goProfile('integrations')"  role="tab" aria-selected="false">Integrations</button>
+      <button class="prf-chip"                 data-section="workspace"     onclick="goProfile('workspace')"     role="tab" aria-selected="false">Workspace</button>
+      <button class="prf-chip"                 data-section="devices"       onclick="goProfile('devices')"       role="tab" aria-selected="false">Devices</button>
+      <button class="prf-chip"                 data-section="billing"       onclick="goProfile('billing')"       role="tab" aria-selected="false">Billing</button>
+      <button class="prf-chip"                 data-section="admin"         onclick="goProfile('admin')"         role="tab" aria-selected="false">Admin</button>
+    </nav>
+
+    <!-- Single-column stack: all sections visible, scroll between them -->
+    <div class="prf-stack">
+
+        <!-- General -->
+        <section class="prf-sec" id="prf-sec-general" data-section="general" role="tabpanel">
+          <div class="prf-sec-title">General</div>
+          <div class="prf-h">Account</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Display Name</div><div style="color:var(--t2);font-size:13px;">Brian Wane</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Email</div><div style="color:var(--t2);font-size:13px;">brian@xqmsg.com</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Role</div><span style="background:#E8EAFD;color:var(--brand);font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rfull);">ENTERPRISE ADMIN</span></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Language</div><div style="color:var(--brand);font-size:13px;font-weight:500;">English (US)</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Time Zone</div><div style="color:var(--brand);font-size:13px;font-weight:500;">America/Los_Angeles</div></div>
+          </div>
+
+          <div class="prf-h">Appearance</div>
+          <div class="card p16 mb12">
+            <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:10px;letter-spacing:.2px;">Theme</div>
+            <div style="display:flex;gap:8px;">
+              <button id="theme-btn-light" class="theme-btn ton" onclick="setTheme('light')">
+                <div class="tswatch" style="background:linear-gradient(135deg,#F2F2F7 50%,#3D5AFE 50%);"></div>
+                <span class="tlabel">Light</span>
+              </button>
+              <button id="theme-btn-dark" class="theme-btn" onclick="setTheme('dark')">
+                <div class="tswatch" style="background:linear-gradient(135deg,#000 50%,#6979F8 50%);"></div>
+                <span class="tlabel">Dark</span>
+              </button>
+              <button id="theme-btn-earth" class="theme-btn" onclick="setTheme('earth')">
+                <div class="tswatch" style="background:linear-gradient(135deg,#071013 50%,#FF7A59 50%);"></div>
+                <span class="tlabel">Earth</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="prf-h">Notification Display</div>
+          <div class="card p16 mb12">
+            <div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:4px;">Display Mode</div>
+            <div style="font-size:11px;color:var(--t3);margin-bottom:10px;">Minimized collapses all security banners and AI panels to compact pills. Tap any pill to expand it inline.</div>
+            <div class="nm-mode-seg">
+              <button class="nm-mode-btn" id="nm-btn-expanded-p" onclick="setNotifMode('expanded')">⬜ Expanded</button>
+              <button class="nm-mode-btn nm-active" id="nm-btn-minimized-p" onclick="setNotifMode('minimized')">▬ Minimized</button>
+            </div>
+          </div>
+
+          <div class="prf-h">About</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Version</div><div class="t2c">1.0.0 (Build 1)</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">XQ API</div><div style="color:var(--ok);font-size:12px;font-weight:600;">v3 · Connected</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Secure Enclave</div><div style="color:var(--ok);font-size:12px;font-weight:600;">Active</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">CoreML Models</div><div class="t2c">3 loaded · 80 MB</div></div>
+          </div>
+
+          <div class="prf-h">Support</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;"><div class="t1c" style="font-size:13px;">Help Center</div><span style="color:var(--brand);font-size:17px;">›</span></div>
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;"><div class="t1c" style="font-size:13px;">Contact Support</div><span style="color:var(--brand);font-size:17px;">›</span></div>
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;"><div class="t1c" style="font-size:13px;">Privacy Policy</div><span style="color:var(--brand);font-size:17px;">›</span></div>
+          </div>
+        </section>
+
+        <!-- Security -->
+        <section class="prf-sec" id="prf-sec-security" data-section="security" role="tabpanel">
+          <div class="prf-sec-title">Security</div>
+          <div class="prf-h">Authentication</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#3D5AFE;"><i class="bi bi-shield-lock-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Multi-Factor Auth</div><div class="t3c">Authenticator app + TouchID</div></div></div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#3D5AFE;"><i class="bi bi-fingerprint"></i></span><div class="t1c" style="font-size:13px;">Biometric Lock</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--t2);"><i class="bi bi-clock-fill"></i></span><div class="t1c" style="font-size:13px;">Auto-lock</div></div><div style="color:var(--brand);font-size:13px;font-weight:500;">2 min</div></div>
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--t2);"><i class="bi bi-key-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Change Password</div><div class="t3c">Last changed 47 days ago</div></div></div><span style="color:var(--brand);font-size:17px;">›</span></div>
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--t2);"><i class="bi bi-shield-shaded"></i></span><div class="t1c" style="font-size:13px;">Recovery Codes</div></div><span style="color:var(--brand);font-size:13px;font-weight:500;">Generate</span></div>
+          </div>
+
+          <div class="prf-h">Transport &amp; Storage</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--ok);"><i class="bi bi-patch-check-fill"></i></span><div class="t1c" style="font-size:13px;">Certificate Pinning</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">Active</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--ok);"><i class="bi bi-shield-fill-check"></i></span><div class="t1c" style="font-size:13px;">At-Rest Encryption</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">AES-256-GCM</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--ok);"><i class="bi bi-cpu-fill"></i></span><div class="t1c" style="font-size:13px;">Secure Enclave</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">Key custody OK</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--ok);"><i class="bi bi-bug-fill"></i></span><div class="t1c" style="font-size:13px;">Jailbreak Detection</div></div><div style="color:var(--ok);font-size:12px;font-weight:600;">Clean</div></div>
+          </div>
+        </section>
+
+        <!-- Notifications -->
+        <section class="prf-sec" id="prf-sec-notifications" data-section="notifications" role="tabpanel">
+          <div class="prf-sec-title">Notifications</div>
+          <div class="prf-h">In-App Banners</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--warn);"><i class="bi bi-exclamation-triangle-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Phishing Alerts</div><div class="t3c">Risk banners on email threads</div></div></div><div id="tog-notif-phishing-p" class="tog on" style="cursor:pointer;" onclick="toggleNotif('phishing')"><div class="tog-k"></div></div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--danger);"><i class="bi bi-shield-exclamation"></i></span><div class="col"><div class="t1c" style="font-size:13px;">PHI Detection Banners</div><div class="t3c">Classification alerts on documents</div></div></div><div id="tog-notif-phi-p" class="tog on" style="cursor:pointer;" onclick="toggleNotif('phi')"><div class="tog-k"></div></div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-file-earmark-text-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Policy &amp; Compliance Panels</div><div class="t3c">Cited controls on files and email</div></div></div><div id="tog-notif-policy-p" class="tog on" style="cursor:pointer;" onclick="toggleNotif('policy')"><div class="tog-k"></div></div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-cpu-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">AI Intelligence Panels</div><div class="t3c">Content analysis panels on files &amp; email</div></div></div><div id="tog-notif-ai-p" class="tog on" style="cursor:pointer;" onclick="toggleNotif('ai')"><div class="tog-k"></div></div></div>
+          </div>
+          <div class="prf-h">Channels</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Push Notifications</div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Email Digest</div><div style="color:var(--brand);font-size:13px;font-weight:500;">Weekly</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Critical Alerts via SMS</div><div class="tog off"><div class="tog-k"></div></div></div>
+          </div>
+        </section>
+
+        <!-- Integrations -->
+        <section class="prf-sec" id="prf-sec-integrations" data-section="integrations" role="tabpanel">
+          <div class="prf-sec-title">Integrations</div>
+          <div class="prf-h">Connected Services</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#0078D4;"><i class="bi bi-microsoft"></i></span><div class="col"><div class="t1c" style="font-size:13px;">SharePoint</div><div class="t3c">acmehealth.sharepoint.com</div></div></div><span style="color:var(--ok);font-size:11px;font-weight:600;">● Connected</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#0078D4;"><i class="bi bi-cloud-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">OneDrive</div><div class="t3c">Personal vault sync</div></div></div><span style="color:var(--ok);font-size:11px;font-weight:600;">● Connected</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--brand);"><i class="bi bi-shield-fill-check"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Entra ID (SSO)</div><div class="t3c">acmehealth.onmicrosoft.com</div></div></div><span style="color:var(--ok);font-size:11px;font-weight:600;">● Active</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#D83B01;"><i class="bi bi-envelope-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Outlook 365</div><div class="t3c">Secure mail bridge</div></div></div><span style="color:var(--ok);font-size:11px;font-weight:600;">● Connected</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#4A154B;"><i class="bi bi-slack"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Slack</div><div class="t3c">Channel-based alerts</div></div></div><span style="color:var(--t3);font-size:11px;font-weight:600;cursor:pointer;">Connect</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:#2EB67D;"><i class="bi bi-shield-check"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Okta</div><div class="t3c">Alternative IdP</div></div></div><span style="color:var(--t3);font-size:11px;font-weight:600;cursor:pointer;">Connect</span></div>
+          </div>
+
+          <div class="prf-h">API Keys &amp; Access Tokens</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="col"><div class="t1c" style="font-size:13px;">XQ Personal API Key</div><div class="t3c">xq_pk_••••••••••••3a9f · Created 2026-03-12</div></div><span style="color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;">Rotate</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="col"><div class="t1c" style="font-size:13px;">Audit Log Export Token</div><div class="t3c">Read-only · Expires in 27 days</div></div><span style="color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;">Manage</span></div>
+            <button class="btn bo" style="margin:8px 0 4px;">+ Create New Token</button>
+          </div>
+        </section>
+
+        <!-- Workspace -->
+        <section class="prf-sec" id="prf-sec-workspace" data-section="workspace" role="tabpanel">
+          <div class="prf-sec-title">Workspace</div>
+          <div class="prf-h">Organization</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Name</div><div style="color:var(--t2);font-size:13px;">Acme Health Systems</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Tenant ID</div><div style="color:var(--t2);font-size:12px;font-family:ui-monospace,monospace;">ahs-prod-9d4e7</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Plan Tier</div><span style="background:#E8EAFD;color:var(--brand);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rfull);">ENTERPRISE</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Data Residency</div><div style="color:var(--t2);font-size:13px;">US-West (Oregon)</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Compliance Posture</div><div style="color:var(--ok);font-size:12px;font-weight:600;">HIPAA · SOC 2 Type II</div></div>
+          </div>
+
+          <div class="prf-h">Workgroups</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;" onclick="go('s-groups')"><div class="col"><div class="t1c" style="font-size:13px;">Acme Research Team</div><div class="t3c">32 members · Internal policy</div></div><span style="color:var(--brand);font-size:17px;">›</span></div>
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;" onclick="go('s-groups')"><div class="col"><div class="t1c" style="font-size:13px;">Compliance &amp; Legal</div><div class="t3c">8 members · Restricted</div></div><span style="color:var(--brand);font-size:17px;">›</span></div>
+            <button class="btn bo" style="margin:8px 0 4px;">+ Create Workgroup</button>
+          </div>
+        </section>
+
+        <!-- Devices -->
+        <section class="prf-sec" id="prf-sec-devices" data-section="devices" role="tabpanel">
+          <div class="prf-sec-title">Devices</div>
+          <div class="prf-h">This Device</div>
+          <div class="card ph16 mb12" style="border:1.5px solid var(--brand);">
+            <div class="cr" style="padding:13px 0;">
+              <span style="font-size:22px;color:var(--brand);"><i class="bi bi-phone-fill"></i></span>
+              <div class="col"><div style="font-size:14px;font-weight:600;color:var(--t1);">iPhone 15 Pro</div><div class="t3c">iOS 26.1 · This device · Active now</div></div>
+              <span style="background:var(--pub-bg);color:var(--ok);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">CURRENT</span>
+            </div>
+          </div>
+
+          <div class="prf-h">Other Active Sessions</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:20px;color:var(--t2);"><i class="bi bi-laptop"></i></span><div class="col"><div class="t1c" style="font-size:13px;">MacBook Pro 14"</div><div class="t3c">macOS 16 · San Francisco · 14 min ago</div></div></div><span style="color:var(--danger);font-size:11px;font-weight:600;cursor:pointer;">Revoke</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:20px;color:var(--t2);"><i class="bi bi-tablet-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">iPad Pro 13"</div><div class="t3c">iPadOS 26 · San Francisco · Yesterday</div></div></div><span style="color:var(--danger);font-size:11px;font-weight:600;cursor:pointer;">Revoke</span></div>
+          </div>
+
+          <div class="card ph16 mb12">
+            <button class="btn bo" style="margin:10px 0;color:var(--danger);">Sign out everywhere else</button>
+          </div>
+        </section>
+
+        <!-- Billing -->
+        <section class="prf-sec" id="prf-sec-billing" data-section="billing" role="tabpanel">
+          <div class="prf-sec-title">Billing</div>
+          <div class="prf-h">Subscription</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Plan</div><span style="background:#E8EAFD;color:var(--brand);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rfull);">ENTERPRISE</span></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Seats</div><div style="color:var(--t2);font-size:13px;">142 / 200</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Billing Cycle</div><div style="color:var(--t2);font-size:13px;">Annual</div></div>
+            <div class="cr rjb" style="padding:13px 0;"><div class="t1c" style="font-size:13px;">Next Renewal</div><div style="color:var(--t2);font-size:13px;">Jan 14, 2027</div></div>
+          </div>
+
+          <div class="prf-h">License Entitlements</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">On-Device AI</div><div style="color:var(--ok);font-size:12px;font-weight:600;">Included</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Policy Management</div><div style="color:var(--ok);font-size:12px;font-weight:600;">Included</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">SharePoint Connector</div><div style="color:var(--ok);font-size:12px;font-weight:600;">Included</div></div>
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Advanced Audit Export</div><div style="color:var(--ok);font-size:12px;font-weight:600;">Included</div></div>
+          </div>
+
+          <div class="prf-h">Payment</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:13px 0;"><div class="row" style="gap:11px;"><span style="font-size:18px;color:var(--t2);"><i class="bi bi-credit-card-fill"></i></span><div class="col"><div class="t1c" style="font-size:13px;">Card on File</div><div class="t3c">Visa ending in 4242</div></div></div><span style="color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;">Update</span></div>
+            <div class="cr rjb" style="padding:13px 0;cursor:pointer;"><div class="t1c" style="font-size:13px;">Invoices &amp; Receipts</div><span style="color:var(--brand);font-size:17px;">›</span></div>
+          </div>
+        </section>
+
+        <!-- Admin -->
+        <section class="prf-sec" id="prf-sec-admin" data-section="admin" role="tabpanel">
+          <div class="prf-sec-title">Admin</div>
+          <div class="ra mb12" style="padding:11px 13px;"><span style="font-size:18px;flex-shrink:0;color:var(--ok);"><i class="bi bi-patch-check-fill"></i></span><div><div class="ra-t" style="font-size:11px;">Policy Bundle Signed</div><div class="ra-d" style="font-size:11px;">Last sync 4 min ago · HSM signature verified · v2.1.4</div></div></div>
+
+          <div class="prf-h">Classification Rules</div>
+          <div class="card mb12">
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">PHI Auto-detection</div><div class="t3c">AI flags patient health info</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">PII Auto-detection</div><div class="t3c">Names, SSN, DOB, addresses</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Financial Data</div><div class="t3c">Account numbers, transactions</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+          </div>
+
+          <div class="prf-h">Share Enforcement</div>
+          <div class="card mb12">
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Block External PHI Shares</div><div class="t3c" style="color:var(--res-t);">CRITICAL policy</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Max Share Expiry (Restricted)</div></div><div style="color:var(--brand);font-size:13px;font-weight:600;">7 days</div></div>
+            <div class="cr rjb"><div class="t1c" style="font-size:13px;">Require XQ for Recipients</div><div class="tog on"><div class="tog-k"></div></div></div>
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Screenshot Detection</div><div class="t3c">Watermark + audit log</div></div><div class="tog on"><div class="tog-k"></div></div></div>
+          </div>
+
+          <div class="prf-h">AI Policy Gates</div>
+          <div class="card mb12">
+            <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Cloud AI Processing</div><div class="t3c">Enterprise opt-in (currently OFF)</div></div><div class="tog off"><div class="tog-k"></div></div></div>
+            <div class="cr"><span style="font-size:15px;color:var(--danger);"><i class="bi bi-exclamation-triangle-fill"></i></span><div class="col"><div style="font-size:12px;color:var(--res-t);font-weight:600;">CUI / PHI = Local Only Always</div><div class="t3c">Hardcoded. Cannot be overridden by any policy.</div></div></div>
+          </div>
+
+          <div class="prf-h">Tenant</div>
+          <div class="card ph16 mb12">
+            <div class="cr rjb" style="padding:11px 0;"><div class="t1c" style="font-size:13px;">Tenant Users</div><div style="font-size:13px;font-weight:600;color:var(--t1);">142</div></div>
+            <div class="cr rjb" style="padding:11px 0;cursor:pointer;"><div class="t1c" style="font-size:13px;">Audit Log Export</div><span style="color:var(--brand);font-size:11px;font-weight:600;">Download CSV</span></div>
+            <div class="cr rjb" style="padding:11px 0;cursor:pointer;" onclick="go('s-policy')"><div class="t1c" style="font-size:13px;">Detailed Policy Editor</div><span style="color:var(--brand);font-size:17px;">›</span></div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <button class="btn bp" style="flex:1;">Publish Policy</button>
+            <button class="btn bo" style="flex:1;">Discard</button>
+          </div>
+        </section>
+
+    </div>
+
+    <div style="padding:8px 16px 16px;">
+      <button class="btn bo" style="color:var(--danger);">Sign out</button>
+    </div>
+  </div>
+  <div class="tabs"></div>
 </div>
 
 <!-- ══ S21 EMAIL THREAD ══ -->
@@ -3000,8 +3359,9 @@
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div class="lt">
     <div class="lt-text">Now</div>
-    <div style="padding-bottom:8px;">
+    <div style="padding-bottom:8px;display:flex;align-items:center;gap:8px;">
       <span style="font-size:10px;color:var(--ok);font-weight:600;">● Protected</span>
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
     </div>
   </div>
   <!-- Scrollable tab bar -->
@@ -3738,8 +4098,9 @@
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div style="padding:2px 20px 10px;display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;">
     <div style="font-size:33px;font-weight:700;letter-spacing:-.5px;color:var(--t1);padding-bottom:8px;line-height:1;">XQ AI</div>
-    <div style="padding-bottom:10px;">
+    <div style="padding-bottom:10px;display:flex;align-items:center;gap:8px;">
       <span style="background:var(--pub-bg);color:var(--ok);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rfull);">● On-device</span>
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
     </div>
   </div>
   <div class="sc" style="padding:0 16px;" id="ai-chat-scroll">
@@ -3854,7 +4215,7 @@
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-email-inbox'); toggleIPad()"><span style="font-size:20px;color:#6979F8;">✉️</span><span style="font-size:9px;color:#6979F8;font-weight:600;">Messages</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-notifications'); toggleIPad()"><span style="font-size:20px;">🔔</span><span style="font-size:9px;color:#636366;">Alerts</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-ai-assistant'); toggleIPad()"><span style="font-size:20px;">✦</span><span style="font-size:9px;color:#636366;">AI</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-settings'); toggleIPad()"><span style="font-size:20px;">⚙️</span><span style="font-size:9px;color:#636366;">Settings</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-profile'); toggleIPad()"><span style="font-size:20px;">👤</span><span style="font-size:9px;color:#636366;">Profile</span></div>
       </div>
     </div>
     <!-- Detail: Thread View with full AI intelligence panel -->
@@ -3981,7 +4342,7 @@ var SCREEN_TAB = {
   messages: ['s-email-inbox','s-email-thread','s-phishing-alert','s-sharing','s-received-share'],
   alerts:   ['s-notifications','s-screenshot-block','s-group-invite','s-groups'],
   ai:       ['s-ai-assistant'],
-  settings: ['s-settings','s-policy']
+  profile:  ['s-profile','s-settings','s-policy']
 };
 
 function getActiveTab(screenId) {
@@ -3997,8 +4358,7 @@ function renderTabBar(el, screenId) {
     { id:'files',    screen:'s-file-browser',  off:'bi-folder2',   on:'bi-folder-fill',   label:'Files' },
     { id:'messages', screen:'s-email-inbox',   off:'bi-envelope',  on:'bi-envelope-fill', label:'Messages' },
     { id:'alerts',   screen:'s-notifications', off:'bi-bell',      on:'bi-bell-fill',     label:'Now' },
-    { id:'ai',       screen:'s-ai-assistant',  off:'bi-stars',     on:'bi-stars',         label:'AI' },
-    { id:'settings', screen:'s-settings',      off:'bi-gear',      on:'bi-gear-fill',     label:'Settings' }
+    { id:'ai',       screen:'s-ai-assistant',  off:'bi-stars',     on:'bi-stars',         label:'AI' }
   ];
   el.innerHTML = tabs.map(function(t) {
     var isActive = t.id === active;
@@ -4011,12 +4371,16 @@ function renderTabBar(el, screenId) {
 
 function go(id) {
   if (id === 's-home') id = 's-notifications';
+  // Settings & Policy entry points consolidated into Profile.
+  if (id === 's-settings') id = 's-profile';
   document.querySelectorAll('.scr').forEach(s => { s.classList.remove('on'); s.style.display = 'none'; });
   const t = document.getElementById(id);
   if (!t) return;
   t.style.display = 'flex';
   const tb = t.querySelector('.tabs');
   if (tb) renderTabBar(tb, id);
+  // Restore last-viewed Profile subsection when landing on s-profile.
+  if (id === 's-profile') applyProfileSection(loadProfileSection());
   requestAnimationFrame(() => {
     t.classList.add('on');
     initSIP();
@@ -4026,8 +4390,51 @@ function go(id) {
   });
 }
 
+// ── Profile deep-linking ───────────────────────────────────────────────────
+var PROFILE_SECTIONS = ['general','security','notifications','integrations','workspace','devices','billing','admin'];
+function loadProfileSection() {
+  try {
+    var saved = localStorage.getItem('xq.profileSection');
+    return PROFILE_SECTIONS.indexOf(saved) >= 0 ? saved : 'general';
+  } catch(e) { return 'general'; }
+}
+function saveProfileSection(section) {
+  try { localStorage.setItem('xq.profileSection', section); } catch(e) {}
+}
+function applyProfileSection(section) {
+  if (PROFILE_SECTIONS.indexOf(section) < 0) section = 'general';
+  var prof = document.getElementById('s-profile');
+  if (!prof) return;
+  // Update active chip in the sticky quick-nav.
+  prof.querySelectorAll('.prf-chip').forEach(function(btn){
+    var active = btn.getAttribute('data-section') === section;
+    btn.classList.toggle('prf-chip-active', active);
+    btn.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  // Scroll the target section into view within Profile's scroll container.
+  var target = prof.querySelector('#prf-sec-' + section);
+  var scroller = prof.querySelector('.sc');
+  if (target && scroller) {
+    // Use offsetTop relative to the scroll container so smooth-scrolling works
+    // inside the iOS phone frame regardless of where the page itself is scrolled.
+    var top = target.offsetTop - 56; // leave room for the sticky chip bar
+    scroller.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }
+}
+function goProfile(section) {
+  saveProfileSection(section);
+  var prof = document.getElementById('s-profile');
+  // If we're already on the profile screen, just switch the section in-place.
+  if (prof && prof.classList.contains('on')) {
+    applyProfileSection(section);
+  } else {
+    go('s-profile');
+    // applyProfileSection runs inside go() once the screen is shown.
+  }
+}
+
 function flow(n) {
-  const map = {1:'s-splash',2:'s-file-browser',3:'s-ai-import',4:'s-email-inbox',5:'s-settings',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread',9:'s-file-risk-dashboard',10:'s-received-share'};
+  const map = {1:'s-splash',2:'s-file-browser',3:'s-ai-import',4:'s-email-inbox',5:'s-profile',6:'s-enterprise-auth',7:'s-notifications',8:'s-email-thread',9:'s-file-risk-dashboard',10:'s-received-share'};
   go(map[n]);
   document.querySelectorAll('.fbtn').forEach((b,i) => b.classList.toggle('on', i+1===n));
   if (n===1) splash();
