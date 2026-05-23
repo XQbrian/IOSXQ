@@ -385,6 +385,64 @@
   .av-nav{cursor:pointer;transition:transform .12s ease;}
   .av-nav:hover{transform:scale(1.06);}
   .av-nav:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+
+  /* ── Device mode switcher (Mobile / iPad / Desktop) ── */
+  .dm-switcher{position:fixed;left:18px;bottom:18px;z-index:1000;display:flex;gap:4px;background:rgba(0,0,0,.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:14px;padding:5px;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+  .dm-btn{background:none;border:none;color:rgba(255,255,255,.6);font-size:11px;font-weight:600;padding:7px 11px;border-radius:9px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:background .15s,color .15s;}
+  .dm-btn:hover{background:rgba(255,255,255,.08);color:#fff;}
+  .dm-btn.on{background:#3D5AFE;color:#fff;}
+  .dm-btn i{font-size:13px;}
+
+  /* ── iPad / Desktop frame sizing ── */
+  body.mode-ipad #page-wrap{width:1024px;}
+  body.mode-ipad .phone{width:1024px;height:768px;border-radius:24px;}
+  body.mode-ipad .phone::before{display:none;}
+  body.mode-desktop #page-wrap{width:1440px;}
+  body.mode-desktop .phone{width:1440px;height:900px;border-radius:14px;box-shadow:0 0 0 1px #2A2A2C,0 30px 80px rgba(0,0,0,.6);}
+  body.mode-desktop .phone::before{display:none;}
+
+  /* Hide phone status bar in iPad/Desktop (not a phone) */
+  body.mode-ipad .sb,body.mode-desktop .sb{display:none;}
+
+  /* Hide legacy hard-coded iPad split-view block in the new system */
+  .ipad{display:none !important;}
+
+  /* ── Left sidebar nav ("rail") — replaces bottom tab bar on tablet/desktop ── */
+  .ipad-rail{display:none;}
+  body.mode-ipad .ipad-rail,body.mode-desktop .ipad-rail{
+    display:flex;flex-direction:column;gap:4px;
+    position:absolute;left:0;top:0;bottom:0;width:236px;z-index:60;
+    background:var(--card);border-right:1px solid var(--sep);
+    padding:22px 14px 18px;
+  }
+  body.mode-desktop .ipad-rail{width:264px;padding:26px 16px 20px;}
+  .rail-brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:var(--t1);padding:2px 6px 16px;letter-spacing:-.3px;}
+  .rail-brand i{color:var(--brand);font-size:18px;}
+  .rail-item{background:none;border:none;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:600;color:var(--t2);cursor:pointer;font-family:inherit;text-align:left;transition:background .15s,color .15s;}
+  .rail-item:hover{background:var(--bg);color:var(--t1);}
+  .rail-item.on{background:var(--brand-light);color:var(--brand);}
+  .rail-item i{font-size:17px;width:20px;text-align:center;}
+  .dm .rail-item.on{background:rgba(105,121,248,.18);color:#9AA7FF;}
+  .rail-spacer{flex:1;}
+  .rail-profile{padding:10px 12px;border-top:1px solid var(--sep);margin-top:6px;border-radius:10px;}
+  .rail-profile .av{flex-shrink:0;}
+
+  /* Hide bottom tab bar in iPad/Desktop modes (rail takes over) */
+  body.mode-ipad .tabs,body.mode-desktop .tabs{display:none;}
+
+  /* Push all .scr content right to make room for the rail */
+  body.mode-ipad .scr{left:236px;}
+  body.mode-desktop .scr{left:264px;}
+
+  /* Slightly increase touch-target / typography density on tablet+ */
+  body.mode-ipad .lt-text,body.mode-desktop .lt-text{font-size:30px;}
+
+  /* ── Per-screen iPad/Desktop refinements ── */
+  body.mode-ipad .fc-2col,body.mode-desktop .fc-2col{grid-template-columns:repeat(3,1fr);}
+  body.mode-desktop .fc-2col{grid-template-columns:repeat(4,1fr);}
+  body.mode-ipad .prf-stack,body.mode-desktop .prf-stack{max-width:760px;}
+  body.mode-ipad .prf-quicknav,body.mode-desktop .prf-quicknav{flex-wrap:wrap;}
+  body.mode-ipad .prf-chip,body.mode-desktop .prf-chip{padding:7px 14px;font-size:12px;}
 </style>
 </head>
 <body>
@@ -405,10 +463,26 @@
   <button class="fbtn" onclick="flow(9)">⑨ File Intelligence</button>
   <button class="fbtn" onclick="flow(10)">⑩ Received Share</button>
   <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleDark()">🌙 Dark</button>
-  <button class="fbtn" style="background:rgba(255,255,255,.1);" onclick="toggleIPad()">📱 iPad</button>
+</div>
+
+<!-- Device mode switcher — bottom-left floating widget -->
+<div class="dm-switcher" id="dm-switcher" role="tablist" aria-label="Device mode">
+  <button class="dm-btn on" data-mode="mobile"  onclick="setDeviceMode('mobile')"  role="tab" aria-selected="true"><i class="bi bi-phone"></i>Mobile</button>
+  <button class="dm-btn"     data-mode="ipad"    onclick="setDeviceMode('ipad')"    role="tab" aria-selected="false"><i class="bi bi-tablet"></i>iPad</button>
+  <button class="dm-btn"     data-mode="desktop" onclick="setDeviceMode('desktop')" role="tab" aria-selected="false"><i class="bi bi-display"></i>Desktop</button>
 </div>
 
 <div class="phone" id="phone">
+
+<!-- Sidebar nav rail (visible in iPad / Desktop modes; CSS-hidden on mobile) -->
+<aside class="ipad-rail" id="ipad-rail" aria-label="Primary navigation">
+  <div class="rail-brand"><i class="bi bi-shield-lock-fill"></i><span>XQ Secure</span></div>
+  <button class="rail-item" data-screen="files"    onclick="go('s-file-browser')"><i class="bi bi-folder-fill"></i><span>Files</span></button>
+  <button class="rail-item" data-screen="messages" onclick="go('s-email-inbox')"><i class="bi bi-envelope-fill"></i><span>Messages</span></button>
+  <button class="rail-item" data-screen="alerts"   onclick="go('s-notifications')"><i class="bi bi-bell-fill"></i><span>Now</span></button>
+  <div class="rail-spacer"></div>
+  <button class="rail-item rail-profile" data-screen="profile" onclick="go('s-profile')"><span class="av" style="width:30px;height:30px;font-size:11px;flex-shrink:0;">BW</span><span>Profile</span></button>
+</aside>
 
 <!-- ══ S1 SPLASH ══ -->
 <div class="scr on" id="s-splash" style="background:#000;align-items:center;justify-content:center;">
@@ -4365,15 +4439,52 @@ function go(id) {
   t.style.display = 'flex';
   const tb = t.querySelector('.tabs');
   if (tb) renderTabBar(tb, id);
+  updateRail(id);
   // Restore last-viewed Profile subsection when landing on s-profile.
   if (id === 's-profile') applyProfileSection(loadProfileSection());
   requestAnimationFrame(() => {
     t.classList.add('on');
     initSIP();
     if (openAsk && typeof switchNotifTab === 'function') switchNotifTab('ask');
-    const ipadActive = document.getElementById('ipad')?.classList.contains('on');
-    const frame = ipadActive ? document.getElementById('ipad') : document.getElementById('phone');
-    if (frame) frame.scrollIntoView({behavior:'smooth', block:'nearest'});
+    const phone = document.getElementById('phone');
+    if (phone) phone.scrollIntoView({behavior:'smooth', block:'nearest'});
+  });
+}
+
+// ── Device mode (Mobile / iPad / Desktop) ──────────────────────────────────
+// Switches the page-level CSS class which drives frame size, sidebar rail
+// visibility, and screen layout adaptations. State persists in localStorage
+// so the chosen mode survives reloads. Active screen + sub-tab are
+// preserved because we only mutate body classes, not the DOM screens.
+var DEVICE_MODES = ['mobile','ipad','desktop'];
+function loadDeviceMode() {
+  try {
+    var saved = localStorage.getItem('xq.deviceMode');
+    return DEVICE_MODES.indexOf(saved) >= 0 ? saved : 'mobile';
+  } catch(e) { return 'mobile'; }
+}
+function setDeviceMode(mode) {
+  if (DEVICE_MODES.indexOf(mode) < 0) mode = 'mobile';
+  try { localStorage.setItem('xq.deviceMode', mode); } catch(e) {}
+  document.body.classList.remove('mode-mobile','mode-ipad','mode-desktop');
+  document.body.classList.add('mode-' + mode);
+  // Update switcher button active states + aria.
+  document.querySelectorAll('#dm-switcher .dm-btn').forEach(function(b){
+    var active = b.getAttribute('data-mode') === mode;
+    b.classList.toggle('on', active);
+    b.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  // Keep the sidebar rail's active state in sync with whatever screen is showing.
+  var active = document.querySelector('.scr.on');
+  if (active) updateRail(active.id);
+}
+
+// Update the iPad/desktop sidebar rail's active item to match the current screen.
+function updateRail(screenId) {
+  var tab = getActiveTab(screenId);
+  document.querySelectorAll('#ipad-rail .rail-item').forEach(function(b){
+    var active = b.getAttribute('data-screen') === tab;
+    b.classList.toggle('on', active);
   });
 }
 
@@ -4656,21 +4767,9 @@ function selectWorkgroup(id) {
   });
 }
 
-function toggleIPad() {
-  const ipad = document.getElementById('ipad');
-  const phone = document.getElementById('phone');
-  const wrap = document.getElementById('page-wrap');
-  const btn = document.querySelector('[onclick="toggleIPad()"]');
-  if (!ipad || !phone) return;
-  const showing = ipad.classList.contains('on');
-  ipad.classList.toggle('on', !showing);
-  phone.style.display = showing ? 'block' : 'none';
-  if (wrap) wrap.classList.toggle('ipad-mode', !showing);
-  if (btn) btn.textContent = showing ? '📱 iPad' : '📱 iPhone';
-  // sync dark mode
-  const isDark = phone.classList.contains('dm');
-  document.getElementById('ipad-inner')?.classList.toggle('dm', isDark);
-}
+// Legacy iPad toggle — superseded by the device-mode switcher. Kept as a
+// safe shim so any historical inline reference doesn't throw.
+function toggleIPad() { setDeviceMode(loadDeviceMode() === 'ipad' ? 'mobile' : 'ipad'); }
 
 function ipadSelectEmail(id) {
   const titles = { ct: 'Patient discharge summary — URGENT', js: 'Q4 budget review — see attached' };
@@ -4829,7 +4928,7 @@ function initNmBanners() {
   updateNotifModeUI();
 }
 
-window.addEventListener('load', () => { splash(); initNmBanners(); });
+window.addEventListener('load', () => { splash(); initNmBanners(); setDeviceMode(loadDeviceMode()); });
 
 // ── Help Chat ──────────────────────────────────────────────────────────────
 
