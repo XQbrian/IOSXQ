@@ -434,8 +434,8 @@
     <div style="font-size:27px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:10px;">Zero Trust. Every File.</div>
     <p style="font-size:14px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;margin-bottom:40px;">Encryption follows your data across every device, cloud, and collaboration.</p>
     <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
-      <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="go('s-repo-setup')">Start for Free</button>
-      <button class="btn" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);" onclick="go('s-enterprise-auth')">Connect Enterprise Workspace</button>
+      <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="onbStart('personal')">Start for Free</button>
+      <button class="btn" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);" onclick="onbStart('enterprise')">Connect Enterprise Workspace</button>
     </div>
   </div>
   <div style="padding:0 28px 44px;"><p style="font-size:10px;color:rgba(255,255,255,.25);text-align:center;line-height:1.5;">By continuing you agree to Terms of Service. Your keys never leave your device.</p></div>
@@ -470,14 +470,14 @@
         <span id="repo-check-gdrive" style="color:transparent;font-size:18px;font-weight:700;">✓</span>
       </div>
     </div>
-    <button class="btn bp mb8" onclick="go('s-workgroup-select')">Continue →</button>
+    <button class="btn bp mb8" onclick="go('s-permissions')">Continue →</button>
   </div>
 </div>
 
 <!-- ══ S4 PERMISSIONS ══ -->
 <div class="scr" id="s-permissions" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="nb"><span class="nb-back" onclick="go('s-workgroup-select')">← Back</span><span class="nb-title">Allow Access</span><span></span></div>
+  <div class="nb"><span class="nb-back" onclick="onbBack()">← Back</span><span class="nb-title">Allow Access</span><span></span></div>
   <div class="sc p16" style="padding-top:14px;">
     <!-- AI Setup Guide -->
     <div id="ag-perm" style="background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(105,121,248,.05));border:1px solid rgba(61,90,254,.18);border-radius:var(--r16);padding:14px;margin-bottom:18px;">
@@ -765,20 +765,6 @@
 
   <!-- ── TAB: FOLDERS ── -->
   <div id="fb-tab-folders" class="sc">
-    <!-- Smart View + View mode row -->
-    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-      <div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;">
-        <button id="fb-sv-btn-all"         onclick="setSmartView('all')"         style="font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:none;background:#007AFF;color:#fff;cursor:pointer;white-space:nowrap;">All Sources</button>
-        <button id="fb-sv-btn-dept"        onclick="setSmartView('dept')"        style="font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:none;background:var(--card);color:var(--t2);cursor:pointer;white-space:nowrap;">Department</button>
-        <button id="fb-sv-btn-sensitivity" onclick="setSmartView('sensitivity')" style="font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:none;background:var(--card);color:var(--t2);cursor:pointer;white-space:nowrap;">Sensitivity</button>
-        <button id="fb-sv-btn-ai"          onclick="setSmartView('ai')"          style="font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;border:none;background:var(--card);color:var(--t2);cursor:pointer;white-space:nowrap;"><i class="bi bi-stars"></i> AI</button>
-      </div>
-      <div style="display:flex;gap:2px;background:var(--card);border-radius:8px;padding:2px;flex-shrink:0;margin-left:8px;">
-        <button id="fb-vm-btn-grid" onclick="setFilesView('grid')" style="background:#007AFF;color:#fff;border:none;border-radius:6px;width:28px;height:24px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-grid-fill"></i></button>
-        <button id="fb-vm-btn-list" onclick="setFilesView('list')" style="background:transparent;color:var(--t3);border:none;border-radius:6px;width:28px;height:24px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-list-ul"></i></button>
-        <button id="fb-vm-btn-tree" onclick="setFilesView('tree')" style="background:transparent;color:var(--t3);border:none;border-radius:6px;width:28px;height:24px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-diagram-3"></i></button>
-      </div>
-    </div>
     <!-- Pinned -->
     <div style="padding:0 16px 4px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -2994,7 +2980,7 @@
 <!-- ══ S15 WORKGROUP SELECT ══ -->
 <div class="scr" id="s-workgroup-select" style="background:var(--bg);flex-direction:column;">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div class="nb"><span class="nb-back" onclick="go('s-repo-setup')">← Back</span><span class="nb-title">Select Workspace</span><span class="nb-act" onclick="go('s-permissions')">Skip</span></div>
+  <div class="nb"><span class="nb-back" onclick="go('s-enterprise-auth')">← Back</span><span class="nb-title">Select Workspace</span><span class="nb-act" onclick="go('s-permissions')">Skip</span></div>
   <div class="sc p16">
     <!-- AI Setup Guide -->
     <div id="ag-wg" style="background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(105,121,248,.05));border:1px solid rgba(61,90,254,.18);border-radius:var(--r16);padding:14px;margin-bottom:18px;">
@@ -3370,8 +3356,6 @@
       <button id="nt-btn-overview" class="nt-seg on" onclick="switchNotifTab('overview')" style="flex-shrink:0;">Overview</button>
       <button id="nt-btn-activity" class="nt-seg" onclick="switchNotifTab('activity')" style="flex-shrink:0;">Activity</button>
       <button id="nt-btn-security" class="nt-seg" onclick="switchNotifTab('security')" style="flex-shrink:0;">Security</button>
-      <button id="nt-btn-shared" class="nt-seg" onclick="switchNotifTab('shared')" style="flex-shrink:0;">Shared</button>
-      <button id="nt-btn-ai-actions" class="nt-seg" onclick="switchNotifTab('ai-actions')" style="flex-shrink:0;">AI Actions</button>
     </div>
   </div>
 
@@ -3484,7 +3468,7 @@
           <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;">
             <i class="bi bi-stars" style="font-size:10px;color:#AB5ADE;margin-right:4px;"></i>Suggested
           </div>
-          <button onclick="switchNotifTab('ai-actions')" style="background:none;border:none;font-size:11px;color:var(--brand);font-weight:600;cursor:pointer;padding:0;">See all →</button>
+          <button onclick="switchNotifTab('activity')" style="background:none;border:none;font-size:11px;color:var(--brand);font-weight:600;cursor:pointer;padding:0;">See all →</button>
         </div>
         <div style="display:flex;flex-direction:column;gap:7px;">
 
@@ -4373,6 +4357,8 @@ function go(id) {
   if (id === 's-home') id = 's-notifications';
   // Settings & Policy entry points consolidated into Profile.
   if (id === 's-settings') id = 's-profile';
+  // Semantic search consolidated into the canonical AI surface.
+  if (id === 's-semantic-search') id = 's-ai-assistant';
   document.querySelectorAll('.scr').forEach(s => { s.classList.remove('on'); s.style.display = 'none'; });
   const t = document.getElementById(id);
   if (!t) return;
@@ -4388,6 +4374,20 @@ function go(id) {
     const frame = ipadActive ? document.getElementById('ipad') : document.getElementById('phone');
     if (frame) frame.scrollIntoView({behavior:'smooth', block:'nearest'});
   });
+}
+
+// ── Onboarding path tracking ───────────────────────────────────────────────
+// Personal onboarding skips the Select Workspace screen entirely; enterprise
+// onboarding keeps it. The path is remembered so back-nav from Permissions
+// returns to the screen the user actually came from.
+function onbStart(path) {
+  try { localStorage.setItem('xq.onbPath', path === 'enterprise' ? 'enterprise' : 'personal'); } catch(e) {}
+  go(path === 'enterprise' ? 's-enterprise-auth' : 's-repo-setup');
+}
+function onbBack() {
+  var path = null;
+  try { path = localStorage.getItem('xq.onbPath'); } catch(e) {}
+  go(path === 'enterprise' ? 's-workgroup-select' : 's-repo-setup');
 }
 
 // ── Profile deep-linking ───────────────────────────────────────────────────
