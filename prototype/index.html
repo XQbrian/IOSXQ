@@ -443,6 +443,149 @@
   body.mode-ipad .prf-stack,body.mode-desktop .prf-stack{max-width:760px;}
   body.mode-ipad .prf-quicknav,body.mode-desktop .prf-quicknav{flex-wrap:wrap;}
   body.mode-ipad .prf-chip,body.mode-desktop .prf-chip{padding:7px 14px;font-size:12px;}
+
+  /* ── AI Composition Assistance (Email + Files) ── */
+  /* Inline toolbar button that opens the AI drawer */
+  .ai-toolbar-btn{background:linear-gradient(135deg,#3D5AFE,#6979F8);color:#fff;border:none;border-radius:var(--r8);padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;letter-spacing:.2px;}
+  .ai-toolbar-btn:hover{filter:brightness(1.08);}
+
+  /* Collapsible drawer container */
+  .ai-drawer{background:linear-gradient(135deg,rgba(61,90,254,.06),rgba(105,121,248,.02));border-bottom:.5px solid rgba(61,90,254,.25);overflow:hidden;flex-shrink:0;transition:max-height .25s ease;}
+  .ai-drawer[hidden]{display:none;}
+  .ai-drawer-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px 6px;}
+  .ai-drawer-hdr i.bi-stars{color:#6979F8;font-size:13px;}
+  .ai-drawer-title{font-size:12px;font-weight:700;color:var(--t1);flex:1;letter-spacing:-.1px;}
+  .ai-drawer-badge{background:var(--pub-bg);color:var(--ok);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);display:inline-flex;align-items:center;gap:4px;}
+  .ai-drawer-close{background:none;border:none;color:var(--t3);font-size:14px;cursor:pointer;font-family:inherit;padding:0 4px;}
+  .ai-drawer-body{padding:0 14px 11px;display:flex;flex-direction:column;gap:9px;}
+
+  /* "Help Me Write" / Ask input */
+  .ai-input-row{background:var(--card);border:1px solid var(--sep);border-radius:11px;padding:8px 10px;display:flex;gap:8px;align-items:center;}
+  .ai-input-row input{flex:1;background:none;border:none;outline:none;font-size:13px;color:var(--t1);font-family:inherit;}
+  .ai-input-row button{background:var(--brand);color:#fff;border:none;border-radius:var(--rfull);width:28px;height:28px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+  /* Chip row (rewrite styles, quick actions) */
+  .ai-chips{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;}
+  .ai-chips::-webkit-scrollbar{display:none;}
+  .ai-chip{background:var(--card);border:1px solid var(--sep);border-radius:var(--rfull);padding:5px 11px;font-size:11px;font-weight:600;color:var(--t2);cursor:pointer;flex-shrink:0;font-family:inherit;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;display:inline-flex;align-items:center;gap:4px;}
+  .ai-chip:hover{background:var(--brand-light);border-color:var(--brand);color:var(--brand);}
+  .ai-chip.ai-chip-primary{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .ai-chip-sec-title{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:0 2px;margin-bottom:3px;}
+
+  /* Streamed output area */
+  .ai-output{background:var(--card);border:1px solid var(--sep);border-radius:11px;padding:11px 13px;font-size:13px;color:var(--t1);line-height:1.5;min-height:0;max-height:240px;overflow-y:auto;white-space:pre-wrap;display:none;}
+  .ai-output.on{display:block;}
+  .ai-output-label{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px;display:flex;gap:6px;align-items:center;}
+  .ai-output-label .ai-stream-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#6979F8;animation:aiPulse 1.2s infinite ease-in-out;}
+  @keyframes aiPulse{0%,100%{opacity:.25;}50%{opacity:1;}}
+  .ai-stream::after{content:'▍';color:var(--brand);animation:aiBlink 1s steps(2) infinite;margin-left:1px;}
+  @keyframes aiBlink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+
+  /* Governance footer — always visible at bottom of every AI surface */
+  .ai-gov-footer{display:flex;flex-wrap:wrap;gap:9px;font-size:10px;color:var(--t3);padding-top:4px;}
+  .ai-gov-footer i{font-size:10px;}
+  .ai-gov-item{display:inline-flex;align-items:center;gap:4px;}
+
+  /* Files: floating "✦ Ask AI" FAB */
+  .ai-fab{position:absolute;right:18px;bottom:88px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3D5AFE,#6979F8);border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 10px 30px rgba(61,90,254,.45);z-index:40;display:flex;align-items:center;justify-content:center;line-height:1;transition:transform .15s;}
+  .ai-fab:hover{transform:scale(1.06);}
+  body.mode-ipad .ai-fab,body.mode-desktop .ai-fab{bottom:32px;right:26px;}
+
+  /* File viewer AI panel — bottom slide-up */
+  .fv-ai-panel{position:absolute;left:0;right:0;bottom:0;background:#1C1C1E;border-top:1px solid #38383A;border-radius:18px 18px 0 0;padding:14px 16px 22px;transform:translateY(100%);transition:transform .28s ease;z-index:50;max-height:62%;overflow-y:auto;color:#E5E5EA;}
+  .fv-ai-panel.on{transform:translateY(0);}
+  .fv-ai-panel .ai-drawer-title{color:#fff;}
+  .fv-ai-panel .ai-input-row{background:#2C2C2E;border-color:#3A3A3C;}
+  .fv-ai-panel .ai-input-row input{color:#fff;}
+  .fv-ai-panel .ai-chip{background:#2C2C2E;border-color:#3A3A3C;color:#AEAEB2;}
+  .fv-ai-panel .ai-chip:hover{background:rgba(105,121,248,.18);border-color:#6979F8;color:#9AA7FF;}
+  .fv-ai-panel .ai-chip.ai-chip-primary{background:#3D5AFE;border-color:#3D5AFE;color:#fff;}
+  .fv-ai-panel .ai-output{background:#2C2C2E;border-color:#3A3A3C;color:#E5E5EA;}
+  .fv-ai-panel .ai-gov-footer{color:#8E8E93;}
+  .fv-ai-panel .ai-chip-sec-title{color:#8E8E93;}
+
+  /* ── Editability badges (single unified component, 9 states) ── */
+  .ed-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);letter-spacing:.2px;line-height:1.4;white-space:nowrap;}
+  .ed-badge i{font-size:9px;}
+  .ed-edit       {background:var(--pub-bg);color:var(--ok);}
+  .ed-view       {background:rgba(118,118,128,.15);color:var(--t2);}
+  .ed-comment    {background:var(--int-bg);color:var(--int-t);}
+  .ed-pending    {background:var(--con-bg);color:var(--con-t);}
+  .ed-restricted {background:var(--res-bg);color:var(--res-t);}
+  .ed-expired    {background:rgba(118,118,128,.15);color:var(--t3);text-decoration:line-through;}
+  .ed-external   {background:rgba(255,149,0,.15);color:var(--warn);}
+  .ed-local      {background:rgba(175,82,222,.14);color:#AF52DE;}
+  .ed-ai         {background:rgba(105,121,248,.14);color:#6979F8;}
+
+  /* Edit-state strip on the File Viewer */
+  .ed-strip{background:var(--card);border-bottom:.5px solid var(--sep);padding:11px 16px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
+  .ed-strip-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t1);}
+  .ed-strip-meta{font-size:11px;color:var(--t3);display:flex;flex-wrap:wrap;gap:12px;}
+  .ed-strip-meta i{font-size:10px;margin-right:3px;}
+  .ed-strip-why{font-size:11px;color:var(--brand);cursor:pointer;font-weight:600;}
+
+  /* Presence row (collaborator avatars at top of doc editor) */
+  .presence-row{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .presence-row .av{width:24px;height:24px;font-size:9px;border:2px solid #fff;margin-left:-7px;cursor:pointer;}
+  .presence-row .av:first-child{margin-left:0;}
+  .presence-row .presence-count{font-size:11px;color:var(--t3);font-weight:600;margin-left:4px;}
+  .presence-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);}
+  .presence-dot.idle{background:var(--warn);}
+  .presence-dot.away{background:var(--t3);}
+
+  /* Doc editor collab bar (track changes, comments, version chips) */
+  .doc-collab-bar{display:flex;gap:6px;align-items:center;padding:6px 12px;background:#FAFAFC;border-bottom:.5px solid var(--sep);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+  .doc-collab-bar::-webkit-scrollbar{display:none;}
+  .doc-chip{background:#fff;border:1px solid var(--sep);border-radius:var(--rfull);padding:4px 10px;font-size:11px;font-weight:600;color:var(--t2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;font-family:inherit;}
+  .doc-chip:hover{background:var(--brand-light);border-color:var(--brand);color:var(--brand);}
+  .doc-chip.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .doc-chip i{font-size:11px;}
+  .doc-chip .doc-chip-count{background:var(--res-t);color:#fff;border-radius:var(--rfull);min-width:14px;height:14px;padding:0 4px;font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;}
+
+  /* Resharing mode selector (Share sheet Settings step) */
+  .rs-modes{display:flex;flex-direction:column;gap:6px;}
+  .rs-mode-btn{background:var(--card);border:1.5px solid var(--sep);border-radius:11px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;text-align:left;font-family:inherit;transition:border-color .15s,background .15s;}
+  .rs-mode-btn:hover{border-color:var(--brand);}
+  .rs-mode-btn.on{background:var(--brand-light);border-color:var(--brand);}
+  .rs-mode-icon{flex-shrink:0;width:26px;height:26px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--t2);}
+  .rs-mode-btn.on .rs-mode-icon{background:rgba(61,90,254,.18);color:var(--brand);}
+  .rs-mode-body{flex:1;min-width:0;}
+  .rs-mode-title{font-size:13px;font-weight:600;color:var(--t1);line-height:1.2;}
+  .rs-mode-desc{font-size:11px;color:var(--t3);line-height:1.4;margin-top:2px;}
+  .rs-mode-check{flex-shrink:0;width:18px;height:18px;border-radius:50%;border:2px solid var(--sep);}
+  .rs-mode-btn.on .rs-mode-check{border-color:var(--brand);background:var(--brand);box-shadow:inset 0 0 0 3px #fff;}
+
+  /* Share lineage mini-tree */
+  .rs-lineage{background:var(--card);border-radius:var(--r12);padding:11px 13px;font-size:11px;color:var(--t2);line-height:1.6;}
+  .rs-lineage-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px;}
+  .rs-lineage-node{display:flex;align-items:center;gap:7px;padding:2px 0;}
+  .rs-lineage-node i.bi-arrow-return-right{color:var(--t3);font-size:11px;flex-shrink:0;}
+  .rs-lineage-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:var(--rfull);background:var(--bg);color:var(--t3);}
+
+  /* AI Sharing Assistant card */
+  .ai-share-card{background:linear-gradient(135deg,rgba(61,90,254,.08),rgba(105,121,248,.03));border:1px solid rgba(61,90,254,.25);border-radius:var(--r12);padding:11px 13px;}
+  .ai-share-card-hdr{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+  .ai-share-card-hdr i.bi-stars{color:#6979F8;font-size:13px;}
+  .ai-share-card-title{font-size:12px;font-weight:700;color:var(--t1);flex:1;}
+  .ai-share-card-row{display:flex;gap:8px;font-size:11px;color:var(--t2);padding:4px 0;align-items:flex-start;line-height:1.4;}
+  .ai-share-card-row i{flex-shrink:0;color:var(--brand);margin-top:1px;}
+  .ai-share-card-cta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  .ai-share-card-cta button{background:#fff;border:1px solid rgba(61,90,254,.3);color:var(--brand);font-size:10px;font-weight:700;padding:4px 9px;border-radius:var(--rfull);cursor:pointer;font-family:inherit;}
+  .ai-share-card-cta button:hover{background:var(--brand);color:#fff;border-color:var(--brand);}
+
+  /* ── Create New Document chooser rows (bottom-sheet) ── */
+  .create-row{display:flex;align-items:center;gap:13px;padding:13px 14px;background:var(--card);border:1px solid var(--sep);border-radius:13px;cursor:pointer;font-family:inherit;text-align:left;width:100%;transition:background .12s,border-color .12s;}
+  .create-row:hover{background:var(--brand-light);border-color:var(--brand);}
+  .create-row + .create-row{margin-top:8px;}
+  .create-row-icon{flex-shrink:0;width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .create-row-body{flex:1;min-width:0;}
+  .create-row-title{font-size:14px;font-weight:600;color:var(--t1);line-height:1.2;}
+  .create-row-meta{font-size:11px;color:var(--t3);margin-top:2px;line-height:1.4;}
+  .create-row-chev{color:var(--t3);font-size:16px;flex-shrink:0;}
+  .create-section-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin:14px 4px 8px;}
+
+  /* "New Document" pill that appears in the doc editor when freshly created */
+  .new-doc-pill{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#3D5AFE,#6979F8);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rfull);letter-spacing:.2px;}
 </style>
 </head>
 <body>
@@ -815,7 +958,7 @@
   <div style="padding:4px 20px 0;display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;">
     <div style="font-size:33px;font-weight:700;letter-spacing:-.5px;color:var(--t1);line-height:1.1;padding-bottom:6px;">Files</div>
     <div style="display:flex;gap:6px;align-items:center;padding-bottom:10px;">
-      <button class="ibtn" onclick="go('s-ai-import')" style="font-size:18px;color:var(--brand);"><i class="bi bi-plus-circle-fill"></i></button>
+      <button class="ibtn" onclick="openCreateMenu()" aria-label="Create or import" style="font-size:18px;color:var(--brand);"><i class="bi bi-plus-circle-fill"></i></button>
       <button class="ibtn" style="font-size:16px;color:var(--t2);" onclick="document.getElementById('risk-overlay').classList.remove('hide')"><i class="bi bi-shield-exclamation"></i></button>
       <button class="ibtn" style="font-size:16px;color:var(--t2);"><i class="bi bi-ellipsis-horizontal-circle"></i></button>
       <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
@@ -1141,6 +1284,70 @@
       <button class="btn bp mb8" style="padding:12px;font-size:13px;" onclick="document.getElementById('risk-overlay').classList.add('hide');go('s-file-risk-dashboard')">Open Full Dashboard →</button>
     </div>
   </div>
+
+  <!-- ── Create / Import chooser (bottom sheet) ── -->
+  <div class="ov hide" id="create-menu" onclick="if(event.target===this)hideCreateMenu()">
+    <div class="bs-panel">
+      <div class="bsh"></div>
+      <div class="bs-title">Add to your workspace</div>
+      <div class="bs-sub">Create a new document or import an existing file.</div>
+
+      <div class="create-section-title">Create new</div>
+      <button class="create-row" onclick="createNewDocument('blank')">
+        <div class="create-row-icon" style="background:rgba(61,90,254,.12);color:var(--brand);"><i class="bi bi-file-earmark-fill"></i></div>
+        <div class="create-row-body">
+          <div class="create-row-title">Blank Document</div>
+          <div class="create-row-meta">Start writing immediately · Editable · Auto-classified on save</div>
+        </div>
+        <span class="create-row-chev">›</span>
+      </button>
+      <button class="create-row" onclick="createNewDocument('memo')">
+        <div class="create-row-icon" style="background:rgba(0,122,255,.12);color:#007AFF;"><i class="bi bi-file-earmark-text-fill"></i></div>
+        <div class="create-row-body">
+          <div class="create-row-title">Memo</div>
+          <div class="create-row-meta">Header, summary, recipients · Internal default</div>
+        </div>
+        <span class="create-row-chev">›</span>
+      </button>
+      <button class="create-row" onclick="createNewDocument('report')">
+        <div class="create-row-icon" style="background:rgba(46,125,50,.12);color:#2E7D32;"><i class="bi bi-file-earmark-bar-graph-fill"></i></div>
+        <div class="create-row-body">
+          <div class="create-row-title">Report</div>
+          <div class="create-row-meta">Cover page, sections, summary · Confidential default</div>
+        </div>
+        <span class="create-row-chev">›</span>
+      </button>
+      <button class="create-row" onclick="createNewDocument('meeting')">
+        <div class="create-row-icon" style="background:rgba(255,149,0,.12);color:var(--warn);"><i class="bi bi-calendar-event-fill"></i></div>
+        <div class="create-row-body">
+          <div class="create-row-title">Meeting Agenda</div>
+          <div class="create-row-meta">Attendees, topics, action items · Internal default</div>
+        </div>
+        <span class="create-row-chev">›</span>
+      </button>
+      <button class="create-row" onclick="createNewDocument('form')">
+        <div class="create-row-icon" style="background:rgba(175,82,222,.12);color:#AF52DE;"><i class="bi bi-list-check"></i></div>
+        <div class="create-row-body">
+          <div class="create-row-title">Structured Form</div>
+          <div class="create-row-meta">Field-based intake · Validation enforced · Restricted default</div>
+        </div>
+        <span class="create-row-chev">›</span>
+      </button>
+
+      <div class="create-section-title">Import existing</div>
+      <button class="create-row" onclick="hideCreateMenu();go('s-ai-import')">
+        <div class="create-row-icon" style="background:rgba(118,118,128,.15);color:var(--t2);"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+        <div class="create-row-body">
+          <div class="create-row-title">Import file</div>
+          <div class="create-row-meta">Files App · Camera · iCloud · AirDrop · AI classifies on import</div>
+        </div>
+        <span class="create-row-chev">›</span>
+      </button>
+
+      <button class="btn bo" style="margin-top:14px;" onclick="hideCreateMenu()">Cancel</button>
+    </div>
+  </div>
+
   <div class="tabs"></div>
 </div>
 
@@ -1511,7 +1718,70 @@
   <div class="nb" style="background:rgba(26,26,26,.95);border-color:#333;">
     <span class="nb-back" onclick="go('s-file-browser')">← Files</span>
     <span class="nb-title" style="color:#fff;font-size:14px;">Q4-Financial-Report.pdf</span>
-    <span class="nb-act" style="font-size:18px;" onclick="showSheet()"><i class="bi bi-box-arrow-up"></i></span>
+    <span style="display:flex;gap:8px;align-items:center;">
+      <button onclick="openInEditor()" aria-label="Open in editor" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;"><i class="bi bi-pencil-fill"></i> Edit</button>
+      <button class="ai-toolbar-btn" onclick="fvAIToggle()" aria-label="Open AI assistant" style="padding:5px 10px;"><i class="bi bi-stars"></i> AI</button>
+      <span class="nb-act" style="font-size:18px;" onclick="showSheet()"><i class="bi bi-box-arrow-up"></i></span>
+    </span>
+  </div>
+
+  <!-- ── Editability state strip — drives editing controls, explains policy ── -->
+  <div class="ed-strip" style="background:#1C1C1E;border-bottom:.5px solid #38383A;color:#E5E5EA;">
+    <div class="ed-strip-row" style="color:#fff;">
+      <span class="ed-badge ed-restricted"><i class="bi bi-slash-circle-fill"></i> RESTRICTED · VIEW ONLY</span>
+      <span class="ed-badge ed-local"><i class="bi bi-shield-lock-fill"></i> LOCAL ONLY</span>
+      <span class="ed-badge ed-ai"><i class="bi bi-cpu-fill"></i> AI RESTRICTED</span>
+      <span style="flex:1;"></span>
+      <span class="ed-strip-why" onclick="go('s-data-lineage')">Why this state? →</span>
+    </div>
+    <div class="ed-strip-meta" style="color:#8E8E93;">
+      <span><i class="bi bi-person-fill"></i>Owner: Carol Thomas</span>
+      <span><i class="bi bi-buildings-fill"></i>Acme Health — Clinical</span>
+      <span><i class="bi bi-clock-fill"></i>Expires in 4 days</span>
+      <span><i class="bi bi-share-fill"></i>Resharing blocked</span>
+    </div>
+  </div>
+
+  <!-- ── File Viewer AI panel (slides up from bottom) ── -->
+  <div class="fv-ai-panel" id="fv-ai-panel" role="region" aria-label="AI document assistance">
+    <div class="ai-drawer-hdr">
+      <i class="bi bi-stars"></i>
+      <span class="ai-drawer-title">Document Assistant</span>
+      <span class="ai-drawer-badge"><i class="bi bi-lock-fill"></i>Local-only</span>
+      <button class="ai-drawer-close" onclick="fvAIToggle()" aria-label="Close" style="color:#8E8E93;">×</button>
+    </div>
+    <div class="ai-drawer-body">
+      <div>
+        <div class="ai-chip-sec-title">Ask About This Document</div>
+        <div class="ai-input-row">
+          <input id="fv-ai-input" type="text" placeholder="Who is named in this report? What's the revenue figure?" onkeydown="if(event.key==='Enter')fvAIAsk()">
+          <button onclick="fvAIAsk()" aria-label="Ask"><i class="bi bi-arrow-up-circle-fill"></i></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="ai-chip-sec-title">Actions</div>
+        <div class="ai-chips">
+          <button class="ai-chip ai-chip-primary" onclick="fvAIAction('summary')"><i class="bi bi-card-text" style="font-size:11px;"></i> Executive Summary</button>
+          <button class="ai-chip" onclick="fvAIAction('tasks')"><i class="bi bi-list-task" style="font-size:11px;"></i> Extract Tasks</button>
+          <button class="ai-chip" onclick="fvAIAction('tag')"><i class="bi bi-tags-fill" style="font-size:11px;"></i> Auto-tag</button>
+          <button class="ai-chip" onclick="fvAIAction('classify')"><i class="bi bi-shield-lock-fill" style="font-size:11px;"></i> Suggest Classification</button>
+          <button class="ai-chip" onclick="fvAIAction('risk')"><i class="bi bi-exclamation-triangle-fill" style="font-size:11px;"></i> Risk Analysis</button>
+          <button class="ai-chip" onclick="fvAIAction('redact')"><i class="bi bi-eraser-fill" style="font-size:11px;"></i> Redact PHI</button>
+        </div>
+      </div>
+
+      <div class="ai-output" id="fv-ai-output">
+        <div class="ai-output-label"><span class="ai-stream-dot"></span><span id="fv-ai-output-label">Analyzing…</span></div>
+        <div id="fv-ai-output-text" class="ai-stream"></div>
+      </div>
+
+      <div class="ai-gov-footer">
+        <span class="ai-gov-item"><i class="bi bi-shield-lock-fill"></i> CUI/PHI processed on-device</span>
+        <span class="ai-gov-item"><i class="bi bi-diagram-3"></i> Lineage recorded</span>
+        <span class="ai-gov-item"><i class="bi bi-tag-fill"></i> Output inherits <strong style="color:#FF6E9E;">Restricted</strong></span>
+      </div>
+    </div>
   </div>
   <div style="flex:1;overflow-y:auto;position:relative;background:#1E1E1E;">
     <div class="wm"><div class="wm-t">RESTRICTED • brian@xqmsg.com</div></div>
@@ -1696,12 +1966,58 @@
       <div id="ss3" style="display:none;">
         <div class="bs-title">Share Settings</div>
         <div class="bs-sub">Encryption enforced by policy</div>
+
+        <!-- AI Sharing Assistant — proactive suggestions before send -->
+        <div class="ai-share-card mb16">
+          <div class="ai-share-card-hdr">
+            <i class="bi bi-stars"></i>
+            <div class="ai-share-card-title">AI Sharing Assistant</div>
+            <span class="ai-drawer-badge"><i class="bi bi-lock-fill"></i>On-device</span>
+          </div>
+          <div class="ai-share-card-row"><i class="bi bi-exclamation-triangle-fill" style="color:var(--warn);"></i><div><strong>Overexposure detected.</strong> 3 recipients but only 1 needs full access — Carol (clinical review). Bob and Alice are auto-cc'd from the legal thread; consider scoping them down.</div></div>
+          <div class="ai-share-card-row"><i class="bi bi-clock-fill"></i><div><strong>Suggested expiry:</strong> 7 days (matches Restricted policy max).</div></div>
+          <div class="ai-share-card-row"><i class="bi bi-shield-fill-check"></i><div><strong>Suggested resharing:</strong> Approval Required — recipients can request reshare; you approve.</div></div>
+          <div class="ai-share-card-cta">
+            <button onclick="applyAIShareSuggestions()">Apply all</button>
+            <button onclick="applyAIShareSuggestions('expiry')">Apply expiry</button>
+            <button onclick="applyAIShareSuggestions('reshare')">Apply reshare</button>
+            <button onclick="applyAIShareSuggestions('scope')">Scope down</button>
+          </div>
+        </div>
+
+        <!-- Resharing mode selector — 8 modes from the brief -->
+        <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin:0 0 8px;">Resharing</div>
+        <div class="rs-modes mb16">
+          <button id="rs-mode-none"       class="rs-mode-btn"    onclick="setReshareMode('none')"><div class="rs-mode-icon"><i class="bi bi-slash-circle"></i></div><div class="rs-mode-body"><div class="rs-mode-title">No Resharing</div><div class="rs-mode-desc">Recipients cannot forward, copy, or grant access.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-internal"   class="rs-mode-btn"    onclick="setReshareMode('internal')"><div class="rs-mode-icon"><i class="bi bi-building"></i></div><div class="rs-mode-body"><div class="rs-mode-title">Internal Resharing</div><div class="rs-mode-desc">Inside your tenant only. External shares blocked.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-group"      class="rs-mode-btn"    onclick="setReshareMode('group')"><div class="rs-mode-icon"><i class="bi bi-people-fill"></i></div><div class="rs-mode-body"><div class="rs-mode-title">Group-Only Resharing</div><div class="rs-mode-desc">Only members of the share group may receive.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-approval"   class="rs-mode-btn on" onclick="setReshareMode('approval')"><div class="rs-mode-icon"><i class="bi bi-shield-check"></i></div><div class="rs-mode-body"><div class="rs-mode-title">Approval Required <span class="ed-badge ed-pending" style="margin-left:4px;">RECOMMENDED</span></div><div class="rs-mode-desc">You approve every reshare request before it lands.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-external-prohibit" class="rs-mode-btn" onclick="setReshareMode('external-prohibit')"><div class="rs-mode-icon"><i class="bi bi-globe2"></i></div><div class="rs-mode-body"><div class="rs-mode-title">External Resharing Prohibited</div><div class="rs-mode-desc">Internal forwarding allowed; external blocked.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-owner"      class="rs-mode-btn"    onclick="setReshareMode('owner')"><div class="rs-mode-icon"><i class="bi bi-key-fill"></i></div><div class="rs-mode-body"><div class="rs-mode-title">Owner-Only Resharing</div><div class="rs-mode-desc">Only you (the owner) can grant new access.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-policy"     class="rs-mode-btn"    onclick="setReshareMode('policy')"><div class="rs-mode-icon"><i class="bi bi-shield-fill-check"></i></div><div class="rs-mode-body"><div class="rs-mode-title">Policy-Driven</div><div class="rs-mode-desc">Tenant policy decides per-recipient at request time.</div></div><div class="rs-mode-check"></div></button>
+          <button id="rs-mode-temp"       class="rs-mode-btn"    onclick="setReshareMode('temp')"><div class="rs-mode-icon"><i class="bi bi-stopwatch-fill"></i></div><div class="rs-mode-body"><div class="rs-mode-title">Temporary Resharing</div><div class="rs-mode-desc">Reshares expire when the original share does.</div></div><div class="rs-mode-check"></div></button>
+        </div>
+
+        <!-- Existing share settings card retained -->
         <div class="card mb16">
           <div class="cr rjb"><div class="col"><div class="t1c" style="font-size:13px;">Expiry</div><div class="t3c">File access expires</div></div><div style="color:var(--brand);font-size:13px;font-weight:600;">7 days</div></div>
           <div class="cr rjb"><div class="t1c" style="font-size:13px;">Screenshot Detection</div><div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div></div>
           <div class="cr rjb"><div class="t1c" style="font-size:13px;">Require XQ App</div><div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div></div>
           <div class="cr rjb"><div class="t1c" style="font-size:13px;">Audit Log</div><div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div></div>
+          <div class="cr rjb" id="share-autogroup-toggle" onclick="toggleAutoGroup()" style="cursor:pointer;">
+            <div class="col"><div class="t1c" style="font-size:13px;">Auto-create share group</div><div class="t3c">"MR-28491 Discharge Review" · expires with file · inherits Restricted-PHI</div></div>
+            <div class="tog on" style="width:40px;height:24px;"><div class="tog-k" style="width:18px;height:18px;"></div></div>
+          </div>
         </div>
+
+        <!-- Share lineage preview (after auto-group enabled) -->
+        <div class="rs-lineage mb16">
+          <div class="rs-lineage-title">Share lineage (after send)</div>
+          <div class="rs-lineage-node"><i class="bi bi-person-fill" style="color:var(--brand);"></i><strong style="color:var(--t1);">You</strong><span class="rs-lineage-tag">Owner</span><span style="font-size:10px;color:var(--t3);">depth 0</span></div>
+          <div class="rs-lineage-node"><i class="bi bi-arrow-return-right"></i><i class="bi bi-people-fill"></i>"MR-28491 Discharge Review" group · 3 members<span class="rs-lineage-tag">Auto-created</span><span style="font-size:10px;color:var(--t3);">depth 1</span></div>
+          <div class="rs-lineage-node"><i class="bi bi-arrow-return-right" style="margin-left:14px;"></i><i class="bi bi-shield-check" style="color:var(--brand);"></i>Reshare attempts require your approval</div>
+        </div>
+
         <button class="btn bp" onclick="sStep(4)">Send Securely →</button>
       </div>
       <div id="ss4" style="display:none;text-align:center;padding:10px 0;">
@@ -1955,7 +2271,69 @@
       <button class="etbtn" style="font-size:12px;">⊞</button>
       <button class="etbtn" style="font-size:12px;">🔗</button>
       <div style="flex:1;"></div>
-      <button style="background:var(--bg);border:none;border-radius:var(--r8);padding:5px 9px;font-size:11px;color:var(--t2);cursor:pointer;font-weight:600;">📎 Attach</button>
+      <button class="ai-toolbar-btn" onclick="composeAIToggle()" aria-expanded="false" aria-controls="compose-ai-drawer"><i class="bi bi-stars"></i> AI</button>
+      <button style="background:var(--bg);border:none;border-radius:var(--r8);padding:5px 9px;font-size:11px;color:var(--t2);cursor:pointer;font-weight:600;margin-left:6px;">📎 Attach</button>
+    </div>
+
+    <!-- ── AI Composition drawer (toggled by the ✦ AI toolbar button) ── -->
+    <div class="ai-drawer" id="compose-ai-drawer" hidden role="region" aria-label="AI composition assistance">
+      <div class="ai-drawer-hdr">
+        <i class="bi bi-stars"></i>
+        <span class="ai-drawer-title">AI Composition</span>
+        <span class="ai-drawer-badge"><i class="bi bi-lock-fill"></i>On-device</span>
+        <button class="ai-drawer-close" onclick="composeAIToggle()" aria-label="Close AI drawer">×</button>
+      </div>
+      <div class="ai-drawer-body">
+        <!-- Help Me Write -->
+        <div>
+          <div class="ai-chip-sec-title">Help Me Write</div>
+          <div class="ai-input-row">
+            <input id="compose-ai-input" type="text" placeholder="Describe what to write — e.g. polite ack with EOD timeline…" onkeydown="if(event.key==='Enter')composeAIAsk()">
+            <button onclick="composeAIAsk()" aria-label="Generate"><i class="bi bi-arrow-up-circle-fill"></i></button>
+          </div>
+        </div>
+
+        <!-- Rewrite styles -->
+        <div>
+          <div class="ai-chip-sec-title">Rewrite Selection</div>
+          <div class="ai-chips">
+            <button class="ai-chip" onclick="composeAIRewrite('professional')">Professional</button>
+            <button class="ai-chip" onclick="composeAIRewrite('concise')">Concise</button>
+            <button class="ai-chip" onclick="composeAIRewrite('executive')">Executive</button>
+            <button class="ai-chip" onclick="composeAIRewrite('friendly')">Friendly</button>
+            <button class="ai-chip" onclick="composeAIRewrite('technical')">Technical</button>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div>
+          <div class="ai-chip-sec-title">Quick Actions</div>
+          <div class="ai-chips">
+            <button class="ai-chip ai-chip-primary" onclick="composeAIAction('subject')"><i class="bi bi-type-h1" style="font-size:11px;"></i> Subject Ideas</button>
+            <button class="ai-chip" onclick="composeAIAction('summarize')"><i class="bi bi-list-task" style="font-size:11px;"></i> Summarize Thread</button>
+            <button class="ai-chip" onclick="composeAIAction('actions')"><i class="bi bi-clipboard-check" style="font-size:11px;"></i> Extract Actions</button>
+            <button class="ai-chip" onclick="composeAIAction('followup')"><i class="bi bi-calendar-event" style="font-size:11px;"></i> Meeting Follow-up</button>
+            <button class="ai-chip" onclick="composeAIAction('translate')"><i class="bi bi-translate" style="font-size:11px;"></i> Translate</button>
+          </div>
+        </div>
+
+        <!-- Streamed output -->
+        <div class="ai-output" id="compose-ai-output">
+          <div class="ai-output-label"><span class="ai-stream-dot"></span><span id="compose-ai-output-label">Drafting…</span></div>
+          <div id="compose-ai-output-text" class="ai-stream"></div>
+          <div style="display:flex;gap:6px;margin-top:10px;">
+            <button class="ai-chip ai-chip-primary" onclick="composeAIInsert()"><i class="bi bi-arrow-down-square-fill" style="font-size:11px;"></i> Insert into draft</button>
+            <button class="ai-chip" onclick="composeAIToggle();composeAIToggle();">Try again</button>
+          </div>
+        </div>
+
+        <!-- Governance footer — visible always so users understand provenance + policy -->
+        <div class="ai-gov-footer">
+          <span class="ai-gov-item"><i class="bi bi-shield-lock-fill"></i> Local-only inference</span>
+          <span class="ai-gov-item"><i class="bi bi-tag-fill"></i> Output inherits <strong style="color:var(--res-t);">Restricted · PHI</strong></span>
+          <span class="ai-gov-item"><i class="bi bi-journal-text"></i> All actions audited</span>
+        </div>
+      </div>
     </div>
     <!-- Tone Analysis Bar (Capability #4) -->
     <div id="compose-tone-bar" style="background:var(--card);border-bottom:.5px solid var(--sep);padding:8px 16px;display:flex;gap:12px;align-items:center;flex-shrink:0;">
@@ -3128,11 +3506,44 @@
   <!-- Nav bar -->
   <div class="nb" style="background:#fff;border-bottom:.5px solid var(--sep);">
     <span class="nb-back" onclick="go('s-file-browser')">← Files</span>
-    <span id="autosave-indicator" style="font-size:12px;color:var(--t3);"></span>
+    <div class="presence-row" aria-label="Active collaborators">
+      <div class="av" style="background:#3D5AFE;">BW</div>
+      <div class="av" style="background:#2E7D32;">SW</div>
+      <div class="av" style="background:#E65100;">JL</div>
+      <span class="presence-count"><span class="presence-dot"></span> 3 editing</span>
+    </div>
     <div style="display:flex;gap:6px;align-items:center;">
+      <span class="new-doc-pill" id="doc-new-pill" style="display:none;"><i class="bi bi-stars"></i> New Document</span>
+      <span id="autosave-indicator" style="font-size:11px;color:var(--t3);"></span>
       <button class="etbtn" style="font-size:12px;" onclick="go('s-sharing')">↗ Share</button>
       <span class="nb-act" onclick="go('s-file-browser')">Done</span>
     </div>
+  </div>
+
+  <!-- Editability state strip — drives editing controls + explains policy -->
+  <div class="ed-strip" style="padding:9px 16px;">
+    <div class="ed-strip-row">
+      <span class="ed-badge ed-edit"><i class="bi bi-pencil-fill"></i> EDITABLE</span>
+      <span class="ed-badge ed-comment"><i class="bi bi-chat-left-text-fill"></i> COMMENTS ON</span>
+      <span class="ed-badge ed-external"><i class="bi bi-globe2"></i> 1 EXTERNAL EDITOR</span>
+      <span style="flex:1;"></span>
+      <span class="ed-strip-why" onclick="go('s-data-lineage')">Lineage →</span>
+    </div>
+    <div class="ed-strip-meta">
+      <span><i class="bi bi-person-fill"></i>Owner: Sarah Wilson</span>
+      <span><i class="bi bi-buildings-fill"></i>Acme HR</span>
+      <span><i class="bi bi-shield-lock-fill"></i>Reshare: Internal Only</span>
+      <span><i class="bi bi-clock-fill"></i>No expiry</span>
+    </div>
+  </div>
+
+  <!-- Collaboration chip bar -->
+  <div class="doc-collab-bar">
+    <button class="doc-chip" id="doc-chip-track" onclick="docToggleTrackChanges()"><i class="bi bi-pencil-square"></i> Track Changes</button>
+    <button class="doc-chip" id="doc-chip-suggest" onclick="docToggleSuggested()"><i class="bi bi-lightbulb-fill"></i> Suggesting</button>
+    <button class="doc-chip on" id="doc-chip-comments" onclick="docToggleComments()"><i class="bi bi-chat-left-text-fill"></i> Comments <span class="doc-chip-count">4</span></button>
+    <button class="doc-chip" onclick="docVersionHistory()"><i class="bi bi-clock-history"></i> Versions <span class="doc-chip-count" style="background:var(--t3);">12</span></button>
+    <button class="doc-chip" onclick="docRequestApproval()"><i class="bi bi-shield-check"></i> Request Approval</button>
   </div>
 
   <!-- Classification banner -->
@@ -4855,6 +5266,217 @@ function docAIAssist() {
   if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }
 
+// ── Create New Document chooser ────────────────────────────────────────────
+// State carried across the go('s-doc-editor') navigation. The doc editor
+// reads this on entry and applies edit mode + the "New Document" pill.
+var __pendingDocState = null;
+function openCreateMenu()  { var m = document.getElementById('create-menu'); if (m) m.classList.remove('hide'); }
+function hideCreateMenu()  { var m = document.getElementById('create-menu'); if (m) m.classList.add('hide'); }
+
+// Open an existing file in the document editor in Edit mode.
+// Called from the File Viewer's new Edit button.
+function openInEditor() {
+  __pendingDocState = { fresh: false, mode: 'edit', template: null };
+  go('s-doc-editor');
+  // Apply mode after the screen finishes rendering.
+  requestAnimationFrame(function(){ if (typeof docMode === 'function') docMode('edit'); applyPendingDocState(); });
+}
+
+// Create a new document from a template (or 'blank') and open in Edit mode.
+function createNewDocument(template) {
+  __pendingDocState = { fresh: true, mode: 'edit', template: template || 'blank' };
+  hideCreateMenu();
+  go('s-doc-editor');
+  requestAnimationFrame(function(){ if (typeof docMode === 'function') docMode('edit'); applyPendingDocState(); });
+}
+
+// Apply the queued doc-state to the editor surface (pill, indicator, etc.).
+function applyPendingDocState() {
+  var pill = document.getElementById('doc-new-pill');
+  var autosave = document.getElementById('autosave-indicator');
+  if (!__pendingDocState) {
+    if (pill) pill.style.display = 'none';
+    return;
+  }
+  if (pill) pill.style.display = __pendingDocState.fresh ? 'inline-flex' : 'none';
+  // Friendly autosave-state cue so the user knows nothing's been persisted yet.
+  if (autosave) autosave.textContent = __pendingDocState.fresh ? 'Unsaved · autosave on' : 'All changes saved';
+}
+
+// ── AI Composition Assistance (Email + File Viewer) ───────────────────────
+// All canned responses below are illustrative for the prototype. The real
+// implementation routes every request through the XQ orchestration layer —
+// see AI_COMPOSITION_SPEC.md for the architecture contract.
+
+// Shared: stream a string into an element token-by-token for a typing feel.
+function aiStreamInto(textEl, labelEl, finalLabel, text) {
+  if (!textEl) return;
+  textEl.classList.add('ai-stream');
+  textEl.textContent = '';
+  if (labelEl) labelEl.textContent = 'Drafting…';
+  var tokens = text.split(/(\s+)/);
+  var i = 0;
+  var step = function() {
+    if (i >= tokens.length) {
+      textEl.classList.remove('ai-stream');
+      if (labelEl) labelEl.textContent = finalLabel || 'Result';
+      return;
+    }
+    textEl.textContent += tokens[i++];
+    setTimeout(step, 18 + Math.random() * 30);
+  };
+  step();
+}
+
+// ── Email Compose AI drawer ────────────────────────────────────────────────
+var COMPOSE_REWRITES = {
+  professional: "Carol,\n\nAttached is the discharge summary for patient MR-28491. All vitals have been reviewed and approved for release. The file is XQ-encrypted; please use the XQ app to decrypt.\n\nLet me know if you need anything further.\n\nBest regards,\nBrian",
+  concise:      "Carol, attached: discharge summary MR-28491. Vitals approved. XQ-encrypted — decrypt with XQ app. — Brian",
+  executive:    "Discharge summary MR-28491 attached. Vitals reviewed, release-approved. File XQ-encrypted; decrypt in XQ. Reach out with questions.",
+  friendly:     "Hi Carol! Sending over the discharge summary for MR-28491 — all vitals look good and we're cleared to release. The attachment is locked with XQ so you'll just need the app to open it. Happy to hop on a call if anything stands out!",
+  technical:    "Carol — Attached: discharge summary, patient MR-28491. Vital signs reviewed against thresholds per protocol §4.2 and approved for release. Attachment is AES-256-GCM ciphertext (XQ envelope); decryption requires the XQ client tied to your hospital.org workspace."
+};
+var COMPOSE_ACTIONS = {
+  subject:    "Suggested subjects:\n• Discharge summary — patient MR-28491 (XQ-secured)\n• Cleared for release: MR-28491 discharge summary\n• PHI — MR-28491 discharge ready for review",
+  summarize:  "Thread spans 6 messages over 2 days. Carol Thomas requested an urgent compliance review of a Restricted PHI discharge summary. Legal approval is the active blocker; sentiment is tense; one external party. 3 actions are open.",
+  actions:    "Action items extracted:\n1. Confirm receipt of discharge summary — Carol Thomas\n2. Obtain legal approval before external share — blocker\n3. Follow up if no reply by Friday — auto-scheduled",
+  followup:   "Following up on our discussion: the discharge summary for MR-28491 is attached. Per our agreement, I'll obtain compliance sign-off before any external distribution. Targeting Friday EOD.",
+  translate:  "(Translation preview — Spanish)\nHola Carol, adjunto encontrarás el resumen de alta del paciente MR-28491. Todos los signos vitales han sido revisados y aprobados para su liberación. El archivo está cifrado con XQ; necesitas la app de XQ para descifrarlo."
+};
+
+function composeAIToggle() {
+  var d = document.getElementById('compose-ai-drawer');
+  var btn = document.querySelector('#s-email-compose .ai-toolbar-btn');
+  if (!d) return;
+  var willShow = d.hasAttribute('hidden');
+  if (willShow) d.removeAttribute('hidden'); else d.setAttribute('hidden','');
+  if (btn) btn.setAttribute('aria-expanded', willShow ? 'true' : 'false');
+}
+function composeAIShowOutput(label, body) {
+  var out = document.getElementById('compose-ai-output');
+  var lbl = document.getElementById('compose-ai-output-label');
+  var txt = document.getElementById('compose-ai-output-text');
+  if (!out || !txt) return;
+  out.classList.add('on');
+  aiStreamInto(txt, lbl, label, body);
+}
+function composeAIRewrite(style) {
+  var body = COMPOSE_REWRITES[style] || COMPOSE_REWRITES.professional;
+  var label = 'Rewritten — ' + style.charAt(0).toUpperCase() + style.slice(1);
+  composeAIShowOutput(label, body);
+}
+function composeAIAction(kind) {
+  var body = COMPOSE_ACTIONS[kind] || '(unavailable)';
+  var labels = { subject:'Subject ideas', summarize:'Thread summary', actions:'Action items', followup:'Follow-up draft', translate:'Translation' };
+  composeAIShowOutput(labels[kind] || 'Result', body);
+}
+function composeAIAsk() {
+  var input = document.getElementById('compose-ai-input');
+  var q = (input && input.value || '').trim();
+  if (!q) return;
+  var preface = "Drafted from your prompt: \"" + q + "\"\n\n";
+  composeAIShowOutput('Draft', preface + COMPOSE_REWRITES.professional);
+  if (input) input.value = '';
+}
+function composeAIInsert() {
+  // Prototype: simply close the drawer. A real impl would replace the body content.
+  composeAIToggle();
+}
+
+// ── File Viewer AI panel ───────────────────────────────────────────────────
+var FV_ACTIONS = {
+  summary:   "Q4-Financial-Report.pdf — executive summary:\nAcme Corp Q4 revenue $42.1M (+18% YoY). Operating margin 14.7%. Three regulated segments. Two compliance flags: §164.502 PHI references in appendix B; one external sharing event under review.",
+  tasks:     "Extracted tasks:\n• File Q4 earnings deck with audit committee — Friday\n• Address PHI appendix flagged by AI scan\n• Re-classify two pages from Confidential to Restricted",
+  tag:       "Suggested tags: finance · quarterly · PHI-adjacent · audit-pending · acme-corp · 2026-Q4",
+  classify:  "Classification recommendation: Restricted (was Confidential).\nReason: appendix B contains 12 PHI identifiers (HIPAA §164.502). Cloud AI processing is gated off for this document.",
+  risk:      "Risk score: 94 / 100.\n• 12 PHI identifiers detected (high severity)\n• Two cleartext credential references on page 14 (high)\n• Sharing to external partner currently blocked pending VP approval",
+  redact:    "Redaction preview:\n• 12 PHI identifiers across pages 11–14 → ████████\n• 2 SSNs in appendix C → ████\n• 1 internal credential string on page 14 → ████\nUser must approve before output is generated."
+};
+function fvAIToggle() {
+  var p = document.getElementById('fv-ai-panel');
+  if (p) p.classList.toggle('on');
+}
+function fvAIShowOutput(label, body) {
+  var out = document.getElementById('fv-ai-output');
+  var lbl = document.getElementById('fv-ai-output-label');
+  var txt = document.getElementById('fv-ai-output-text');
+  if (!out || !txt) return;
+  out.classList.add('on');
+  aiStreamInto(txt, lbl, label, body);
+}
+function fvAIAction(kind) {
+  var body = FV_ACTIONS[kind] || '(unavailable)';
+  var labels = { summary:'Executive summary', tasks:'Tasks', tag:'Auto-tag suggestions', classify:'Classification', risk:'Risk analysis', redact:'Redaction preview' };
+  fvAIShowOutput(labels[kind] || 'Result', body);
+}
+function fvAIAsk() {
+  var input = document.getElementById('fv-ai-input');
+  var q = (input && input.value || '').trim();
+  if (!q) return;
+  fvAIShowOutput('Answer', "Q: " + q + "\n\nA: Based on the authorized document and your access scope, the figure cited is $42.1M (Q4 revenue), and the named individuals are Brian Wane (Finance Lead) and Carol Thomas (Compliance Reviewer). Source: pages 2 and 14.");
+  if (input) input.value = '';
+}
+
+// ── Doc Editor: collaboration controls ─────────────────────────────────────
+// Prototype: chip-state toggles + small UI feedback. Real implementation
+// wires through the collaboration transport (CRDT) — see
+// COLLABORATION_SHARING_SPEC.md.
+function docToggleTrackChanges() {
+  var c = document.getElementById('doc-chip-track');
+  if (c) c.classList.toggle('on');
+}
+function docToggleSuggested() {
+  var c = document.getElementById('doc-chip-suggest');
+  if (c) c.classList.toggle('on');
+}
+function docToggleComments() {
+  var c = document.getElementById('doc-chip-comments');
+  if (c) c.classList.toggle('on');
+}
+function docVersionHistory() {
+  alert('Version history\n\n12 versions saved (last 30 days).\nv12 — You · just now (autosave)\nv11 — Sarah Wilson · 3 min ago\nv10 — Sarah Wilson · yesterday\n\nTap a version to preview or restore. All restores are audit-logged.');
+}
+function docRequestApproval() {
+  alert('Approval Request\n\nThis document is currently Editable. Requesting approval will:\n• Lock further edits until reviewed\n• Notify the assigned reviewer\n• Capture the current version snapshot\n\nReviewer: Compliance team (default per policy).');
+}
+
+// ── Share Sheet: resharing mode + auto-group + AI suggestions ──────────────
+function setReshareMode(id) {
+  // Single-select among rs-mode-* buttons.
+  document.querySelectorAll('.rs-mode-btn').forEach(function(b){ b.classList.remove('on'); });
+  var btn = document.getElementById('rs-mode-' + id);
+  if (btn) btn.classList.add('on');
+}
+function toggleAutoGroup() {
+  var row = document.getElementById('share-autogroup-toggle');
+  if (!row) return;
+  var tog = row.querySelector('.tog');
+  if (tog) tog.classList.toggle('on');
+}
+function applyAIShareSuggestions(only) {
+  // 'only' may be undefined (apply all), 'expiry', 'reshare', or 'scope'.
+  // Prototype: just flash an acknowledgement and apply visible state changes.
+  if (!only || only === 'reshare') setReshareMode('approval');
+  if (!only || only === 'expiry') {
+    // expiry already shows 7 days in the share settings card; no-op for prototype.
+  }
+  if (!only || only === 'scope') {
+    // Visually drop bob@acme.com from the recipient chips.
+    var pillTab = document.getElementById('ss-people-tab');
+    if (pillTab) {
+      pillTab.querySelectorAll('div').forEach(function(d){
+        if (d.textContent.indexOf('bob@acme.com') === 0) d.remove();
+      });
+    }
+  }
+  // Subtle visual flash on the AI card to confirm.
+  var card = document.querySelector('.ai-share-card');
+  if (card) {
+    card.style.boxShadow = '0 0 0 2px rgba(61,90,254,.4)';
+    setTimeout(function(){ card.style.boxShadow = ''; }, 600);
+  }
+}
+
 // ── Notification Minimization ──────────────────────────────────────────────
 
 let notifMode = (function(){ try { return localStorage.getItem('xq.notifMode') || 'minimized'; } catch(e){ return 'minimized'; } })();
@@ -4871,10 +5493,18 @@ function setNotifMode(mode) {
 }
 
 function updateNotifModeUI() {
-  var btnExp = document.getElementById('nm-btn-expanded');
-  var btnMin = document.getElementById('nm-btn-minimized');
-  if (btnExp) btnExp.classList.toggle('nm-active', notifMode !== 'minimized');
-  if (btnMin) btnMin.classList.toggle('nm-active', notifMode === 'minimized');
+  // Profile (`-p` suffix) is the live location of the toggle; the legacy
+  // `s-settings` IDs are kept for back-compat. Update both so whichever
+  // one the user clicks immediately reflects the active state.
+  var minimized = notifMode === 'minimized';
+  ['nm-btn-expanded', 'nm-btn-expanded-p'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('nm-active', !minimized);
+  });
+  ['nm-btn-minimized', 'nm-btn-minimized-p'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('nm-active', minimized);
+  });
 }
 
 var NM_BANNERS = [
@@ -5385,7 +6015,13 @@ function _updateSelCount() {
   if (lbl) lbl.textContent = n + ' selected';
 }
 function fvFileClick(el, screen) {
-  if (!_folderSelectMode) { go(screen); return; }
+  if (!_folderSelectMode) {
+    // Editable formats land in the doc editor in Edit mode for clarity that
+    // editing is supported. View-only file types continue to the file viewer.
+    if (screen === 's-doc-editor') { openInEditor(); return; }
+    go(screen);
+    return;
+  }
   var cb = el.querySelector('.file-sel-cb');
   if (!cb) return;
   cb.classList.toggle('on');
