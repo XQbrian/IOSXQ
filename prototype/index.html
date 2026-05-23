@@ -3354,6 +3354,7 @@
   <div style="padding:0 16px 8px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;">
     <div style="display:flex;gap:6px;white-space:nowrap;">
       <button id="nt-btn-overview" class="nt-seg on" onclick="switchNotifTab('overview')" style="flex-shrink:0;">Overview</button>
+      <button id="nt-btn-ask"      class="nt-seg"    onclick="switchNotifTab('ask')"      style="flex-shrink:0;"><i class="bi bi-stars" style="font-size:10px;margin-right:3px;"></i>Ask</button>
       <button id="nt-btn-activity" class="nt-seg" onclick="switchNotifTab('activity')" style="flex-shrink:0;">Activity</button>
       <button id="nt-btn-security" class="nt-seg" onclick="switchNotifTab('security')" style="flex-shrink:0;">Security</button>
     </div>
@@ -3513,6 +3514,48 @@
   </div>
 
   <!-- ── ACTIVITY TAB ── -->
+  <!-- ── ASK TAB (XQ AI assistant, formerly its own bottom-nav tab) ── -->
+  <div id="nt-tab-ask" class="sc" style="display:none;flex-direction:column;padding:0 16px;">
+    <div id="ai-chat-scroll" style="flex:1;display:flex;flex-direction:column;padding-bottom:8px;">
+      <div id="ai-welcome-state" style="display:flex;flex-direction:column;align-items:center;padding:12px 8px 14px;">
+        <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px;box-shadow:0 8px 32px rgba(61,90,254,.25);color:#fff;">✦</div>
+        <div style="font-size:18px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:4px;">XQ AI Assistant</div>
+        <div style="font-size:12px;color:var(--t2);text-align:center;line-height:1.5;margin-bottom:16px;">Encrypted workspace intelligence. Everything processed on-device — your data never leaves.</div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+          <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
+            <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📁</div>
+            <div><div style="font-size:13px;font-weight:600;color:var(--t1);">File Intelligence</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Classify, search, and summarize encrypted files</div></div>
+          </div>
+          <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
+            <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🛡️</div>
+            <div><div style="font-size:13px;font-weight:600;color:var(--t1);">Risk Analysis</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Detect PHI, PII, and policy violations proactively</div></div>
+          </div>
+          <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
+            <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">✉️</div>
+            <div><div style="font-size:13px;font-weight:600;color:var(--t1);">Email Compliance</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Review drafts for tone, commitments, and classification</div></div>
+          </div>
+        </div>
+        <div style="width:100%;">
+          <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;">Try Asking</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <button onclick="aiChat('Which of my files contain PHI?')" class="ai-prompt-btn">Which of my files contain PHI?</button>
+            <button onclick="aiChat('Show files shared externally expiring this week')" class="ai-prompt-btn">Show files expiring this week</button>
+            <button onclick="aiChat('Summarize my security posture')" class="ai-prompt-btn">Summarize my security posture</button>
+            <button onclick="aiChat('Who has access to Q4-Financial-Report.pdf?')" class="ai-prompt-btn">Who can access my Q4 Report?</button>
+          </div>
+        </div>
+      </div>
+      <div id="ai-messages" style="display:flex;flex-direction:column;gap:12px;padding-bottom:8px;"></div>
+    </div>
+    <!-- Sticky chat input bar -->
+    <div style="position:sticky;bottom:0;background:var(--nav);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);margin:0 -16px;padding:9px 14px 12px;display:flex;gap:9px;align-items:center;">
+      <div style="flex:1;background:rgba(118,118,128,.12);border-radius:22px;padding:9px 15px;display:flex;align-items:center;">
+        <input id="ai-input" type="text" style="flex:1;background:none;border:none;outline:none;font-size:14px;color:var(--t1);font-family:inherit;" placeholder="Ask anything about your workspace…" onkeydown="if(event.key==='Enter')aiChat(this.value)">
+      </div>
+      <button onclick="aiChat(document.getElementById('ai-input').value)" style="width:38px;height:38px;border-radius:19px;background:var(--brand);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;"><i class="bi bi-arrow-up-circle-fill"></i></button>
+    </div>
+  </div>
+
   <div id="nt-tab-activity" class="sc" style="display:none;flex-direction:column;">
     <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:8px;">
       <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:2px 0 4px;">Today</div>
@@ -4078,54 +4121,10 @@
 </div>
 
 <!-- ══ AI ASSISTANT SCREEN ══ -->
-<div class="scr" id="s-ai-assistant" style="background:var(--bg);">
-  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <div style="padding:2px 20px 10px;display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;">
-    <div style="font-size:33px;font-weight:700;letter-spacing:-.5px;color:var(--t1);padding-bottom:8px;line-height:1;">XQ AI</div>
-    <div style="padding-bottom:10px;display:flex;align-items:center;gap:8px;">
-      <span style="background:var(--pub-bg);color:var(--ok);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rfull);">● On-device</span>
-      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
-    </div>
-  </div>
-  <div class="sc" style="padding:0 16px;" id="ai-chat-scroll">
-    <div id="ai-welcome-state" style="display:flex;flex-direction:column;align-items:center;padding:12px 8px 16px;">
-      <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:14px;box-shadow:0 8px 32px rgba(61,90,254,.25);">✦</div>
-      <div style="font-size:20px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:5px;">XQ AI Assistant</div>
-      <div style="font-size:13px;color:var(--t2);text-align:center;line-height:1.5;margin-bottom:20px;">Encrypted workspace intelligence. Everything processed on-device — your data never leaves.</div>
-      <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-        <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
-          <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📁</div>
-          <div><div style="font-size:13px;font-weight:600;color:var(--t1);">File Intelligence</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Classify, search, and summarize encrypted files</div></div>
-        </div>
-        <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
-          <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🛡️</div>
-          <div><div style="font-size:13px;font-weight:600;color:var(--t1);">Risk Analysis</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Detect PHI, PII, and policy violations proactively</div></div>
-        </div>
-        <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
-          <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">✉️</div>
-          <div><div style="font-size:13px;font-weight:600;color:var(--t1);">Email Compliance</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Review drafts for tone, commitments, and classification</div></div>
-        </div>
-      </div>
-      <div style="width:100%;">
-        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;">Try Asking</div>
-        <div style="display:flex;flex-direction:column;gap:7px;">
-          <button onclick="aiChat('Which of my files contain PHI?')" class="ai-prompt-btn">Which of my files contain PHI?</button>
-          <button onclick="aiChat('Show files shared externally expiring this week')" class="ai-prompt-btn">Show files expiring this week</button>
-          <button onclick="aiChat('Summarize my security posture')" class="ai-prompt-btn">Summarize my security posture</button>
-          <button onclick="aiChat('Who has access to Q4-Financial-Report.pdf?')" class="ai-prompt-btn">Who can access my Q4 Report?</button>
-        </div>
-      </div>
-    </div>
-    <div id="ai-messages" style="display:flex;flex-direction:column;gap:12px;padding-bottom:12px;"></div>
-  </div>
-  <div style="background:var(--nav);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:10px 14px 16px;display:flex;gap:9px;align-items:center;flex-shrink:0;">
-    <div style="flex:1;background:rgba(118,118,128,.12);border-radius:22px;padding:10px 16px;display:flex;align-items:center;">
-      <input id="ai-input" type="text" style="flex:1;background:none;border:none;outline:none;font-size:15px;color:var(--t1);font-family:inherit;" placeholder="Ask anything about your workspace…" onkeydown="if(event.key==='Enter')aiChat(this.value)">
-    </div>
-    <button onclick="aiChat(document.getElementById('ai-input').value)" style="width:40px;height:40px;border-radius:20px;background:var(--brand);border:none;color:#fff;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;"><i class="bi bi-arrow-up-circle-fill"></i></button>
-  </div>
-  <div class="tabs"></div>
-</div>
+<!-- Former AI tab — content relocated into the Now tab's Ask sub-tab.
+     This screen is kept as a stub so any unaliased go('s-ai-assistant')
+     calls don't error; go() aliases route them to s-notifications + Ask. -->
+<div class="scr" id="s-ai-assistant" style="background:var(--bg);"></div>
 
 </div><!-- /phone -->
 
@@ -4197,8 +4196,7 @@
       <div style="display:flex;background:#1C1C1E;border-top:.5px solid #38383A;padding:8px 0 20px;flex-shrink:0;">
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-file-browser'); toggleIPad()"><span style="font-size:20px;">📁</span><span style="font-size:9px;color:#636366;">Files</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-email-inbox'); toggleIPad()"><span style="font-size:20px;color:#6979F8;">✉️</span><span style="font-size:9px;color:#6979F8;font-weight:600;">Messages</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-notifications'); toggleIPad()"><span style="font-size:20px;">🔔</span><span style="font-size:9px;color:#636366;">Alerts</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-ai-assistant'); toggleIPad()"><span style="font-size:20px;">✦</span><span style="font-size:9px;color:#636366;">AI</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-notifications'); toggleIPad()"><span style="font-size:20px;">🔔</span><span style="font-size:9px;color:#636366;">Now</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-profile'); toggleIPad()"><span style="font-size:20px;">👤</span><span style="font-size:9px;color:#636366;">Profile</span></div>
       </div>
     </div>
@@ -4324,8 +4322,7 @@
 var SCREEN_TAB = {
   files:    ['s-file-browser','s-folder-view','s-ai-organize','s-folder-empty','s-file-viewer','s-ai-import','s-semantic-search','s-file-risk-dashboard','s-data-lineage','s-doc-editor'],
   messages: ['s-email-inbox','s-email-thread','s-phishing-alert','s-sharing','s-received-share'],
-  alerts:   ['s-notifications','s-screenshot-block','s-group-invite','s-groups'],
-  ai:       ['s-ai-assistant'],
+  alerts:   ['s-notifications','s-screenshot-block','s-group-invite','s-groups','s-ai-assistant'],
   profile:  ['s-profile','s-settings','s-policy']
 };
 
@@ -4341,8 +4338,7 @@ function renderTabBar(el, screenId) {
   var tabs = [
     { id:'files',    screen:'s-file-browser',  off:'bi-folder2',   on:'bi-folder-fill',   label:'Files' },
     { id:'messages', screen:'s-email-inbox',   off:'bi-envelope',  on:'bi-envelope-fill', label:'Messages' },
-    { id:'alerts',   screen:'s-notifications', off:'bi-bell',      on:'bi-bell-fill',     label:'Now' },
-    { id:'ai',       screen:'s-ai-assistant',  off:'bi-stars',     on:'bi-stars',         label:'AI' }
+    { id:'alerts',   screen:'s-notifications', off:'bi-bell',      on:'bi-bell-fill',     label:'Now' }
   ];
   el.innerHTML = tabs.map(function(t) {
     var isActive = t.id === active;
@@ -4357,8 +4353,12 @@ function go(id) {
   if (id === 's-home') id = 's-notifications';
   // Settings & Policy entry points consolidated into Profile.
   if (id === 's-settings') id = 's-profile';
-  // Semantic search consolidated into the canonical AI surface.
-  if (id === 's-semantic-search') id = 's-ai-assistant';
+  // AI surface + semantic search merged into the Now tab's Ask sub-tab.
+  var openAsk = false;
+  if (id === 's-ai-assistant' || id === 's-semantic-search') {
+    id = 's-notifications';
+    openAsk = true;
+  }
   document.querySelectorAll('.scr').forEach(s => { s.classList.remove('on'); s.style.display = 'none'; });
   const t = document.getElementById(id);
   if (!t) return;
@@ -4370,6 +4370,7 @@ function go(id) {
   requestAnimationFrame(() => {
     t.classList.add('on');
     initSIP();
+    if (openAsk && typeof switchNotifTab === 'function') switchNotifTab('ask');
     const ipadActive = document.getElementById('ipad')?.classList.contains('on');
     const frame = ipadActive ? document.getElementById('ipad') : document.getElementById('phone');
     if (frame) frame.scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -5182,7 +5183,7 @@ function triggerScreenshotDemo() {
 
 // ── Notification hub tab switching ──────────────────────────────────────────
 function switchNotifTab(tab) {
-  var tabs = ['overview','activity','security','shared','ai-actions'];
+  var tabs = ['overview','ask','activity','security'];
   tabs.forEach(function(t) {
     var panel = document.getElementById('nt-tab-' + t);
     var btn   = document.getElementById('nt-btn-' + t);
