@@ -19,19 +19,22 @@ final class SecureShareViewModel: ObservableObject {
     private let rawFileData: Data
     private let session: XQSession
     private let graphClient: MicrosoftGraphClient?
+    private let xqAPI: (any XQSecureAPI)?
 
     init(
         file: SecureFile,
         rawFileData: Data,
         classificationResult: AIClassificationResult?,
         session: XQSession,
-        graphClient: MicrosoftGraphClient?
+        graphClient: MicrosoftGraphClient?,
+        xqAPI: (any XQSecureAPI)? = nil
     ) {
         self.file = file
         self.rawFileData = rawFileData
         self.classificationResult = classificationResult
         self.session = session
         self.graphClient = graphClient
+        self.xqAPI = xqAPI
     }
 
     func send(recipients: [String], expiryDays: Int = 7) async {
@@ -41,22 +44,30 @@ final class SecureShareViewModel: ObservableObject {
         defer { isSending = false }
 
         do {
-            // AES-256-GCM encrypt on device
-            let key = SymmetricKey(size: .bits256)
-            let payload = rawFileData.isEmpty ? Data("xq-secure-placeholder".utf8) : rawFileData
-            let sealedBox = try AES.GCM.seal(payload, using: key)
-            guard let encryptedData = sealedBox.combined else {
-                sendError = "Encryption failed"
-                return
+            let filePayload = rawFileData.isEmpty ? Data("xq-secure-placeholder".utf8) : rawFileData
+
+            let encryptedPayload: EncryptedPayload
+            if let api = xqAPI {
+                encryptedPayload = try await api.encryptFile(data: filePayload, session: session)
+            } else {
+                // Fallback: local CryptoKit encryption without key registration
+                let key = SymmetricKey(size: .bits256)
+                let sealed = try AES.GCM.seal(filePayload, using: key)
+                encryptedPayload = EncryptedPayload(
+                    ciphertext: sealed.ciphertext,
+                    iv: Data(AES.GCM.Nonce()),
+                    authTag: sealed.tag,
+                    keyId: key.withUnsafeBytes { Data($0.prefix(8)).map { String(format: "%02x", $0) }.joined() }
+                )
             }
 
-            keyId = key.withUnsafeBytes { ptr -> String in
-                Array(ptr.prefix(8)).map { String(format: "%02x", $0) }.joined()
-            }
+            keyId = encryptedPayload.keyId
+
+            let wireData = encryptedPayload.iv + encryptedPayload.authTag + encryptedPayload.ciphertext
 
             if let client = graphClient {
                 let item = try await client.uploadFileContent(
-                    data: encryptedData,
+                    data: wireData,
                     name: file.name + ".xqe",
                     mimeType: "application/octet-stream"
                 )
@@ -64,8 +75,17 @@ final class SecureShareViewModel: ObservableObject {
                 shareURL = URL(string: urlString)
             }
 
+            if let api = xqAPI, !recipients.isEmpty {
+                try await api.grantAccess(
+                    keyId: encryptedPayload.keyId,
+                    recipients: recipients,
+                    expiryDays: expiryDays,
+                    session: session
+                )
+            }
+
             if shareURL == nil {
-                let shortId = encryptedData.prefix(6).map { String(format: "%02x", $0) }.joined()
+                let shortId = wireData.prefix(6).map { String(format: "%02x", $0) }.joined()
                 shareURL = URL(string: "https://xq.ms/share/\(shortId)")
             }
 

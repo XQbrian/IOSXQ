@@ -50,13 +50,10 @@ extension OfflineOperation: Codable {
     public func encode(to encoder: Encoder) throws {
         switch self {
         case .upload(let id, let data, let name, let path, let provider):
-            var container = encoder.singleValueContainer()
             let payload = UploadPayload(id: id, data: data, name: name, path: path, provider: provider)
-            // Wrap in a tagged object so the decoder can discriminate.
             var keyed = encoder.container(keyedBy: TaggedCodingKeys.self)
             try keyed.encode(TypeTag.upload, forKey: .type)
             try keyed.encode(payload, forKey: .payload)
-            _ = container // suppress unused warning; keyed container does the work
         case .delete(let id, let fileId, let provider):
             var keyed = encoder.container(keyedBy: TaggedCodingKeys.self)
             try keyed.encode(TypeTag.delete, forKey: .type)

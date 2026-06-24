@@ -172,7 +172,8 @@ struct FileViewerView: View {
                 rawFileData: vm.decryptedPreviewData ?? Data(),
                 classificationResult: vm.classificationResult,
                 session: shareSession,
-                graphClient: coordinator.graphToken.map { MicrosoftGraphClient(graphToken: $0) }
+                graphClient: coordinator.graphToken.map { MicrosoftGraphClient(graphToken: $0) },
+                xqAPI: coordinator.xqAPI
             )
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
@@ -184,13 +185,34 @@ struct FileViewerView: View {
             DocumentEditorView(file: vm.file)
         }
         .fullScreenCover(isPresented: $showQuickLook) {
-            if let url = vm.quickLookURL {
-                QuickLookPreview(url: url)
-                    .ignoresSafeArea()
+            // Wrap QuickLook in its own NavigationStack so an explicit Done
+            // button is always available. `.ignoresSafeArea()` on the bare
+            // QuickLook view sometimes hid the inherited toolbar; this
+            // guarantees the user always has a tap-to-dismiss control.
+            NavigationStack {
+                Group {
+                    if let url = vm.quickLookURL {
+                        QuickLookPreview(url: url)
+                            .ignoresSafeArea(edges: .bottom)
+                    } else {
+                        Color.black.ignoresSafeArea()
+                    }
+                }
+                .navigationTitle(vm.file.name)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Done") { showQuickLook = false }
+                            .foregroundColor(brandBlue)
+                    }
+                }
             }
         }
         .task {
             guard let session = coordinator.currentSession else { return }
+            if let xqAPI = coordinator.xqAPI {
+                vm.configure(policyEngine: coordinator.policyEngine, xqAPI: xqAPI)
+            }
             await vm.loadAndScan(session: session, repository: coordinator.repository)
         }
     }

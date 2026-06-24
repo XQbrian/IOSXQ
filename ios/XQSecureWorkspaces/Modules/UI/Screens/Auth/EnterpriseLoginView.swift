@@ -4,88 +4,165 @@ import XQCore
 struct EnterpriseLoginView: View {
     @EnvironmentObject var coordinator: AppCoordinator
 
+    @State private var workEmail = ""
+    @State private var detectedIDP: DetectedIDP? = nil
     @State private var isAuthenticating = false
     @State private var errorMessage: String? = nil
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
+    private let brandGradient = LinearGradient(
+        colors: [Color(red: 0.239, green: 0.353, blue: 0.996),
+                 Color(red: 0.412, green: 0.471, blue: 0.973)],
+        startPoint: .topLeading, endPoint: .bottomTrailing
+    )
 
     var body: some View {
         ZStack {
-            Color(.systemGroupedBackground).ignoresSafeArea()
+            Color.black.ignoresSafeArea()
 
             VStack(spacing: 0) {
                 Spacer()
 
-                // Logo
-                RoundedRectangle(cornerRadius: 22)
-                    .fill(brandBlue)
-                    .frame(width: 88, height: 88)
-                    .overlay(
-                        Image(systemName: "lock.shield.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundStyle(.white)
-                            .padding(18)
-                    )
-                    .shadow(color: brandBlue.opacity(0.35), radius: 16, x: 0, y: 8)
-                    .padding(.bottom, 28)
+                // Icon
+                ZStack {
+                    RoundedRectangle(cornerRadius: 17)
+                        .fill(brandGradient)
+                        .frame(width: 64, height: 64)
+                    Image(systemName: "building.2.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundStyle(.white)
+                        .padding(13)
+                        .frame(width: 64, height: 64)
+                }
+                .shadow(color: brandBlue.opacity(0.4), radius: 32, x: 0, y: 8)
+                .padding(.bottom, 20)
 
-                Text("XQ Secure Workspaces")
-                    .font(.system(size: 26, weight: .bold))
+                Text("Enterprise Sign-In")
+                    .font(.system(size: 24, weight: .heavy))
+                    .foregroundStyle(.white)
+                    .kerning(-0.5)
                     .padding(.bottom, 8)
 
-                Text("Sign in with your corporate account\nto access your encrypted workspace.")
-                    .font(.system(size: 15))
-                    .foregroundStyle(.secondary)
+                Text("Enter your work email to auto-detect\nyour identity provider.")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.white.opacity(0.45))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 40)
-                    .padding(.bottom, 48)
+                    .lineSpacing(3)
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 28)
 
+                // Email input
+                TextField("work@yourcompany.com", text: $workEmail)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .font(.system(size: 15))
+                    .foregroundStyle(.white)
+                    .tint(brandBlue)
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 13)
+                    .background(Color(white: 0.11))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(
+                        detectedIDP != nil ? brandBlue.opacity(0.6) : Color(white: 0.22),
+                        lineWidth: 1))
+                    .padding(.horizontal, 28)
+                    .onChange(of: workEmail) { _, new in
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            detectedIDP = DetectedIDP(email: new)
+                        }
+                    }
+
+                // IDP badge (appears when domain is recognized)
+                if let idp = detectedIDP {
+                    HStack(spacing: 11) {
+                        Text(idp.icon)
+                            .font(.system(size: 26))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(idp.name)
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.white)
+                            Text("Detected via domain MX record")
+                                .font(.system(size: 11))
+                                .foregroundStyle(.white.opacity(0.4))
+                        }
+                        Spacer()
+                        Text("AUTO")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(brandBlue)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(brandBlue.opacity(0.3))
+                            .clipShape(Capsule())
+                    }
+                    .padding(13)
+                    .background(Color(white: 0.11))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(white: 0.22), lineWidth: 1))
+                    .padding(.horizontal, 28)
+                    .padding(.top, 16)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+
+                Spacer().frame(height: 24)
+
+                // SSO button
                 Button {
-                    Task { await signInWithMicrosoft() }
+                    Task { await signInWithSSO() }
                 } label: {
-                    HStack(spacing: 12) {
-                        MicrosoftLogoShape()
-                            .frame(width: 20, height: 20)
-                        Text(isAuthenticating ? "Signing in…" : "Continue with Microsoft")
-                            .font(.system(size: 16, weight: .semibold))
+                    Group {
+                        if isAuthenticating {
+                            ProgressView().tint(.white)
+                        } else {
+                            Text("Continue with SSO")
+                                .font(.system(size: 16, weight: .semibold))
+                        }
                     }
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14)
-                            .fill(isAuthenticating ? Color.gray : brandBlue)
-                    )
+                    .background(canContinue ? AnyView(brandGradient) : AnyView(brandGradient.opacity(0.35)))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .disabled(isAuthenticating)
-                .padding(.horizontal, 32)
+                .disabled(!canContinue || isAuthenticating)
+                .padding(.horizontal, 28)
 
                 if let error = errorMessage {
                     Text(error)
                         .font(.system(size: 13))
                         .foregroundStyle(.red)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                        .padding(.top, 16)
+                        .padding(.horizontal, 28)
+                        .padding(.top, 12)
                         .transition(.opacity)
                 }
 
-                Spacer()
-                Spacer()
+                #if targetEnvironment(simulator)
+                Button("Dev Login (Simulator)") {
+                    coordinator.devLogin()
+                }
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .padding(.top, 16)
+                #endif
 
-                Text("End-to-end encrypted · Zero-trust · HIPAA compliant")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.secondary.opacity(0.7))
-                    .padding(.bottom, 32)
+                Spacer()
+                Spacer()
             }
         }
         .animation(.easeInOut(duration: 0.2), value: errorMessage != nil)
+        .navigationTitle("")
+        .toolbarColorScheme(.dark, for: .navigationBar)
     }
 
     // MARK: - Auth
 
-    private func signInWithMicrosoft() async {
+    private var canContinue: Bool {
+        workEmail.contains("@") && workEmail.split(separator: "@").last.map { $0.contains(".") } == true
+    }
+
+    private func signInWithSSO() async {
         guard !isAuthenticating else { return }
         isAuthenticating = true
         errorMessage = nil
@@ -119,19 +196,36 @@ struct EnterpriseLoginView: View {
     }
 }
 
-// MARK: - Microsoft four-colour logo
+// MARK: - IDP Detection
 
-private struct MicrosoftLogoShape: View {
-    var body: some View {
-        Grid(horizontalSpacing: 2, verticalSpacing: 2) {
-            GridRow {
-                Rectangle().fill(Color(red: 0.941, green: 0.341, blue: 0.133))
-                Rectangle().fill(Color(red: 0.122, green: 0.467, blue: 0.706))
-            }
-            GridRow {
-                Rectangle().fill(Color(red: 0.522, green: 0.706, blue: 0.000))
-                Rectangle().fill(Color(red: 1.000, green: 0.733, blue: 0.020))
-            }
+private struct DetectedIDP: Equatable {
+    let name: String
+    let icon: String
+
+    init?(email: String) {
+        guard email.contains("@"),
+              let domain = email.split(separator: "@").last.map(String.init),
+              domain.contains(".") else { return nil }
+
+        let d = domain.lowercased()
+        if d == "outlook.com" || d == "hotmail.com" || d == "live.com" || d.hasSuffix(".microsoft.com") {
+            name = "Microsoft Entra ID"; icon = "🔷"
+        } else if d == "gmail.com" || d.hasSuffix(".google.com") || d.hasSuffix(".googlemail.com") {
+            name = "Google Workspace"; icon = "🟢"
+        } else if d.hasSuffix(".okta.com") {
+            name = "Okta"; icon = "🔐"
+        } else if domain.split(separator: ".").count >= 2 {
+            // Generic corporate domain — default to Microsoft Entra (most common enterprise IDP)
+            name = "Microsoft Entra ID"; icon = "🔷"
+        } else {
+            return nil
         }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        EnterpriseLoginView()
+            .environmentObject(AppCoordinator())
     }
 }

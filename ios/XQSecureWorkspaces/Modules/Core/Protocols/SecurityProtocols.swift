@@ -29,7 +29,7 @@ public struct JailbreakAssessment: Sendable {
     public let confidenceScore: Int
     public let signals: [JailbreakSignal]
 
-    public enum JailbreakSignal: String {
+    public enum JailbreakSignal: String, Sendable {
         case suspiciousFilesystem, dyldInjection, processIntegrityFail,
              behavioralAnomaly, appAttestFail
     }

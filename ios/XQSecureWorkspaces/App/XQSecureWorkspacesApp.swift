@@ -6,14 +6,16 @@ import MSAL
 @main
 struct XQSecureWorkspacesApp: App {
     @StateObject private var coordinator = AppCoordinator()
+    @StateObject private var appTheme = AppTheme()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(coordinator)
+                .environmentObject(appTheme)
+                .preferredColorScheme(appTheme.mode.preferredColorScheme)
+                .tint(appTheme.mode.brandColor)
                 .onOpenURL { url in
-                    // Hand MSAL redirect URIs (msauth.<bundle-id>://auth) back to
-                    // the MSAL runtime so it can complete the interactive sign-in flow.
                     MSALPublicClientApplication.handleMSALResponse(url, sourceApplication: nil)
                 }
                 .onReceive(

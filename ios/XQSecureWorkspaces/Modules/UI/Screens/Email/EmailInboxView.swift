@@ -7,6 +7,7 @@ struct EmailInboxView: View {
     @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var vm: EmailInboxViewModel
     @State private var showCompose = false
+    @State private var showAISearch = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -35,6 +36,32 @@ struct EmailInboxView: View {
                         .padding(.horizontal, 16)
                         .padding(.bottom, 8)
                 }
+
+                // Ask AI bar — mirrors Files screen
+                Button { showAISearch = true } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "sparkles.magnifyingglass")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(brandBlue)
+                        Text("Ask AI: find emails with PHI attachments…")
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("✦ AI")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Capsule().fill(brandBlue))
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 6)
 
                 if vm.isLoading {
                     Spacer()
@@ -74,6 +101,10 @@ struct EmailInboxView: View {
                 }
             }
             .sheet(isPresented: $showCompose) { EmailComposeView() }
+            .sheet(isPresented: $showAISearch) {
+                SemanticSearchView()
+                    .environmentObject(coordinator)
+            }
         }
         .task {
             guard let session = coordinator.currentSession else { return }
@@ -137,6 +168,7 @@ struct EmailInboxView: View {
             }
         }
         .listStyle(.plain)
+        .frame(maxHeight: .infinity)
     }
 
     // MARK: - Empty State

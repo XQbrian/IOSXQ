@@ -8,6 +8,7 @@ struct EmailDetailView: View {
 
     @State private var showPhishingAlert = false
     @State private var showSenderIntel = false
+    @State private var composeConfig: ComposeConfig? = nil
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -36,7 +37,6 @@ struct EmailDetailView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 12)
 
-                // Phishing banner for high/critical risk
                 if let risk = vm.risk, risk.overallRisk == .high || risk.overallRisk == .critical {
                     phishingBanner(risk: risk)
                         .padding(.horizontal, 20)
@@ -80,18 +80,37 @@ struct EmailDetailView: View {
                 }
 
                 Divider()
-                replySection
+                aiReplySection
                     .padding(.horizontal, 20)
                     .padding(.vertical, 16)
 
-                Spacer(minLength: 40)
+                Spacer(minLength: 80)
             }
+        }
+        .safeAreaInset(edge: .bottom) {
+            bottomActionBar
         }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 SensitivityBadge(sensitivity: vm.email.sensitivity)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack(spacing: 4) {
+                    Button {
+                        // Archive
+                    } label: {
+                        Image(systemName: "archivebox")
+                            .font(.system(size: 16))
+                    }
+                    Button(role: .destructive) {
+                        // Delete — would trigger confirmation in real impl
+                    } label: {
+                        Image(systemName: "trash")
+                            .font(.system(size: 16))
+                    }
+                }
             }
         }
         .task {
@@ -104,6 +123,9 @@ struct EmailDetailView: View {
             if let risk = vm.risk {
                 PhishingAlertView(risk: risk)
             }
+        }
+        .sheet(item: $composeConfig) { config in
+            EmailComposeView(config: config)
         }
     }
 
@@ -377,9 +399,52 @@ struct EmailDetailView: View {
         }
     }
 
-    // MARK: - Reply
+    // MARK: - Bottom Action Bar (Reply / Reply All / Forward)
 
-    private var replySection: some View {
+    private var bottomActionBar: some View {
+        VStack(spacing: 0) {
+            Divider()
+            HStack(spacing: 0) {
+                ActionBarButton(
+                    icon: "arrowshape.turn.up.left.fill",
+                    label: "Reply"
+                ) {
+                    composeConfig = .reply(to: vm.email)
+                }
+                Divider().frame(height: 28)
+                ActionBarButton(
+                    icon: "arrowshape.turn.up.left.2.fill",
+                    label: "Reply All"
+                ) {
+                    let myEmail = coordinator.currentSession?.userId ?? ""
+                    composeConfig = .replyAll(to: vm.email, myEmail: myEmail)
+                }
+                Divider().frame(height: 28)
+                ActionBarButton(
+                    icon: "arrowshape.turn.up.right.fill",
+                    label: "Forward"
+                ) {
+                    composeConfig = .forward(email: vm.email)
+                }
+                Divider().frame(height: 28)
+                ActionBarButton(
+                    icon: "flag",
+                    label: "Flag"
+                ) {}
+                Divider().frame(height: 28)
+                ActionBarButton(
+                    icon: "square.and.arrow.down",
+                    label: "Move"
+                ) {}
+            }
+            .padding(.vertical, 8)
+            .background(Color(.systemBackground))
+        }
+    }
+
+    // MARK: - AI Reply (Suggest Reply only)
+
+    private var aiReplySection: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let reply = vm.suggestedReply {
                 Text("Suggested Reply")
@@ -471,6 +536,38 @@ struct EmailDetailView: View {
         case .procurementAction: return "cart"
         case .legalReview:       return "doc.text.magnifyingglass"
         }
+    }
+}
+
+// MARK: - Identifiable conformance for sheet(item:)
+
+extension ComposeConfig: Identifiable {
+    var id: String { title + toAddresses.joined() }
+}
+
+// MARK: - Action Bar Button
+
+private struct ActionBarButton: View {
+    let icon: String
+    let label: String
+    let action: () -> Void
+
+    private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundColor(brandBlue)
+                Text(label)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(brandBlue)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 6)
+        }
+        .buttonStyle(.plain)
     }
 }
 

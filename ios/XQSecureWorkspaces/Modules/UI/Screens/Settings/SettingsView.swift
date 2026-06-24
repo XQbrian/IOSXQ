@@ -4,8 +4,9 @@ import XQPolicy
 
 struct SettingsView: View {
     @EnvironmentObject var coordinator: AppCoordinator
+    @EnvironmentObject var appTheme: AppTheme
 
-    @State private var biometricLock = true
+    @AppStorage("xq.biometricLock") private var biometricLock = true
     @State private var cloudAIEnabled = false
     @State private var phishingAlerts = true
     @State private var phiDetectionBanners = true
@@ -131,9 +132,11 @@ struct SettingsView: View {
                         }
                     }
 
-                    Button {
-                        coordinator.navigate(to: .adminPolicy)
-                    } label: {
+                    // Push AdminPolicyView onto SettingsView's NavigationStack
+                    // so the user gets a system back button. Avoids the previous
+                    // `coordinator.navigate(to: .adminPolicy)` which replaced the
+                    // entire root view and trapped the user.
+                    NavigationLink(destination: AdminPolicyView()) {
                         HStack {
                             Label("Policy Management", systemImage: "doc.badge.gearshape")
                                 .foregroundColor(.primary)
@@ -160,6 +163,28 @@ struct SettingsView: View {
                 } footer: {
                     Text("You have enterprise administrator privileges for this organization.")
                         .font(.system(size: 12))
+                }
+
+                // MARK: Appearance Section
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Theme")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.secondary)
+                        HStack(spacing: 10) {
+                            ForEach(AppThemeMode.allCases, id: \.self) { mode in
+                                ThemeButton(
+                                    mode: mode,
+                                    isSelected: appTheme.mode == mode
+                                ) {
+                                    appTheme.mode = mode
+                                }
+                            }
+                        }
+                    }
+                    .padding(.vertical, 6)
+                } header: {
+                    Text("Appearance")
                 }
 
                 // MARK: About Section
@@ -218,7 +243,42 @@ struct SettingsView: View {
     }
 }
 
+// MARK: - Theme Button
+
+private struct ThemeButton: View {
+    let mode: AppThemeMode
+    let isSelected: Bool
+    let action: () -> Void
+
+    private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 6) {
+                let (top, bottom) = mode.swatchColors
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LinearGradient(
+                        colors: [top, bottom],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    .frame(height: 44)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(isSelected ? brandBlue : Color.clear, lineWidth: 2)
+                    )
+                Text(mode.displayName)
+                    .font(.system(size: 12, weight: isSelected ? .semibold : .regular))
+                    .foregroundColor(isSelected ? brandBlue : .secondary)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 #Preview {
     SettingsView()
         .environmentObject(AppCoordinator())
+        .environmentObject(AppTheme())
 }

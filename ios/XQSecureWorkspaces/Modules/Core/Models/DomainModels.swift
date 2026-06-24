@@ -33,7 +33,7 @@ public struct SecureFile: Identifiable, Hashable, Sendable {
     }
 }
 
-public enum RepositorySource: String, Codable {
+public enum RepositorySource: String, Codable, Sendable {
     case sharePoint
     case smb
     case googleDrive
@@ -119,7 +119,7 @@ public struct XQSession: Sendable {
     }
 }
 
-public enum XQAPIVersion: String { case v1, v2, v3 }
+public enum XQAPIVersion: String, Sendable { case v1, v2, v3 }
 
 public struct PolicyBundle: Codable, Sendable {
     public let version: String

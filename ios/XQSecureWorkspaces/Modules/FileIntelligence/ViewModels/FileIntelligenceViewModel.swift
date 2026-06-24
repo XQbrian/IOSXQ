@@ -52,7 +52,7 @@ final class FileIntelligenceViewModel: ObservableObject {
 
     func authorizeAgentTask(_ taskId: UUID, session: XQSession) async {
         do {
-            let completed = try await orchestrator.authorizeAndExecute(
+            _ = try await orchestrator.authorizeAndExecute(
                 taskId: taskId,
                 authorizedBy: session.userId,
                 session: session

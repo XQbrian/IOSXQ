@@ -19,10 +19,14 @@ final class AIImportViewModel: ObservableObject {
     var pickedMimeType: String = "application/octet-stream"
 
     private let aiOrchestrator: any AIOrchestrator
-    private let policyEngine: any PolicyEngine
+    private var policyEngine: any PolicyEngine
 
     init(aiOrchestrator: any AIOrchestrator, policyEngine: any PolicyEngine) {
         self.aiOrchestrator = aiOrchestrator
+        self.policyEngine = policyEngine
+    }
+
+    func configure(policyEngine: any PolicyEngine) {
         self.policyEngine = policyEngine
     }
 

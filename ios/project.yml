@@ -59,6 +59,9 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLSchemes:
               - msauth.$(PRODUCT_BUNDLE_IDENTIFIER)
+        LSApplicationQueriesSchemes:
+          - msauthv2
+          - msauthv3
         NSFaceIDUsageDescription: "Used to secure access to your encrypted workspace"
         NSPhotoLibraryUsageDescription: "Allows importing files from your photo library"
         NSCameraUsageDescription: "Allows scanning documents directly into your secure vault"

@@ -52,7 +52,7 @@ public actor DataLineageTracker: DataLineageService {
             }
         }
 
-        if var record = lineageStore[fileId] {
+        if let record = lineageStore[fileId] {
             let updated = DataLineageRecord(
                 fileId: record.fileId,
                 originHash: record.originHash,

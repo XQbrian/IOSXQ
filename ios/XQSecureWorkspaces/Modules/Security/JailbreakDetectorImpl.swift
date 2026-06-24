@@ -6,6 +6,9 @@ public actor JailbreakDetectorImpl: JailbreakDetector {
     public init() {}
 
     public func assess() async -> JailbreakAssessment {
+        #if targetEnvironment(simulator)
+        return JailbreakAssessment(confidenceScore: 0, signals: [])
+        #else
         var score = 0
         var signals: [JailbreakAssessment.JailbreakSignal] = []
 
@@ -13,9 +16,9 @@ public actor JailbreakDetectorImpl: JailbreakDetector {
         if await checkDyldInjection()    { score += 25; signals.append(.dyldInjection) }
         if await checkProcessIntegrity() { score += 20; signals.append(.processIntegrityFail) }
         if await checkBehavioral()       { score += 15; signals.append(.behavioralAnomaly) }
-        // App Attest failure is assessed separately during session establishment.
 
         return JailbreakAssessment(confidenceScore: min(score, 100), signals: signals)
+        #endif
     }
 
     private func checkFilesystem() async -> Bool {

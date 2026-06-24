@@ -10,6 +10,7 @@ public actor LocalVaultProvider: RepositoryProvider {
     private let fileStore: SecureFileStore
     private let xqAPI: any XQSecureAPI
     private var metadataCache: [UUID: SecureFile] = [:]
+    private var storedSession: XQSession? = nil
 
     public init(fileStore: SecureFileStore, xqAPI: any XQSecureAPI) {
         self.fileStore = fileStore
@@ -33,8 +34,7 @@ public actor LocalVaultProvider: RepositoryProvider {
             .appendingPathComponent(file.id.uuidString)
 
         let payload = try await fileStore.read(from: fileURL)
-        // Plaintext never touches disk; decryption happens entirely in memory.
-        let session = try currentSession()
+        guard let session = storedSession else { throw RepositoryError.authenticationRequired }
         return try await xqAPI.decryptFile(payload, session: session)
     }
 
@@ -85,6 +85,10 @@ public actor LocalVaultProvider: RepositoryProvider {
         return DeltaSyncResult(added: [], modified: [], deleted: [], nextCursor: nextCursor)
     }
 
+    public func setSession(_ session: XQSession) {
+        storedSession = session
+    }
+
     // MARK: - Private helpers
 
     /// Infers MIME type from the file extension. Production callers may supply
@@ -98,13 +102,4 @@ public actor LocalVaultProvider: RepositoryProvider {
         }
     }
 
-    /// Placeholder: in production the caller passes a live XQSession; this
-    /// actor does not own session state, so callers that need a session for
-    /// fetchFile must provide one. This is a design smell that will be resolved
-    /// when fetchFile signature is updated to accept XQSession.
-    private func currentSession() throws -> XQSession {
-        // TODO: accept XQSession as a parameter in fetchFile once the protocol
-        // is updated in Phase 5. For now throw to surface the gap at runtime.
-        throw RepositoryError.authenticationRequired
-    }
 }

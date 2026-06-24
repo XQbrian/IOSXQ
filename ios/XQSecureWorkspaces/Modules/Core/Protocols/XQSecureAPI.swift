@@ -15,6 +15,12 @@ public protocol XQSecureAPI: Sendable {
     func fetchPolicyBundle(tenantId: String, session: XQSession) async throws -> PolicyBundle
 
     func submitAuditEvent(_ event: AuditEvent, session: XQSession) async throws
+
+    func grantAccess(keyId: String, recipients: [String], expiryDays: Int, session: XQSession) async throws
+}
+
+public extension XQSecureAPI {
+    func grantAccess(keyId: String, recipients: [String], expiryDays: Int, session: XQSession) async throws {}
 }
 
 public struct XQCredentials {

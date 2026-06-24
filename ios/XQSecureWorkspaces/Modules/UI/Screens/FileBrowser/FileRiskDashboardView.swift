@@ -152,10 +152,11 @@ struct FileRiskDashboardView: View {
             .background(brandBlue.opacity(0.07))
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
-            Button {
-                dismiss()
-                coordinator.navigate(to: .aiImport)
-            } label: {
+            // Push AIImportView onto this view's NavigationStack so the user
+            // can swipe back to the risk dashboard, then dismiss the sheet
+            // normally. Avoids the previous dismiss-then-replace-root path
+            // that trapped the user with no way back.
+            NavigationLink(destination: AIImportView()) {
                 Label("Run AI Remediation", systemImage: "sparkles")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.white)

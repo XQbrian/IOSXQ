@@ -62,8 +62,8 @@ public actor SharePointProviderImpl: SharePointProvider {
         // The current implementation returns raw bytes as a stub; no plaintext
         // is cached to disk.
         let endpoint = "graph/v1.0/me/drive/items/\(file.id)/content"
-        let data: Data = try await gateway.get(path: endpoint)
-        return data
+        let raw: GraphRawContent = try await gateway.get(path: endpoint)
+        return raw.data
     }
 
     public func uploadFile(data: Data, name: String, path: String, session: XQSession) async throws -> SecureFile {
@@ -212,17 +212,15 @@ extension SharePointSite: Decodable {
     }
 }
 
-// Data needs to be Decodable from a raw-bytes gateway response.
-// XQAPIGateway.get returns T: Decodable; for raw Data we decode the base64
-// representation the Graph API returns for binary content endpoints.
-extension Data: @retroactive Decodable {
-    public init(from decoder: Decoder) throws {
+// Private wrapper for Graph /content binary responses (base64-encoded JSON string).
+private struct GraphRawContent: Decodable {
+    let data: Data
+    init(from decoder: Decoder) throws {
         let c = try decoder.singleValueContainer()
-        // Graph /content returns base64-encoded bytes in JSON context.
         let b64 = try c.decode(String.self)
         guard let d = Data(base64Encoded: b64) else {
             throw DecodingError.dataCorruptedError(in: c, debugDescription: "Invalid base64")
         }
-        self = d
+        data = d
     }
 }

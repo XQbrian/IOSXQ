@@ -10,7 +10,7 @@ struct RootView: View {
         case .splash:
             SplashView()
         case .welcome:
-            EnterpriseLoginView()
+            WelcomeView()
         case .xqVerification(let email, let idToken, let msalAccountIdentifier, let graphToken):
             XQVerificationView(
                 email: email,
@@ -20,25 +20,15 @@ struct RootView: View {
             )
         case .home:
             MainTabView()
-        case .fileBrowser:
-            FileBrowserView()
-        case .fileViewer(let file):
-            NavigationStack {
-                FileViewerView(file: file)
-            }
-        case .aiImport:
-            AIImportView()
-        case .emailInbox:
-            EmailInboxView()
-        case .settings:
-            SettingsView()
-        case .adminPolicy:
-            AdminPolicyView()
         case .onboarding:
             OnboardingView()
         case .securityFailure(let assessment):
             SecurityFailureView(assessment: assessment)
         }
+        // Note: there are intentionally NO root-replacement cases for Files,
+        // FileViewer, Messages, Settings, AdminPolicy, or AIImport. Those all
+        // live inside MainTabView's per-tab NavigationStacks (push) or as
+        // sheets — that's what gives every screen a back path.
     }
 }
 

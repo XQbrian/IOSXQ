@@ -17,8 +17,8 @@ final class FileViewerViewModel: ObservableObject {
     @Published var quickLookURL: URL? = nil
 
     private let aiOrchestrator: any AIOrchestrator
-    private let policyEngine: any PolicyEngine
-    private let xqAPI: any XQSecureAPI
+    private var policyEngine: any PolicyEngine
+    private var xqAPI: any XQSecureAPI
 
     init(
         file: SecureFile,
@@ -28,6 +28,11 @@ final class FileViewerViewModel: ObservableObject {
     ) {
         self.file = file
         self.aiOrchestrator = aiOrchestrator
+        self.policyEngine = policyEngine
+        self.xqAPI = xqAPI
+    }
+
+    func configure(policyEngine: any PolicyEngine, xqAPI: any XQSecureAPI) {
         self.policyEngine = policyEngine
         self.xqAPI = xqAPI
     }

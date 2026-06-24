@@ -5,6 +5,7 @@ import XQAI
 import XQPolicy
 
 struct AIImportView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var coordinator: AppCoordinator
     @StateObject private var vm = AIImportViewModel(
         aiOrchestrator: OnDeviceAIOrchestrator(),
@@ -123,8 +124,10 @@ struct AIImportView: View {
                                 }
 
                                 Button {
-                                    guard let session = coordinator.currentSession,
-                                          let repo = coordinator.repository else { return }
+                                    guard let session = coordinator.currentSession else { return }
+                                    let repo: (any RepositoryProvider)? = coordinator.localVaultProvider
+                                        ?? coordinator.repository
+                                    guard let repo else { return }
                                     Task { await vm.upload(session: session, repository: repo) }
                                 } label: {
                                     Group {
@@ -166,12 +169,15 @@ struct AIImportView: View {
                 }
                 .padding(.top, 16)
             }
+            .task {
+                vm.configure(policyEngine: coordinator.policyEngine)
+            }
             .navigationTitle("Import & Classify")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
-                        coordinator.navigate(to: .home)
+                        dismiss()
                     }
                     .foregroundColor(brandBlue)
                 }

@@ -1,20 +1,95 @@
 import SwiftUI
 import XQCore
+import XQEmailIntelligence
+
+// MARK: - Compose Config
+
+struct ComposeConfig {
+    var toAddresses: [String] = []
+    var ccAddresses: [String] = []
+    var bccAddresses: [String] = []
+    var subject: String = ""
+    var quotedBody: String = ""
+    var title: String = "New Message"
+
+    static func reply(to email: SecureEmail) -> ComposeConfig {
+        ComposeConfig(
+            toAddresses: [email.senderEmail],
+            subject: email.subject.hasPrefix("Re: ") ? email.subject : "Re: " + email.subject,
+            quotedBody: quotedBlock(email),
+            title: "Reply"
+        )
+    }
+
+    static func replyAll(to email: SecureEmail, myEmail: String) -> ComposeConfig {
+        let cc = email.recipientEmails.filter { $0 != myEmail }
+        return ComposeConfig(
+            toAddresses: [email.senderEmail],
+            ccAddresses: cc,
+            subject: email.subject.hasPrefix("Re: ") ? email.subject : "Re: " + email.subject,
+            quotedBody: quotedBlock(email),
+            title: "Reply All"
+        )
+    }
+
+    static func forward(email: SecureEmail) -> ComposeConfig {
+        ComposeConfig(
+            subject: email.subject.hasPrefix("Fwd: ") ? email.subject : "Fwd: " + email.subject,
+            quotedBody: forwardBlock(email),
+            title: "Forward"
+        )
+    }
+
+    private static func quotedBlock(_ email: SecureEmail) -> String {
+        let df = DateFormatter(); df.dateStyle = .medium; df.timeStyle = .short
+        return "\n\n\n—— On \(df.string(from: email.receivedAt)), \(email.senderName) <\(email.senderEmail)> wrote:\n\n\(email.bodyPreview)"
+    }
+
+    private static func forwardBlock(_ email: SecureEmail) -> String {
+        let df = DateFormatter(); df.dateStyle = .medium; df.timeStyle = .short
+        return "\n\n\n—— Forwarded message ——\nFrom: \(email.senderName) <\(email.senderEmail)>\nDate: \(df.string(from: email.receivedAt))\nSubject: \(email.subject)\n\n\(email.bodyPreview)"
+    }
+}
+
+// MARK: - EmailComposeView
 
 struct EmailComposeView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var toField = ""
-    @State private var ccField = ""
-    @State private var subjectField = ""
-    @State private var bodyText = ""
-    @State private var showCCBCC = false
+    @State private var toField: String
+    @State private var ccField: String
+    @State private var bccField: String
+    @State private var subjectField: String
+    @State private var bodyText: String
+    @State private var showCCBCC: Bool
     @State private var sensitivity: SensitivityLevel = .internal_
     @State private var showDiscardAlert = false
 
+    private let navTitle: String
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
-
     private var tone: ComposeTone { ComposeTone.analyze(body: bodyText) }
+
+    // New message
+    init() {
+        _toField = State(initialValue: "")
+        _ccField = State(initialValue: "")
+        _bccField = State(initialValue: "")
+        _subjectField = State(initialValue: "")
+        _bodyText = State(initialValue: "")
+        _showCCBCC = State(initialValue: false)
+        navTitle = "New Message"
+    }
+
+    // Reply / Reply All / Forward
+    init(config: ComposeConfig) {
+        _toField = State(initialValue: config.toAddresses.joined(separator: ", "))
+        _ccField = State(initialValue: config.ccAddresses.joined(separator: ", "))
+        _bccField = State(initialValue: config.bccAddresses.joined(separator: ", "))
+        _subjectField = State(initialValue: config.subject)
+        _bodyText = State(initialValue: config.quotedBody)
+        _showCCBCC = State(initialValue: !config.ccAddresses.isEmpty || !config.bccAddresses.isEmpty)
+        navTitle = config.title
+    }
 
     var body: some View {
         NavigationStack {
@@ -30,7 +105,7 @@ struct EmailComposeView: View {
                     }
                 }
             }
-            .navigationTitle("New Message")
+            .navigationTitle(navTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -60,7 +135,7 @@ struct EmailComposeView: View {
         }
     }
 
-    // MARK: - Banner
+    // MARK: - Classification Banner
 
     private var classificationBanner: some View {
         HStack(spacing: 8) {
@@ -97,13 +172,15 @@ struct EmailComposeView: View {
             if showCCBCC {
                 ComposeFieldRow(label: "CC", text: $ccField, placeholder: "")
                 Divider().padding(.leading, 52)
+                ComposeFieldRow(label: "BCC", text: $bccField, placeholder: "")
+                Divider().padding(.leading, 52)
             }
 
             ComposeFieldRow(label: "Subject", text: $subjectField, placeholder: "Subject")
             Divider().padding(.leading, 52)
 
             Button {
-                withAnimation { showCCBCC.toggle() }
+                withAnimation(.easeInOut(duration: 0.2)) { showCCBCC.toggle() }
             } label: {
                 HStack {
                     Text(showCCBCC ? "Hide CC/BCC" : "Add CC/BCC")

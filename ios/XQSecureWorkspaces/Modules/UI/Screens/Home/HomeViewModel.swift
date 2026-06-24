@@ -19,10 +19,15 @@ final class HomeViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String? = nil
 
-    private let repository: any RepositoryProvider
-    private let policyEngine: any PolicyEngine
+    private var repository: any RepositoryProvider
+    private var policyEngine: any PolicyEngine
 
     init(repository: any RepositoryProvider, policyEngine: any PolicyEngine) {
+        self.repository = repository
+        self.policyEngine = policyEngine
+    }
+
+    func configure(repository: any RepositoryProvider, policyEngine: any PolicyEngine) {
         self.repository = repository
         self.policyEngine = policyEngine
     }

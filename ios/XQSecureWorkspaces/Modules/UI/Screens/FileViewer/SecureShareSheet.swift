@@ -25,7 +25,8 @@ struct SecureShareSheet: View {
         rawFileData: Data,
         classificationResult: AIClassificationResult?,
         session: XQSession,
-        graphClient: MicrosoftGraphClient?
+        graphClient: MicrosoftGraphClient?,
+        xqAPI: (any XQSecureAPI)? = nil
     ) {
         _isPresented = isPresented
         _vm = StateObject(wrappedValue: SecureShareViewModel(
@@ -33,7 +34,8 @@ struct SecureShareSheet: View {
             rawFileData: rawFileData,
             classificationResult: classificationResult,
             session: session,
-            graphClient: graphClient
+            graphClient: graphClient,
+            xqAPI: xqAPI
         ))
     }
 

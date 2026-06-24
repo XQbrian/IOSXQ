@@ -5,7 +5,7 @@ import CryptoKit
 // v3 uses ChaCha20-Poly1305 for transport but AES-256-GCM for stored payloads.
 public actor XQAPIV3Adapter: XQSecureAPI {
 
-    public let negotiatedVersion: XQAPIVersion = .v3
+    public nonisolated let negotiatedVersion: XQAPIVersion = .v3
     private let gateway: XQAPIGateway
 
     public init(gateway: XQAPIGateway) {
@@ -120,6 +120,16 @@ public actor XQAPIV3Adapter: XQSecureAPI {
 
     public func fetchPolicyBundle(tenantId: String, session: XQSession) async throws -> PolicyBundle {
         try await gateway.get(path: "v3/tenants/\(tenantId)/policy", session: session)
+    }
+
+    public func grantAccess(keyId: String, recipients: [String], expiryDays: Int, session: XQSession) async throws {
+        struct GrantRequest: Encodable { let recipients: [String]; let expiryDays: Int }
+        struct GrantResponse: Decodable { let granted: Bool }
+        let _: GrantResponse = try await gateway.post(
+            path: "v3/keys/\(keyId)/recipients",
+            body: GrantRequest(recipients: recipients, expiryDays: expiryDays),
+            session: session
+        )
     }
 
     public func submitAuditEvent(_ event: AuditEvent, session: XQSession) async throws {

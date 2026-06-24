@@ -3829,7 +3829,7 @@
 <div class="scr" id="s-notifications" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
   <div class="lt">
-    <div class="lt-text">Now</div>
+    <div class="lt-text">AI</div>
     <div style="padding-bottom:8px;display:flex;align-items:center;gap:8px;">
       <span style="font-size:10px;color:var(--ok);font-weight:600;">● Protected</span>
       <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
@@ -3838,15 +3838,13 @@
   <!-- Scrollable tab bar -->
   <div style="padding:0 16px 8px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;">
     <div style="display:flex;gap:6px;white-space:nowrap;">
-      <button id="nt-btn-overview" class="nt-seg on" onclick="switchNotifTab('overview')" style="flex-shrink:0;">Overview</button>
-      <button id="nt-btn-ask"      class="nt-seg"    onclick="switchNotifTab('ask')"      style="flex-shrink:0;"><i class="bi bi-stars" style="font-size:10px;margin-right:3px;"></i>Ask</button>
       <button id="nt-btn-activity" class="nt-seg" onclick="switchNotifTab('activity')" style="flex-shrink:0;">Activity</button>
-      <button id="nt-btn-security" class="nt-seg" onclick="switchNotifTab('security')" style="flex-shrink:0;">Security</button>
+      <button id="nt-btn-productivity" class="nt-seg on" onclick="switchNotifTab('productivity')" style="flex-shrink:0;"><i class="bi bi-stars" style="font-size:10px;margin-right:3px;color:#AB5ADE;"></i>Productivity</button>
     </div>
   </div>
 
-  <!-- ── OVERVIEW TAB ── -->
-  <div id="nt-tab-overview" class="sc" style="flex-direction:column;">
+  <!-- ── COMBINED NOW VIEW (Overview + Ask AI) ── -->
+  <div id="nt-tab-overview" class="sc" style="display:none;flex-direction:column;">
     <div style="padding:4px 16px 0;display:flex;flex-direction:column;gap:14px;">
 
       <!-- Trust status — compact pill -->
@@ -3994,51 +3992,32 @@
         </div>
       </div>
 
-      <div style="height:20px;"></div>
-    </div>
-  </div>
-
-  <!-- ── ACTIVITY TAB ── -->
-  <!-- ── ASK TAB (XQ AI assistant, formerly its own bottom-nav tab) ── -->
-  <div id="nt-tab-ask" class="sc" style="display:none;flex-direction:column;padding:0 16px;">
-    <div id="ai-chat-scroll" style="flex:1;display:flex;flex-direction:column;padding-bottom:8px;">
-      <div id="ai-welcome-state" style="display:flex;flex-direction:column;align-items:center;padding:12px 8px 14px;">
-        <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px;box-shadow:0 8px 32px rgba(61,90,254,.25);color:#fff;">✦</div>
-        <div style="font-size:18px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:4px;">XQ AI Assistant</div>
-        <div style="font-size:12px;color:var(--t2);text-align:center;line-height:1.5;margin-bottom:16px;">Encrypted workspace intelligence. Everything processed on-device — your data never leaves.</div>
-        <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
-          <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
-            <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📁</div>
-            <div><div style="font-size:13px;font-weight:600;color:var(--t1);">File Intelligence</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Classify, search, and summarize encrypted files</div></div>
+        <!-- Ask XQ inline AI section -->
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+          <div style="flex:1;height:.5px;background:var(--sep);"></div>
+          <div style="display:flex;align-items:center;gap:5px;background:rgba(171,90,222,.08);border-radius:var(--rfull);padding:4px 11px;">
+            <i class="bi bi-stars" style="font-size:10px;color:#AB5ADE;"></i>
+            <span style="font-size:10px;font-weight:700;color:#AB5ADE;letter-spacing:.3px;text-transform:uppercase;">Ask XQ</span>
           </div>
-          <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
-            <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🛡️</div>
-            <div><div style="font-size:13px;font-weight:600;color:var(--t1);">Risk Analysis</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Detect PHI, PII, and policy violations proactively</div></div>
-          </div>
-          <div style="background:var(--card);border-radius:12px;padding:11px 13px;display:flex;gap:11px;align-items:center;">
-            <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">✉️</div>
-            <div><div style="font-size:13px;font-weight:600;color:var(--t1);">Email Compliance</div><div style="font-size:11px;color:var(--t2);margin-top:2px;">Review drafts for tone, commitments, and classification</div></div>
-          </div>
+          <div style="flex:1;height:.5px;background:var(--sep);"></div>
         </div>
-        <div style="width:100%;">
-          <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;">Try Asking</div>
-          <div style="display:flex;flex-direction:column;gap:7px;">
-            <button onclick="aiChat('Which of my files contain PHI?')" class="ai-prompt-btn">Which of my files contain PHI?</button>
-            <button onclick="aiChat('Show files shared externally expiring this week')" class="ai-prompt-btn">Show files expiring this week</button>
-            <button onclick="aiChat('Summarize my security posture')" class="ai-prompt-btn">Summarize my security posture</button>
-            <button onclick="aiChat('Who has access to Q4-Financial-Report.pdf?')" class="ai-prompt-btn">Who can access my Q4 Report?</button>
-          </div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <button onclick="aiChat('Which of my files contain PHI?')" class="ai-prompt-btn">Which of my files contain PHI?</button>
+          <button onclick="aiChat('Show files shared externally expiring this week')" class="ai-prompt-btn">Show files expiring this week</button>
+          <button onclick="aiChat('Summarize my security posture')" class="ai-prompt-btn">Summarize my security posture</button>
+          <button onclick="aiChat('Who has access to Q4-Financial-Report.pdf?')" class="ai-prompt-btn">Who can access my Q4 Report?</button>
         </div>
+        <div id="ai-messages" style="display:flex;flex-direction:column;gap:12px;padding-bottom:8px;"></div>
+        <div id="ai-welcome-state" style="display:none;"></div>
+        <div style="height:8px;"></div>
       </div>
-      <div id="ai-messages" style="display:flex;flex-direction:column;gap:12px;padding-bottom:8px;"></div>
-    </div>
-    <!-- Sticky chat input bar -->
-    <div style="position:sticky;bottom:0;background:var(--nav);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);margin:0 -16px;padding:9px 14px 12px;display:flex;gap:9px;align-items:center;">
-      <div style="flex:1;background:rgba(118,118,128,.12);border-radius:22px;padding:9px 15px;display:flex;align-items:center;">
-        <input id="ai-input" type="text" style="flex:1;background:none;border:none;outline:none;font-size:14px;color:var(--t1);font-family:inherit;" placeholder="Ask anything about your workspace…" onkeydown="if(event.key==='Enter')aiChat(this.value)">
+      <!-- Sticky AI input bar -->
+      <div style="position:sticky;bottom:0;background:var(--nav);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);padding:9px 14px 12px;display:flex;gap:9px;align-items:center;">
+        <div style="flex:1;background:rgba(118,118,128,.12);border-radius:22px;padding:9px 15px;display:flex;align-items:center;">
+          <input id="ai-input" type="text" style="flex:1;background:none;border:none;outline:none;font-size:14px;color:var(--t1);font-family:inherit;" placeholder="Ask anything about your workspace…" onkeydown="if(event.key==='Enter')aiChat(this.value)">
+        </div>
+        <button onclick="aiChat(document.getElementById('ai-input').value)" style="width:38px;height:38px;border-radius:19px;background:var(--brand);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;"><i class="bi bi-arrow-up-circle-fill"></i></button>
       </div>
-      <button onclick="aiChat(document.getElementById('ai-input').value)" style="width:38px;height:38px;border-radius:19px;background:var(--brand);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;"><i class="bi bi-arrow-up-circle-fill"></i></button>
-    </div>
   </div>
 
   <div id="nt-tab-activity" class="sc" style="display:none;flex-direction:column;">
@@ -4110,23 +4089,16 @@
         </div>
 
       </div>
-      <div style="height:20px;"></div>
-    </div>
-  </div>
+      <!-- Security section merged into Activity tab -->
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:8px 0 4px;">Security</div>
 
-  <!-- ── SECURITY TAB ── -->
-  <div id="nt-tab-security" class="sc" style="display:none;flex-direction:column;">
-    <div style="padding:8px 16px 0;display:flex;flex-direction:column;gap:10px;">
-
-      <div style="background:rgba(52,199,89,.08);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
-        <i class="bi bi-shield-check" style="font-size:22px;color:var(--ok);flex-shrink:0;"></i>
+      <div style="background:rgba(52,199,89,.08);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+        <i class="bi bi-shield-check" style="font-size:18px;color:var(--ok);flex-shrink:0;"></i>
         <div>
           <div style="font-size:13px;font-weight:700;color:var(--t1);">Secure</div>
           <div style="font-size:11px;color:var(--t3);">Vault scanned · AES-256-GCM · Enclave OK</div>
         </div>
       </div>
-
-      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:2px 0 2px;">Security Events</div>
 
       <div onclick="go('s-screenshot-block')" style="background:var(--card);border-radius:13px;padding:13px 14px;cursor:pointer;">
         <div style="display:flex;gap:11px;align-items:flex-start;">
@@ -4135,19 +4107,17 @@
           </div>
           <div style="flex:1;">
             <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;">Screenshot capture blocked</div>
-            <div style="font-size:12px;color:var(--t2);line-height:1.4;margin-bottom:5px;">An attempt to capture Q4-Financial-Report.pdf was blocked. The document data was protected.</div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.4;margin-bottom:5px;">An attempt to capture Q4-Financial-Report.pdf was blocked.</div>
             <div style="font-size:10px;color:var(--t3);">Today · 9:02 AM · Logged to audit trail</div>
           </div>
           <i class="bi bi-chevron-right" style="font-size:12px;color:var(--t3);flex-shrink:0;margin-top:2px;"></i>
         </div>
       </div>
 
-      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:2px 0 2px;">Policy &amp; Compliance</div>
-
       <div style="background:var(--card);border-radius:13px;overflow:hidden;">
         <div style="display:flex;gap:11px;align-items:center;padding:12px 14px;border-bottom:.5px solid var(--sep);">
-          <div style="width:36px;height:36px;border-radius:9px;background:rgba(61,90,254,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="bi bi-building-check" style="font-size:16px;color:var(--brand);"></i>
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(61,90,254,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="bi bi-building-check" style="font-size:15px;color:var(--brand);"></i>
           </div>
           <div class="col">
             <div style="font-size:13px;font-weight:500;color:var(--t1);">Policy bundle updated</div>
@@ -4155,8 +4125,8 @@
           </div>
         </div>
         <div style="display:flex;gap:11px;align-items:center;padding:12px 14px;">
-          <div style="width:36px;height:36px;border-radius:9px;background:rgba(52,199,89,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="bi bi-patch-check-fill" style="font-size:16px;color:var(--ok);"></i>
+          <div style="width:34px;height:34px;border-radius:9px;background:rgba(52,199,89,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="bi bi-patch-check-fill" style="font-size:15px;color:var(--ok);"></i>
           </div>
           <div class="col">
             <div style="font-size:13px;font-weight:500;color:var(--t1);">Certificate pinning verified</div>
@@ -4165,8 +4135,6 @@
         </div>
       </div>
 
-      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:2px 0 2px;">Worth Reviewing</div>
-
       <div onclick="go('s-email-inbox')" style="background:var(--card);border-radius:13px;padding:13px 14px;cursor:pointer;">
         <div style="display:flex;gap:11px;align-items:flex-start;">
           <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,149,0,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -4174,7 +4142,7 @@
           </div>
           <div style="flex:1;">
             <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;">2 emails may need a second look</div>
-            <div style="font-size:12px;color:var(--t2);line-height:1.4;">Outbound drafts may reference patient information. Recommended to review before sending.</div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.4;">Outbound drafts may reference patient information.</div>
           </div>
           <i class="bi bi-chevron-right" style="font-size:12px;color:var(--t3);flex-shrink:0;margin-top:2px;"></i>
         </div>
@@ -4182,6 +4150,84 @@
 
       <div style="height:20px;"></div>
     </div>
+  </div>
+
+  <!-- ── PRODUCTIVITY TAB (DLP Chat — ChatGPT-style) ── -->
+  <div id="nt-tab-productivity" class="sc" style="flex-direction:column;overflow:hidden;">
+
+    <!-- Minimal header -->
+    <div style="display:flex;align-items:center;padding:11px 14px;border-bottom:.5px solid var(--sep);flex-shrink:0;">
+      <!-- DLP live indicator (left) -->
+      <div style="display:flex;align-items:center;gap:5px;min-width:56px;">
+        <div id="dlp-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0;transition:background .3s;"></div>
+        <span id="dlp-status-text" style="font-size:11px;font-weight:500;color:var(--t3);transition:color .3s;">DLP</span>
+      </div>
+      <!-- Centered title + model badge -->
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span style="font-size:16px;font-weight:600;color:var(--t1);letter-spacing:-.2px;">XQ AI</span>
+        <div style="background:rgba(171,90,222,.12);border-radius:var(--rfull);padding:2px 8px;">
+          <span style="font-size:10px;font-weight:700;color:#AB5ADE;letter-spacing:.2px;">L2</span>
+        </div>
+        <i class="bi bi-chevron-down" style="font-size:10px;color:var(--t3);margin-left:-3px;"></i>
+      </div>
+      <!-- New chat (right) -->
+      <button onclick="dlpNewChat()" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--t1);display:flex;align-items:center;justify-content:flex-end;min-width:56px;" aria-label="New conversation">
+        <i class="bi bi-pencil-square" style="font-size:19px;"></i>
+      </button>
+    </div>
+
+    <!-- Scrollable chat area -->
+    <div id="dlp-chat-scroll" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;">
+
+      <!-- Welcome state -->
+      <div id="dlp-welcome" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 18px 16px;min-height:100%;">
+        <div style="font-size:27px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:5px;letter-spacing:-.5px;">What can I help with?</div>
+        <div style="font-size:13px;color:var(--t3);text-align:center;margin-bottom:26px;">DLP enforced · L2 Standard clearance</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;">
+          <button onclick="dlpChat('Which files contain PHI or restricted data?')"
+            style="background:var(--card);border:1px solid var(--sep);border-radius:16px;padding:14px 13px;text-align:left;cursor:pointer;font-family:inherit;">
+            <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;">Find sensitive files</div>
+            <div style="font-size:12px;color:var(--t3);line-height:1.4;">Scan for PHI, PII, or restricted content</div>
+          </button>
+          <button onclick="dlpChat('Are any of my shared files expiring soon?')"
+            style="background:var(--card);border:1px solid var(--sep);border-radius:16px;padding:14px 13px;text-align:left;cursor:pointer;font-family:inherit;">
+            <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;">Check sharing</div>
+            <div style="font-size:12px;color:var(--t3);line-height:1.4;">Review expiring links and permissions</div>
+          </button>
+          <button onclick="dlpChat('Show me recent phishing or security alerts')"
+            style="background:var(--card);border:1px solid var(--sep);border-radius:16px;padding:14px 13px;text-align:left;cursor:pointer;font-family:inherit;">
+            <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;">Security alerts</div>
+            <div style="font-size:12px;color:var(--t3);line-height:1.4;">Phishing, policy blocks, anomalies</div>
+          </button>
+          <button onclick="dlpChat('Classify and organize my recent uploads')"
+            style="background:var(--card);border:1px solid var(--sep);border-radius:16px;padding:14px 13px;text-align:left;cursor:pointer;font-family:inherit;">
+            <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;">Classify uploads</div>
+            <div style="font-size:12px;color:var(--t3);line-height:1.4;">Auto-tag and organize recent files</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div id="dlp-messages" style="display:flex;flex-direction:column;padding:8px 0 16px;"></div>
+
+    </div>
+
+    <!-- Input area -->
+    <div style="padding:8px 12px 18px;flex-shrink:0;">
+      <div style="background:var(--card);border:1.5px solid var(--sep);border-radius:26px;display:flex;align-items:center;padding:7px 7px 7px 16px;gap:8px;">
+        <input id="dlp-input" type="text"
+          style="flex:1;background:none;border:none;outline:none;font-size:15px;color:var(--t1);font-family:inherit;"
+          placeholder="Message XQ AI…"
+          onkeydown="if(event.key==='Enter')dlpChat(this.value)">
+        <button onclick="dlpChat(document.getElementById('dlp-input').value)"
+          style="width:34px;height:34px;border-radius:50%;background:var(--t1);border:none;color:var(--bg);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;">
+          <i class="bi bi-arrow-up" style="font-weight:900;"></i>
+        </button>
+      </div>
+      <div style="text-align:center;margin-top:6px;font-size:10px;color:var(--t3);">XQ AI can make mistakes. Verify sensitive data decisions independently.</div>
+    </div>
+
   </div>
 
   <!-- ── SHARED TAB ── -->
@@ -4681,7 +4727,7 @@
       <div style="display:flex;background:#1C1C1E;border-top:.5px solid #38383A;padding:8px 0 20px;flex-shrink:0;">
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-file-browser'); toggleIPad()"><span style="font-size:20px;">📁</span><span style="font-size:9px;color:#636366;">Files</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-email-inbox'); toggleIPad()"><span style="font-size:20px;color:#6979F8;">✉️</span><span style="font-size:9px;color:#6979F8;font-weight:600;">Messages</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-notifications'); toggleIPad()"><span style="font-size:20px;">🔔</span><span style="font-size:9px;color:#636366;">Now</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-notifications'); toggleIPad()"><span style="font-size:20px;">🔔</span><span style="font-size:9px;color:#636366;">AI</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;" onclick="go('s-profile'); toggleIPad()"><span style="font-size:20px;">👤</span><span style="font-size:9px;color:#636366;">Profile</span></div>
       </div>
     </div>
@@ -4823,7 +4869,7 @@ function renderTabBar(el, screenId) {
   var tabs = [
     { id:'files',    screen:'s-file-browser',  off:'bi-folder2',   on:'bi-folder-fill',   label:'Files' },
     { id:'messages', screen:'s-email-inbox',   off:'bi-envelope',  on:'bi-envelope-fill', label:'Messages' },
-    { id:'alerts',   screen:'s-notifications', off:'bi-bell',      on:'bi-bell-fill',     label:'Now' }
+    { id:'alerts',   screen:'s-notifications', off:'bi-bell',      on:'bi-bell-fill',     label:'AI' }
   ];
   el.innerHTML = tabs.map(function(t) {
     var isActive = t.id === active;
@@ -4856,7 +4902,7 @@ function go(id) {
   requestAnimationFrame(() => {
     t.classList.add('on');
     initSIP();
-    if (openAsk && typeof switchNotifTab === 'function') switchNotifTab('ask');
+    if (id === 's-notifications' && typeof switchNotifTab === 'function') switchNotifTab(openAsk ? 'overview' : 'productivity');
     const phone = document.getElementById('phone');
     if (phone) phone.scrollIntoView({behavior:'smooth', block:'nearest'});
   });
@@ -5912,13 +5958,26 @@ function triggerScreenshotDemo() {
 
 // ── Notification hub tab switching ──────────────────────────────────────────
 function switchNotifTab(tab) {
-  var tabs = ['overview','ask','activity','security'];
-  tabs.forEach(function(t) {
-    var panel = document.getElementById('nt-tab-' + t);
-    var btn   = document.getElementById('nt-btn-' + t);
-    if (panel) panel.style.display = t === tab ? 'flex' : 'none';
-    if (btn)   btn.classList.toggle('on', t === tab);
-  });
+  // overview is the default view (no button), activity and productivity are tabbed
+  var managed = ['activity','productivity'];
+  var overviewPanel = document.getElementById('nt-tab-overview');
+  if (tab === 'overview') {
+    if (overviewPanel) overviewPanel.style.display = 'flex';
+    managed.forEach(function(t) {
+      var panel = document.getElementById('nt-tab-' + t);
+      var btn   = document.getElementById('nt-btn-' + t);
+      if (panel) panel.style.display = 'none';
+      if (btn)   btn.classList.remove('on');
+    });
+  } else {
+    if (overviewPanel) overviewPanel.style.display = 'none';
+    managed.forEach(function(t) {
+      var panel = document.getElementById('nt-tab-' + t);
+      var btn   = document.getElementById('nt-btn-' + t);
+      if (panel) panel.style.display = t === tab ? 'flex' : 'none';
+      if (btn)   btn.classList.toggle('on', t === tab);
+    });
+  }
 }
 
 // ── File Browser tabs / views ────────────────────────────────────────────────
@@ -6108,6 +6167,85 @@ function aiChat(prompt) {
     typingDiv.innerHTML = '<div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;line-height:1;">✦</div><div style="background:var(--card);border-radius:4px 18px 18px 18px;padding:12px 14px;font-size:13px;color:var(--t1);line-height:1.55;max-width:82%;white-space:pre-line;">' + ans + '</div>';
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
   }, 860);
+}
+
+// ── DLP Chat (Productivity tab — ChatGPT-style) ──────────────────────────────
+function dlpChat(prompt) {
+  if (!prompt || !prompt.trim()) return;
+  var welcome  = document.getElementById('dlp-welcome');
+  var msgs     = document.getElementById('dlp-messages');
+  var input    = document.getElementById('dlp-input');
+  var scroll   = document.getElementById('dlp-chat-scroll');
+  var dot      = document.getElementById('dlp-dot');
+  var statusTxt= document.getElementById('dlp-status-text');
+  if (welcome) welcome.style.display = 'none';
+  if (input)   input.value = '';
+
+  // User bubble — right-aligned gray, ChatGPT style
+  var userDiv = document.createElement('div');
+  userDiv.style.cssText = 'padding:4px 14px 2px;display:flex;justify-content:flex-end;';
+  userDiv.innerHTML = '<div style="max-width:76%;background:rgba(118,118,128,.14);color:var(--t1);border-radius:20px 20px 4px 20px;padding:10px 14px;font-size:15px;line-height:1.45;">' + prompt.replace(/</g,'&lt;') + '</div>';
+  msgs.appendChild(userDiv);
+
+  // DLP scanning — header dot turns blue
+  if (dot) { dot.style.background = '#3D5AFE'; }
+  if (statusTxt) { statusTxt.textContent = 'Scanning'; statusTxt.style.color = '#3D5AFE'; }
+
+  // DLP scan annotation under the user bubble
+  var dlpChip = document.createElement('div');
+  dlpChip.style.cssText = 'padding:1px 14px 10px;display:flex;justify-content:flex-end;';
+  dlpChip.innerHTML = '<span style="font-size:10px;color:var(--t3);">● Scanning…</span>';
+  msgs.appendChild(dlpChip);
+
+  // Typing indicator — avatar + three dots, no bubble
+  var typingDiv = document.createElement('div');
+  typingDiv.style.cssText = 'display:flex;gap:10px;align-items:flex-start;padding:10px 14px 6px;';
+  typingDiv.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#AB5ADE,#7B4FD8);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:12px;line-height:1;">✦</div><div style="font-size:22px;color:var(--t3);padding-top:0;letter-spacing:3px;line-height:1.2;">···</div>';
+  msgs.appendChild(typingDiv);
+  if (scroll) scroll.scrollTop = scroll.scrollHeight;
+
+  var ANSWERS = {
+    phi:    'Found 3 files with PHI in your vault:\n\n• Patient-Discharge-Summary.pdf — Restricted\n• Q4-Financial-Report.pdf — Restricted (SSN)\n• Medical-Records-Export.csv — Restricted\n\nAll AES-256-GCM encrypted. Local processing only — nothing leaves your device.',
+    expiry: '2 shares expire this week:\n\n• Q4-Financial-Report.pdf → alice@partner.com (expires tomorrow)\n• Budget-Planning-FY26.xlsx → bob@acme.com (expires Friday)\n\nWant me to queue renewal notifications?',
+    alert:  'Recent security alerts:\n\n🔴 Screenshot blocked — Q4-Financial-Report.pdf · 9:02 AM\n⚠️ 2 outbound emails flagged for PHI review\n✓ Vault scan complete — no anomalies\n\nAll events logged to your audit trail.',
+    classify:'Classified 4 recent uploads:\n\n• Patient-Discharge-Summary.pdf → Restricted\n• Contract-NDA-2026.docx → Confidential\n• Meeting-Notes-Jun.txt → Internal\n• Roadmap-Draft.pptx → Internal\n\nLabels applied. Encryption policies enforced automatically.'
+  };
+  var lp = prompt.toLowerCase();
+  var ans = 'I\'ve analyzed your workspace. Everything looks secure. Is there a specific file, share, or policy area you\'d like me to look into?';
+  var dlpState = 'cleared';
+  if (lp.includes('phi') || lp.includes('health') || lp.includes('sensitive') || lp.includes('restrict')) { ans = ANSWERS.phi; dlpState = 'warning'; }
+  else if (lp.includes('expir') || lp.includes('shar') || lp.includes('link')) { ans = ANSWERS.expiry; }
+  else if (lp.includes('alert') || lp.includes('phish') || lp.includes('secur') || lp.includes('block')) { ans = ANSWERS.alert; dlpState = 'warning'; }
+  else if (lp.includes('classif') || lp.includes('organiz') || lp.includes('tag') || lp.includes('upload')) { ans = ANSWERS.classify; }
+
+  setTimeout(function() {
+    // Resolve DLP chip
+    dlpChip.innerHTML = dlpState === 'warning'
+      ? '<span style="font-size:10px;color:var(--warn);">⚠ Sensitive content — partial redaction applied</span>'
+      : '<span style="font-size:10px;color:var(--t3);">✓ Cleared</span>';
+
+    // Restore header indicator
+    if (dot) { dot.style.background = 'var(--ok)'; }
+    if (statusTxt) { statusTxt.textContent = 'DLP'; statusTxt.style.color = 'var(--t3)'; }
+
+    // AI response — no bubble, plain text next to avatar (ChatGPT style)
+    typingDiv.style.cssText = 'display:flex;gap:10px;align-items:flex-start;padding:10px 14px 16px;';
+    typingDiv.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#AB5ADE,#7B4FD8);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:12px;line-height:1;margin-top:2px;">✦</div><div style="flex:1;font-size:15px;color:var(--t1);line-height:1.6;padding-top:3px;white-space:pre-line;">' + ans + '</div>';
+    if (scroll) scroll.scrollTop = scroll.scrollHeight;
+  }, 900);
+}
+
+function dlpNewChat() {
+  var welcome = document.getElementById('dlp-welcome');
+  var msgs    = document.getElementById('dlp-messages');
+  var input   = document.getElementById('dlp-input');
+  var dot     = document.getElementById('dlp-dot');
+  var txt     = document.getElementById('dlp-status-text');
+  if (welcome) welcome.style.display = 'flex';
+  if (msgs)   msgs.innerHTML = '';
+  if (input)  input.value = '';
+  if (dot)    dot.style.background = 'var(--ok)';
+  if (txt)    { txt.textContent = 'DLP'; txt.style.color = 'var(--t3)'; }
 }
 </script>
 </body>

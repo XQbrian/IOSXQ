@@ -45,21 +45,28 @@ struct HomeView: View {
                             .kerning(0.5)
                             .padding(.horizontal, 20)
 
-                        LazyVGrid(
-                            columns: Array(repeating: GridItem(.flexible(), spacing: 9), count: 4),
-                            spacing: 9
-                        ) {
-                            QuickActionCard(icon: "📁", label: "Files") {
-                                coordinator.selectedTab = .files
+                        VStack(spacing: 9) {
+                            HStack(spacing: 9) {
+                                PrimaryActionCard(
+                                    systemImage: "folder.fill",
+                                    label: "Files",
+                                    sublabel: "Browse & share"
+                                ) { coordinator.selectedTab = .files }
+                                PrimaryActionCard(
+                                    systemImage: "envelope.fill",
+                                    label: "Email",
+                                    sublabel: "Secure inbox"
+                                ) { coordinator.selectedTab = .messages }
                             }
-                            QuickActionCard(icon: "🤖", label: "AI Import") {
-                                showAIImport = true
-                            }
-                            QuickActionCard(icon: "✉️", label: "Email") {
-                                coordinator.selectedTab = .email
-                            }
-                            QuickActionCard(icon: "🔗", label: "Sharing") {
-                                coordinator.selectedTab = .sharing
+                            HStack(spacing: 9) {
+                                SecondaryActionCard(
+                                    systemImage: "sparkles",
+                                    label: "AI Import"
+                                ) { showAIImport = true }
+                                SecondaryActionCard(
+                                    systemImage: "bell.fill",
+                                    label: "Alerts"
+                                ) { coordinator.selectedTab = .alerts }
                             }
                         }
                         .padding(.horizontal, 16)
@@ -176,10 +183,17 @@ struct HomeView: View {
                 }
             }
             .task {
+                let repo: any RepositoryProvider = coordinator.localVaultProvider
+                    ?? coordinator.repository
+                    ?? StubRepositoryProvider()
+                vm.configure(repository: repo, policyEngine: coordinator.policyEngine)
                 await vm.loadDashboard()
             }
-            .sheet(isPresented: $showNotifications) {
-                NotificationsView()
+            .onChange(of: showNotifications) { _, show in
+                if show {
+                    showNotifications = false
+                    coordinator.selectedTab = .alerts
+                }
             }
             .sheet(isPresented: $showWorkgroupSelect) {
                 WorkgroupSelectView()
@@ -196,25 +210,60 @@ struct HomeView: View {
 
 // MARK: - Supporting Views
 
-private struct QuickActionCard: View {
-    let icon: String
+private struct PrimaryActionCard: View {
+    let systemImage: String
     let label: String
+    let sublabel: String
     let action: () -> Void
+
+    private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 4) {
-                Text(icon)
-                    .font(.system(size: 24))
+            VStack(spacing: 5) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 28))
+                    .foregroundColor(brandBlue)
                 Text(label)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.primary)
+                Text(sublabel)
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .padding(.horizontal, 8)
+            .padding(.vertical, 16)
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 1)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct SecondaryActionCard: View {
+    let systemImage: String
+    let label: String
+    let action: () -> Void
+
+    private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 18))
+                    .foregroundColor(brandBlue)
+                Text(label)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 1)
         }
         .buttonStyle(.plain)
