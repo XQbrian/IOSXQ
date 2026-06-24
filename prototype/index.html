@@ -652,7 +652,8 @@
     <p style="font-size:14px;color:rgba(255,255,255,.5);text-align:center;line-height:1.6;margin-bottom:40px;">Encryption follows your data across every device, cloud, and collaboration.</p>
     <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
       <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="onbStart('personal')">Start for Free</button>
-      <button class="btn" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);" onclick="onbStart('enterprise')">Connect Enterprise Workspace</button>
+      <button class="btn" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);" onclick="onbStart('enterprise')">Workspace Login</button>
+      <button class="btn" style="background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);margin-top:2px;" onclick="go('s-ent-create-1')">Create Enterprise Workspace</button>
     </div>
   </div>
   <div style="padding:0 28px 44px;"><p style="font-size:10px;color:rgba(255,255,255,.25);text-align:center;line-height:1.5;">By continuing you agree to Terms of Service. Your keys never leave your device.</p></div>
@@ -2088,15 +2089,19 @@
 <!-- ══ S9 EMAIL INBOX ══ -->
 <div class="scr" id="s-email-inbox" style="background:var(--bg);">
   <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
-  <!-- Apple Mail large-title header -->
+  <!-- Header -->
   <div class="lt">
     <div class="lt-text">Inbox</div>
     <div style="padding-bottom:8px;display:flex;align-items:center;gap:6px;">
+      <button class="ibtn" style="background:none;border:none;font-size:20px;color:var(--t1);cursor:pointer;position:relative;" onclick="go('s-notification-center')" aria-label="Notifications">
+        <i class="bi bi-bell-fill"></i>
+        <span style="position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--danger);border-radius:50%;border:1.5px solid var(--bg);"></span>
+      </button>
       <button class="ibtn" style="background:none;border:none;font-size:22px;color:var(--brand);cursor:pointer;" onclick="go('s-email-compose')"><i class="bi bi-pencil-square"></i></button>
       <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
     </div>
   </div>
-  <!-- iOS-native search bar -->
+  <!-- Search -->
   <div style="padding:4px 16px 6px;" onclick="go('s-semantic-search')">
     <div style="background:rgba(118,118,128,.12);border-radius:10px;padding:8px 13px;display:flex;gap:8px;align-items:center;cursor:pointer;">
       <span style="font-size:14px;color:var(--t3);"><i class="bi bi-search"></i></span>
@@ -2104,31 +2109,20 @@
       <span style="background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✦ AI</span>
     </div>
   </div>
-  <!-- Filter pills — Apple Mail style -->
-  <div style="padding:2px 16px 8px;display:flex;gap:6px;overflow-x:auto;">
-    <div class="chip on">All Mail</div>
-    <div class="chip">Unread <span style="background:var(--brand);color:#fff;font-size:9px;font-weight:700;border-radius:var(--rfull);padding:1px 5px;margin-left:2px;">3</span></div>
-    <div class="chip">Flagged</div>
+  <!-- Folder navigation -->
+  <div style="padding:2px 16px 8px;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;">
+    <div class="chip on">Inbox</div>
     <div class="chip">Sent</div>
     <div class="chip">Drafts</div>
+    <div class="chip">Secure Shares</div>
+    <div class="chip">Quarantine <span style="background:var(--danger);color:#fff;font-size:9px;font-weight:700;border-radius:var(--rfull);padding:1px 5px;margin-left:2px;">2</span></div>
   </div>
-  <!-- AI Triage — subtle iOS banner -->
-  <div style="background:rgba(0,122,255,.05);border-top:.5px solid rgba(0,122,255,.12);border-bottom:.5px solid rgba(0,122,255,.12);padding:7px 16px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
-    <span style="font-size:11px;color:var(--brand);">✦</span>
-    <span style="font-size:10px;font-weight:600;color:var(--brand);flex-shrink:0;">AI Triage</span>
-    <div style="display:flex;gap:5px;flex:1;">
-      <span style="background:var(--res-bg);color:var(--res-t);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">1 Critical</span>
-      <span style="background:var(--con-bg);color:var(--con-t);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">2 Action</span>
-      <span style="background:var(--int-bg);color:var(--int-t);font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rfull);">1 FYI</span>
-    </div>
-    <span style="font-size:9px;color:var(--t3);"><i class="bi bi-lock-fill"></i></span>
-  </div>
+  <!-- Email list -->
   <div class="sc">
     <div style="padding:8px 16px 0;">
-      <!-- Apple Mail-style inset grouped list -->
       <div style="background:var(--card);border-radius:var(--r12);overflow:hidden;">
 
-        <!-- Unread: Carol Thomas — Critical -->
+        <!-- Unread: Carol Thomas -->
         <div style="cursor:pointer;display:flex;align-items:stretch;border-bottom:.5px solid var(--sep);" onclick="go('s-email-thread')">
           <div style="width:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <div style="width:8px;height:8px;background:var(--brand);border-radius:50%;"></div>
@@ -2136,16 +2130,16 @@
           <div style="padding:12px 10px 12px 0;flex-shrink:0;">
             <div class="av" style="background:#C62828;width:42px;height:42px;font-size:14px;">CT</div>
           </div>
-          <div style="flex:1;min-width:0;padding:12px 16px 12px 0;border-left:none;">
+          <div style="flex:1;min-width:0;padding:12px 16px 12px 0;">
             <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px;">
               <span style="font-size:16px;font-weight:700;color:var(--t1);">Carol Thomas</span>
-              <span style="font-size:12px;color:var(--t3);flex-shrink:0;margin-left:6px;">9:14 AM ›</span>
+              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:6px;">
+                <i class="bi bi-lock-fill" style="font-size:10px;color:var(--ok);"></i>
+                <span style="font-size:12px;color:var(--t3);">9:14 AM ›</span>
+              </div>
             </div>
             <div style="font-size:15px;font-weight:500;color:var(--t1);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Re: Patient discharge summary — URGENT</div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;color:var(--t3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Please find attached the discharge summary for patient MR-28491…</span>
-              <span class="bg res" style="font-size:8px;flex-shrink:0;"><span class="bg-dot"></span>Restricted</span>
-            </div>
+            <div style="font-size:13px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Please find attached the discharge summary for patient MR-28491…</div>
           </div>
         </div>
 
@@ -2160,13 +2154,13 @@
           <div style="flex:1;min-width:0;padding:12px 16px 12px 0;">
             <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px;">
               <span style="font-size:16px;font-weight:700;color:var(--t1);">John Smith</span>
-              <span style="font-size:12px;color:var(--t3);flex-shrink:0;margin-left:6px;">8:30 AM ›</span>
+              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:6px;">
+                <i class="bi bi-lock-fill" style="font-size:10px;color:var(--ok);"></i>
+                <span style="font-size:12px;color:var(--t3);">8:30 AM ›</span>
+              </div>
             </div>
             <div style="font-size:15px;font-weight:500;color:var(--t1);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Q4 budget review — see attached</div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;color:var(--t3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Thought you should see these numbers before Thursday's call…</span>
-              <span class="bg con" style="font-size:8px;flex-shrink:0;"><span class="bg-dot"></span>Confidential</span>
-            </div>
+            <div style="font-size:13px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Thought you should see these numbers before Thursday's call…</div>
           </div>
         </div>
 
@@ -2181,17 +2175,17 @@
           <div style="flex:1;min-width:0;padding:12px 16px 12px 0;">
             <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px;">
               <span style="font-size:16px;font-weight:700;color:var(--t1);">Alice Martinez</span>
-              <span style="font-size:12px;color:var(--t3);flex-shrink:0;margin-left:6px;">Yesterday ›</span>
+              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:6px;">
+                <i class="bi bi-lock-fill" style="font-size:10px;color:var(--ok);"></i>
+                <span style="font-size:12px;color:var(--t3);">Yesterday ›</span>
+              </div>
             </div>
             <div style="font-size:15px;font-weight:500;color:var(--t1);margin-bottom:3px;">Team all-hands agenda — confirm attendance</div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;color:var(--t3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Please RSVP for Thursday — we need a final headcount by…</span>
-              <span class="bg int" style="font-size:8px;flex-shrink:0;"><span class="bg-dot"></span>Internal</span>
-            </div>
+            <div style="font-size:13px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Please RSVP for Thursday — we need a final headcount by…</div>
           </div>
         </div>
 
-        <!-- Read: XQ Security (no bold = read) -->
+        <!-- Read: XQ Security -->
         <div style="cursor:pointer;display:flex;align-items:stretch;" onclick="go('s-email-thread')">
           <div style="width:16px;flex-shrink:0;"></div>
           <div style="padding:12px 10px 12px 0;flex-shrink:0;">
@@ -2917,107 +2911,38 @@
   </div>
   <div class="sc">
     <!-- ✦ Unified Security & Intelligence Panel (email) -->
-    <div id="et-sip" class="sip sip-lt" style="margin:12px 16px 0;">
-      <!-- Header -->
-      <div class="sip-hdr" onclick="toggleSIP('et-sip')">
-        <div class="sip-hdr-l">
-          <div class="sip-icon" style="background:rgba(255,149,0,.18);color:#E65100;">🎣</div>
-          <span class="sip-htitle" style="color:var(--t1);">Security &amp; Intelligence</span>
-          <span class="sip-hbadge" style="background:rgba(255,149,0,.15);color:#E65100;">Phishing · Medium</span>
+    <!-- Security Details — collapsed by default -->
+    <div id="et-security-details" style="margin:12px 16px 0;background:var(--card);border-radius:var(--r12);overflow:hidden;border:.5px solid var(--sep);">
+      <div onclick="toggleSecurityDetails()" style="display:flex;align-items:center;padding:12px 14px;cursor:pointer;">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(52,199,89,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:10px;">
+          <i class="bi bi-shield-check" style="font-size:13px;color:var(--ok);"></i>
         </div>
-        <button class="sip-tgl" id="et-sip-tgl">Minimize</button>
+        <span style="flex:1;font-size:13px;font-weight:600;color:var(--t1);">Security Details</span>
+        <i id="et-sec-chev" class="bi bi-chevron-down" style="font-size:11px;color:var(--t3);transition:transform .2s;"></i>
       </div>
-      <!-- Minimized bar -->
-      <div class="sip-min-bar">
-        <span style="font-size:12px;">🎣</span>
-        <span style="font-size:11px;font-weight:700;color:#E65100;">Phishing risk</span>
-        <span style="font-size:11px;color:var(--t3);">· 58/100 · 3 actions · Legal blocker</span>
-        <span style="flex:1;"></span>
-        <span style="font-size:11px;color:var(--brand);cursor:pointer;" onclick="toggleSIP('et-sip')">Expand ›</span>
+      <div id="et-sec-body" style="display:none;border-top:.5px solid var(--sep);padding:12px 14px;display:none;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:var(--t3);">Encryption Status</span>
+          <span style="font-size:12px;font-weight:600;color:var(--ok);">AES-256-GCM · End-to-End</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:var(--t3);">Data Classification</span>
+          <span style="font-size:11px;font-weight:700;background:var(--res-bg);color:var(--res-t);padding:2px 8px;border-radius:var(--rfull);">Restricted · PHI</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:var(--t3);">Access Restrictions</span>
+          <span style="font-size:12px;font-weight:500;color:var(--t1);">Legal approval required</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;color:var(--t3);">Expiration</span>
+          <span style="font-size:12px;color:var(--t2);">No expiry set</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span style="font-size:12px;color:var(--t3);">Chain of Custody</span>
+          <span style="font-size:11px;color:var(--t2);text-align:right;max-width:55%;">You → Carol Thomas → Legal<br><span style="color:var(--t3);">3 access events logged</span></span>
+        </div>
       </div>
-      <!-- Expanded content -->
-      <div class="sip-exp">
-        <!-- Section 1: Sender Trust (phishing + sender intel) — always open -->
-        <div class="sip-sec" id="et-sec-sender">
-          <div class="sip-sec-hdr" onclick="toggleSIPSection('et-sec-sender')">
-            <span class="sip-sec-title" style="color:var(--warn);">Sender Trust</span>
-            <span class="sip-sec-chev">▾</span>
-          </div>
-          <div class="sip-sec-body">
-            <div style="display:flex;gap:10px;align-items:center;margin-bottom:9px;">
-              <div class="av" style="background:#1565C0;width:34px;height:34px;font-size:11px;flex-shrink:0;">CT</div>
-              <div style="flex:1;">
-                <div style="font-size:13px;font-weight:700;color:var(--t1);">Carol Thomas</div>
-                <div style="font-size:11px;color:var(--t3);">carol.thomas@hospital.org · External Partner</div>
-              </div>
-              <span class="sip-pill" style="background:rgba(255,149,0,.12);color:#E65100;"><i class="bi bi-exclamation-triangle-fill" style="font-size:var(--xi-xs);vertical-align:middle;"></i> Escalates fast</span>
-            </div>
-            <div class="sip-row">
-              <span class="sip-row-ic" style="color:var(--warn);"><i class="bi bi-exclamation-triangle-fill" style="font-size:var(--xi-sm);"></i></span>
-              <div class="sip-row-txt"><span class="sip-row-lbl">Phishing score 58/100</span> — urgency manipulation signal · 72% confidence · <span style="color:var(--brand);cursor:pointer;" onclick="go('s-phishing-alert')">Full analysis →</span></div>
-            </div>
-            <div class="sip-row">
-              <span class="sip-row-ic" style="color:var(--t3);"><i class="bi bi-info-circle" style="font-size:var(--xi-sm);"></i></span>
-              <div class="sip-row-txt">Avg. response 4.2h · 3 prior threads escalated to compliance within 48h when unacknowledged</div>
-            </div>
-          </div>
-        </div>
-        <!-- Section 2: Suggested Actions — always open -->
-        <div class="sip-sec" id="et-sec-actions">
-          <div class="sip-sec-hdr" onclick="toggleSIPSection('et-sec-actions')">
-            <span class="sip-sec-title" style="color:var(--brand);">Suggested Actions</span>
-            <span class="sip-sec-chev">▾</span>
-          </div>
-          <div class="sip-sec-body">
-            <div class="sip-row" style="align-items:center;">
-              <span class="sip-row-ic" style="color:var(--warn);"><i class="bi bi-scale" style="font-size:var(--xi-sm);"></i></span>
-              <div class="sip-row-txt" style="flex:1;"><span class="sip-row-lbl">Legal approval required</span> before external share · PHI policy blocker</div>
-              <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
-            </div>
-            <div class="sip-row" style="align-items:center;">
-              <span class="sip-row-ic" style="color:var(--t2);"><i class="bi bi-clipboard-check" style="font-size:var(--xi-sm);"></i></span>
-              <div class="sip-row-txt" style="flex:1;"><span class="sip-row-lbl">Confirm receipt</span> of discharge summary · You → Carol</div>
-              <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--sep);flex-shrink:0;"></div>
-            </div>
-            <div class="sip-row" style="align-items:center;">
-              <span class="sip-row-ic" style="color:var(--t3);"><i class="bi bi-calendar-event" style="font-size:var(--xi-sm);"></i></span>
-              <div class="sip-row-txt" style="flex:1;"><span class="sip-row-lbl">Follow-up reminder</span> set · EOD Friday May 23</div>
-              <div style="background:var(--brand);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:10px;color:#fff;">✓</span></div>
-            </div>
-          </div>
-        </div>
-        <!-- Section 3: AI Summary — collapsed by default -->
-        <div class="sip-sec collapsed" id="et-sec-summary">
-          <div class="sip-sec-hdr" onclick="toggleSIPSection('et-sec-summary')">
-            <span class="sip-sec-title">AI Summary</span>
-            <span class="sip-sec-chev">▾</span>
-          </div>
-          <div class="sip-sec-body">
-            <div style="font-size:12px;color:var(--t1);line-height:1.5;font-style:italic;margin-bottom:8px;">"Carol Thomas is requesting urgent review and confirmation of a restricted PHI discharge summary. Thread contains 6 messages over 2 days. External share requires compliance approval."</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <span class="sip-tag" style="background:var(--res-bg);color:var(--res-t);">6 messages</span>
-              <span class="sip-tag" style="background:var(--con-bg);color:var(--con-t);">3 actions</span>
-              <span class="sip-tag" style="background:var(--int-bg);color:var(--int-t);">1 blocker</span>
-              <span class="sip-tag" style="background:var(--pub-bg);color:var(--pub-d);">Tense sentiment</span>
-            </div>
-          </div>
-        </div>
-        <!-- Section 4: Data Protection — collapsed by default -->
-        <div class="sip-sec collapsed" id="et-sec-protect">
-          <div class="sip-sec-hdr" onclick="toggleSIPSection('et-sec-protect')">
-            <span class="sip-sec-title">Data Protection</span>
-            <span class="sip-sec-chev">▾</span>
-          </div>
-          <div class="sip-sec-body">
-            <div class="sip-row"><span class="sip-row-ic"><i class="bi bi-lock-fill" style="font-size:var(--xi-sm);"></i></span><div class="sip-row-txt"><span class="sip-row-lbl">CONFIDENTIAL</span> · PHI detected · On-device CoreML only · Cloud AI gated</div></div>
-            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;">
-              <span class="sip-tag" style="background:var(--res-bg);color:var(--res-t);">HIPAA §164.502</span>
-              <span class="sip-tag" style="background:var(--int-bg);color:var(--int-t);">XQ Encrypted</span>
-            </div>
-          </div>
-        </div>
-      </div><!-- /sip-exp -->
-    </div><!-- /et-sip -->
+    </div>
     <!-- Thread messages -->
     <div class="sh" style="padding:14px 16px 8px;">Thread (6 messages)</div>
     <div class="card ph16 mb16">
@@ -3426,6 +3351,239 @@
   </div>
   <div style="padding:0 28px 44px;width:100%;">
     <button class="btn" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);" onclick="go('s-welcome')">← Back</button>
+  </div>
+</div>
+
+<!-- ══ NOTIFICATION CENTER ══ -->
+<div class="scr" id="s-notification-center" style="background:var(--bg);">
+  <div class="sb"><span class="t">9:41</span><span class="ic">⚡ 📶</span></div>
+  <div class="lt">
+    <div class="lt-text">Notifications</div>
+    <div style="padding-bottom:8px;">
+      <button class="av av-nav" onclick="go('s-profile')" aria-label="Open profile" style="border:none;font-family:inherit;width:28px;height:28px;font-size:10px;">BW</button>
+    </div>
+  </div>
+  <div class="sc" style="padding:8px 16px 0;">
+
+    <!-- Critical -->
+    <div style="font-size:11px;font-weight:700;color:var(--danger);letter-spacing:.4px;text-transform:uppercase;padding:4px 0 8px;">Critical</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:20px;">
+
+      <div style="background:var(--card);border-radius:12px;padding:12px 14px;border-left:3px solid var(--danger);display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,59,48,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-shield-exclamation" style="font-size:15px;color:var(--danger);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;">Policy violation detected</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.4;margin-bottom:4px;">Outbound email attempted with unencrypted PHI attachment. Blocked by DLP.</div>
+          <div style="font-size:11px;color:var(--t3);">Just now · Requires acknowledgment</div>
+        </div>
+        <button onclick="this.closest('[style*=border-left]').style.opacity='.4'" style="background:var(--danger);color:#fff;border:none;border-radius:var(--rfull);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;">Review</button>
+      </div>
+
+      <div style="background:var(--card);border-radius:12px;padding:12px 14px;border-left:3px solid var(--danger);display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,59,48,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-lock-fill" style="font-size:15px;color:var(--danger);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;">Unauthorized access attempt</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.4;margin-bottom:4px;">2 failed decryption attempts on Patient Records from unrecognized device.</div>
+          <div style="font-size:11px;color:var(--t3);">12 min ago · Pinned until acknowledged</div>
+        </div>
+        <button onclick="this.closest('[style*=border-left]').style.opacity='.4'" style="background:var(--danger);color:#fff;border:none;border-radius:var(--rfull);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;">Review</button>
+      </div>
+
+    </div>
+
+    <!-- Important -->
+    <div style="font-size:11px;font-weight:700;color:var(--warn);letter-spacing:.4px;text-transform:uppercase;padding:4px 0 8px;">Important</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:20px;">
+
+      <div onclick="go('s-received-share')" style="background:var(--card);border-radius:12px;padding:12px 14px;border-left:3px solid var(--warn);display:flex;gap:10px;align-items:center;cursor:pointer;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,149,0,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-file-earmark-arrow-down-fill" style="font-size:15px;color:var(--warn);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px;">New secure document shared</div>
+          <div style="font-size:12px;color:var(--t2);">Patient-Discharge-Summary.pdf from Carol Thomas</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px;">2 hours ago · Expires in 7 days</div>
+        </div>
+        <i class="bi bi-chevron-right" style="font-size:11px;color:var(--t3);flex-shrink:0;"></i>
+      </div>
+
+      <div style="background:var(--card);border-radius:12px;padding:12px 14px;border-left:3px solid var(--warn);display:flex;gap:10px;align-items:center;">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,149,0,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-person-check-fill" style="font-size:15px;color:var(--warn);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px;">Approval requested</div>
+          <div style="font-size:12px;color:var(--t2);">Legal review needed before Q4-Financial-Report.pdf expires today.</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px;">Today · Expires in 4 hours</div>
+        </div>
+        <button style="background:var(--brand);color:#fff;border:none;border-radius:var(--rfull);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;">Approve</button>
+      </div>
+
+    </div>
+
+    <!-- Informational -->
+    <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;padding:4px 0 8px;">Informational</div>
+    <div style="background:var(--card);border-radius:12px;overflow:hidden;margin-bottom:24px;">
+
+      <div style="display:flex;gap:10px;align-items:center;padding:11px 14px;border-bottom:.5px solid var(--sep);">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(52,199,89,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-cloud-check-fill" style="font-size:13px;color:var(--ok);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;color:var(--t1);">Vault sync completed</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:1px;">1,247 files verified · 8:45 AM</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;padding:11px 14px;border-bottom:.5px solid var(--sep);">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(61,90,254,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-building-check" style="font-size:13px;color:var(--brand);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;color:var(--t1);">Policy bundle updated</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:1px;">v2.1.4 deployed · 8:15 AM</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;padding:11px 14px;">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(118,118,128,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="bi bi-archive-fill" style="font-size:13px;color:var(--t3);"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;color:var(--t1);">Backup completed</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:1px;">Encrypted backup · Yesterday 11:00 PM</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="tabs">
+    <div class="ti" onclick="go('s-home')"><div class="ti-ic"><i class="bi bi-house-door-fill"></i></div><div class="ti-lb">Home</div></div>
+    <div class="ti" onclick="go('s-file-browser')"><div class="ti-ic"><i class="bi bi-folder-fill"></i></div><div class="ti-lb">Files</div></div>
+    <div class="ti" onclick="go('s-email-inbox')"><div class="ti-ic"><i class="bi bi-envelope-fill"></i></div><div class="ti-lb">Email</div></div>
+    <div class="ti" onclick="go('s-sharing')"><div class="ti-ic"><i class="bi bi-share-fill"></i></div><div class="ti-lb">Sharing</div></div>
+    <div class="ti" onclick="go('s-settings')"><div class="ti-ic"><i class="bi bi-gear-fill"></i></div><div class="ti-lb">Settings</div></div>
+  </div>
+</div>
+
+<!-- ══ ENT-CREATE-1: Organization Information ══ -->
+<div class="scr" id="s-ent-create-1" style="background:#000;align-items:center;justify-content:center;">
+  <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div style="width:64px;height:64px;border-radius:17px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 32px rgba(61,90,254,.4);font-size:32px;">🏢</div>
+    <div style="font-size:24px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:6px;">Create Enterprise Workspace</div>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);text-align:center;line-height:1.5;margin-bottom:6px;">Step 1 of 3 — Organization Information</p>
+    <div style="width:100%;background:rgba(255,255,255,.08);border-radius:3px;height:3px;margin-bottom:28px;overflow:hidden;">
+      <div style="width:33%;height:100%;background:#3D5AFE;border-radius:3px;"></div>
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;" placeholder="Company Name">
+      <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;" placeholder="Work Email" type="email">
+      <select class="inp" style="background:#1C1C1E;border-color:#38383A;color:rgba(255,255,255,.6);">
+        <option value="" disabled selected>Country</option>
+        <option>United States</option><option>United Kingdom</option><option>Canada</option><option>Australia</option><option>Germany</option><option>France</option><option>Japan</option><option>Other</option>
+      </select>
+      <select class="inp" style="background:#1C1C1E;border-color:#38383A;color:rgba(255,255,255,.6);">
+        <option value="" disabled selected>Industry</option>
+        <option>Healthcare</option><option>Finance &amp; Banking</option><option>Legal</option><option>Government</option><option>Technology</option><option>Defense</option><option>Education</option><option>Other</option>
+      </select>
+    </div>
+    <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);width:100%;" onclick="go('s-ent-create-2')">Continue</button>
+  </div>
+  <div style="padding:0 28px 44px;width:100%;">
+    <button class="btn" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);" onclick="go('s-welcome')">← Back</button>
+  </div>
+</div>
+
+<!-- ══ ENT-CREATE-2: Workspace Configuration ══ -->
+<div class="scr" id="s-ent-create-2" style="background:#000;align-items:center;justify-content:center;">
+  <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div style="width:64px;height:64px;border-radius:17px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 32px rgba(61,90,254,.4);font-size:32px;">⚙️</div>
+    <div style="font-size:24px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:6px;">Workspace Configuration</div>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);text-align:center;line-height:1.5;margin-bottom:6px;">Step 2 of 3 — Data &amp; Infrastructure</p>
+    <div style="width:100%;background:rgba(255,255,255,.08);border-radius:3px;height:3px;margin-bottom:28px;overflow:hidden;">
+      <div style="width:66%;height:100%;background:#3D5AFE;border-radius:3px;"></div>
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:10px;">
+      <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;" placeholder="Workspace Name">
+      <select class="inp" style="background:#1C1C1E;border-color:#38383A;color:rgba(255,255,255,.6);">
+        <option value="" disabled selected>Data Residency Region</option>
+        <option>US East (Virginia)</option><option>US West (Oregon)</option><option>EU West (Ireland)</option><option>EU Central (Frankfurt)</option><option>APAC (Singapore)</option><option>APAC (Tokyo)</option><option>Canada (Montreal)</option>
+      </select>
+    </div>
+    <div style="width:100%;margin-bottom:24px;">
+      <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px;">Cloud Provider</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:center;gap:12px;background:#1C1C1E;border-radius:var(--r12);padding:13px 16px;cursor:pointer;border:1.5px solid rgba(61,90,254,.4);">
+          <input type="radio" name="cloud" value="aws" checked style="accent-color:#3D5AFE;">
+          <span style="font-size:14px;color:#fff;font-weight:500;">AWS</span>
+          <span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:auto;">Amazon Web Services</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:12px;background:#1C1C1E;border-radius:var(--r12);padding:13px 16px;cursor:pointer;border:1.5px solid transparent;">
+          <input type="radio" name="cloud" value="azure" style="accent-color:#3D5AFE;">
+          <span style="font-size:14px;color:#fff;font-weight:500;">Azure</span>
+          <span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:auto;">Microsoft Azure</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:12px;background:#1C1C1E;border-radius:var(--r12);padding:13px 16px;cursor:pointer;border:1.5px solid transparent;">
+          <input type="radio" name="cloud" value="gcp" style="accent-color:#3D5AFE;">
+          <span style="font-size:14px;color:#fff;font-weight:500;">Google Cloud</span>
+          <span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:auto;">GCP</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:12px;background:#1C1C1E;border-radius:var(--r12);padding:13px 16px;cursor:pointer;border:1.5px solid transparent;">
+          <input type="radio" name="cloud" value="self" style="accent-color:#3D5AFE;">
+          <span style="font-size:14px;color:#fff;font-weight:500;">Self Hosted</span>
+          <span style="font-size:11px;color:rgba(255,255,255,.4);margin-left:auto;">On-premises</span>
+        </label>
+      </div>
+    </div>
+    <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);width:100%;" onclick="go('s-ent-create-3')">Continue</button>
+  </div>
+  <div style="padding:0 28px 44px;width:100%;">
+    <button class="btn" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);" onclick="go('s-ent-create-1')">← Back</button>
+  </div>
+</div>
+
+<!-- ══ ENT-CREATE-3: Administrator Setup ══ -->
+<div class="scr" id="s-ent-create-3" style="background:#000;align-items:center;justify-content:center;">
+  <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div style="width:64px;height:64px;border-radius:17px;background:linear-gradient(135deg,#3D5AFE,#6979F8);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 32px rgba(61,90,254,.4);font-size:32px;">🔑</div>
+    <div style="font-size:24px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:6px;">Administrator Setup</div>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);text-align:center;line-height:1.5;margin-bottom:6px;">Step 3 of 3 — Secure your admin account</p>
+    <div style="width:100%;background:rgba(255,255,255,.08);border-radius:3px;height:3px;margin-bottom:28px;overflow:hidden;">
+      <div style="width:100%;height:100%;background:#3D5AFE;border-radius:3px;"></div>
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <div style="display:flex;gap:10px;">
+        <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;flex:1;" placeholder="First Name">
+        <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;flex:1;" placeholder="Last Name">
+      </div>
+      <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;" placeholder="Password" type="password">
+      <input class="inp" style="background:#1C1C1E;border-color:#38383A;color:#fff;" placeholder="Confirm Password" type="password">
+      <div style="background:#1C1C1E;border-radius:var(--r8);padding:10px 12px;">
+        <div style="font-size:10px;color:rgba(255,255,255,.35);line-height:1.5;">Password must be at least 12 characters, include uppercase, lowercase, number, and symbol. Keys are stored only in your device's Secure Enclave.</div>
+      </div>
+    </div>
+    <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);width:100%;" onclick="go('s-ent-create-success')">Create Workspace</button>
+  </div>
+  <div style="padding:0 28px 44px;width:100%;">
+    <button class="btn" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);" onclick="go('s-ent-create-2')">← Back</button>
+  </div>
+</div>
+
+<!-- ══ ENT-CREATE-SUCCESS ══ -->
+<div class="scr" id="s-ent-create-success" style="background:#000;align-items:center;justify-content:center;">
+  <div style="padding:32px 28px;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#34C759,#00B44D);display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 8px 32px rgba(52,199,89,.35);font-size:36px;">✓</div>
+    <div style="font-size:24px;font-weight:800;color:#fff;text-align:center;letter-spacing:-.5px;margin-bottom:10px;">Workspace Created</div>
+    <p style="font-size:14px;color:rgba(255,255,255,.55);text-align:center;line-height:1.6;margin-bottom:32px;">Your Enterprise Workspace has been created. Keys are bound to this device and encrypted at rest.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+      <button class="btn bp" style="background:linear-gradient(135deg,#3D5AFE,#6979F8);" onclick="go('s-workgroup-select')">Go To Workspace</button>
+      <button class="btn" style="background:transparent;color:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.25);" onclick="go('s-workgroup-select')">Invite Team Members</button>
+    </div>
   </div>
 </div>
 
@@ -4164,7 +4322,7 @@
       </div>
       <!-- Centered title + model badge -->
       <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;">
-        <span style="font-size:16px;font-weight:600;color:var(--t1);letter-spacing:-.2px;">XQ AI</span>
+        <span style="font-size:16px;font-weight:600;color:var(--t1);letter-spacing:-.2px;">Secure AI Assistant</span>
         <div style="background:rgba(171,90,222,.12);border-radius:var(--rfull);padding:2px 8px;">
           <span style="font-size:10px;font-weight:700;color:#AB5ADE;letter-spacing:.2px;">L2</span>
         </div>
@@ -4182,7 +4340,8 @@
       <!-- Welcome state -->
       <div id="dlp-welcome" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 18px 16px;min-height:100%;">
         <div style="font-size:27px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:5px;letter-spacing:-.5px;">What can I help with?</div>
-        <div style="font-size:13px;color:var(--t3);text-align:center;margin-bottom:26px;">DLP enforced · L2 Standard clearance</div>
+        <div style="font-size:13px;color:var(--t3);text-align:center;margin-bottom:8px;">Ask questions about your data, policies, security controls,<br>compliance requirements, or workspace activity.</div>
+        <div style="font-size:11px;color:var(--t3);text-align:center;margin-bottom:26px;">DLP enforced · L2 Standard clearance</div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;">
           <button onclick="dlpChat('Which files contain PHI or restricted data?')"
@@ -4218,7 +4377,7 @@
       <div style="background:var(--card);border:1.5px solid var(--sep);border-radius:26px;display:flex;align-items:center;padding:7px 7px 7px 16px;gap:8px;">
         <input id="dlp-input" type="text"
           style="flex:1;background:none;border:none;outline:none;font-size:15px;color:var(--t1);font-family:inherit;"
-          placeholder="Message XQ AI…"
+          placeholder="Ask Secure AI…"
           onkeydown="if(event.key==='Enter')dlpChat(this.value)">
         <button onclick="dlpChat(document.getElementById('dlp-input').value)"
           style="width:34px;height:34px;border-radius:50%;background:var(--t1);border:none;color:var(--bg);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;">
@@ -6233,6 +6392,15 @@ function dlpChat(prompt) {
     typingDiv.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#AB5ADE,#7B4FD8);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:12px;line-height:1;margin-top:2px;">✦</div><div style="flex:1;font-size:15px;color:var(--t1);line-height:1.6;padding-top:3px;white-space:pre-line;">' + ans + '</div>';
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
   }, 900);
+}
+
+function toggleSecurityDetails() {
+  var body = document.getElementById('et-sec-body');
+  var chev = document.getElementById('et-sec-chev');
+  if (!body) return;
+  var open = body.style.display === 'flex';
+  body.style.display = open ? 'none' : 'flex';
+  if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
 }
 
 function dlpNewChat() {
