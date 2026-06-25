@@ -308,7 +308,6 @@ The `GoogleService-Info.plist` for each environment is stored as a base64-encode
 | Firebase GoogleService-Info.plist | GitHub Secrets (base64 encoded, per environment) | CI decodes to temp file |
 | XQ API keys (staging/prod) | GitHub Secrets | Injected into xcconfig at build time |
 | SharePoint test tenant credentials | GitHub Secrets | Integration test ENV only |
-| Figma access token | GitHub Secrets | Design token sync workflow only |
 | MATCH_PASSWORD | GitHub Secrets (org-level) | Fastlane match |
 
 **Absolute prohibitions:**
@@ -338,10 +337,6 @@ The `GoogleService-Info.plist` for each environment is stored as a base64-encode
 ### XQ API Keys Management
 
 The XQ SDK (github.com/XQ-Message-Inc) uses API keys for tenant identification. These are injected as build-time xcconfig values from GitHub Secrets. At runtime, the `XQSecureAPI` protocol adapter reads the key from the app's compiled configuration, not from any user-facing config file. Keys are rotated by updating the GitHub Secret and triggering a new build — no source code change required.
-
-### Figma Token Management
-
-Figma access token is used exclusively in the design token sync workflow, which runs on a separate schedule (not in the main build pipeline). It has read-only scope. It is stored as a GitHub Secret at the organization level with restricted access to only the token-sync workflow.
 
 ---
 

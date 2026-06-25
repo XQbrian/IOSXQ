@@ -1,6 +1,4 @@
-The complete Figma Design Strategy document has been written to `/Users/brianwane/agentic-lab/apps/IOSXQ/FIGMA_DESIGN_STRATEGY.md`.
-
-Here is a summary of everything covered:
+UX/UI Design Strategy — summary of design decisions:
 
 ---
 
@@ -19,8 +17,8 @@ Every token listed with explicit light and dark values: 54 color tokens, 14 font
 **SECTION 5 — ANIMATION SYSTEM**
 Every animation has explicit SwiftUI parameters: entry (0.3s easeOut, +20pt Y offset), exit (0.2s easeIn, 0.92 scale), button press-down (spring response:0.25 dampingFraction:0.8), button release bounce (response:0.35 dampingFraction:0.65), tab bounce (response:0.4 dampingFraction:0.55), critical alert entry (response:0.45 dampingFraction:0.72). List stagger: 40ms per row, capped at 200ms total.
 
-**SECTION 6 — FIGMA STRUCTURE**
-27-page file structure, frame naming convention (Screen/Device/Mode/State), component naming convention, Auto Layout rules, and variant architecture.
+**SECTION 6 — SCREEN STRUCTURE**
+27-screen layout structure, frame naming convention (Screen/Device/Mode/State), component naming convention, and layout rules.
 
 **SECTION 7 — 18 SCREEN SPECS**
 Each screen has: layout structure with exact measurements, all component references, all states (empty/loading/error/offline/admin), specific animation choreography, and iPhone-vs-iPad differences.
@@ -28,4 +26,4 @@ Each screen has: layout structure with exact measurements, all component referen
 **SECTIONS 8-12 — FLOW MAP, PROTOTYPE, DARK MODE, ROLE VARIANTS, iPAD RULES**
 The interaction flow map is fully specified. The five priority prototype flows are chosen to demonstrate the core product narrative. Dark mode contrast ratios are verified for all five classification levels. Enterprise admin vs standard user differences are enumerated component-by-component. iPad rules cover SplitView dimensions, multi-column triggers, and Stage Manager minimum window widths.
 
-A Figma designer can open this document and begin building immediately without needing clarifying conversations.
+The design decisions here inform the HTML prototype and Swift implementation.

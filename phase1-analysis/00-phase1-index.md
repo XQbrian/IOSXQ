@@ -17,9 +17,8 @@
 | [05-ai-integration.md](05-ai-integration.md) | AI Integration | ✅ Complete | AIProvider protocol, CoreML models, cloud AI gate, classification pipeline |
 | [06-devops-delivery.md](06-devops-delivery.md) | DevOps & Delivery | ✅ Complete | CI/CD pipeline, build targets, feature flags, force update system |
 | [07-qa-testing.md](07-qa-testing.md) | QA & Testing | ✅ Complete | Unit/integration/E2E strategy, DLP validation, AI accuracy benchmarks, device matrix |
-| [08-ux-ui-design.md](08-ux-ui-design.md) | UX/UI Design | ✅ Complete | Figma structure, design tokens, 18-screen specs, animation system, component library |
+| [08-ux-ui-design.md](08-ux-ui-design.md) | UX/UI Design | ✅ Complete | Design tokens, 18-screen specs, animation system, component library |
 
-**Full Figma design strategy**: `/Users/brianwane/agentic-lab/apps/IOSXQ/FIGMA_DESIGN_STRATEGY.md`
 
 ---
 
@@ -79,16 +78,6 @@
 
 ---
 
-## Next: Phase 2 — Figma Prototype
+## Next: Phase 2 — Prototype Refinement
 
-**FIGMA-FIRST constraint**: Per the orchestration spec, no application code is written until the Figma prototype is complete, reviewed, and the user experience architecture is validated.
-
-Phase 2 work:
-1. Create Figma project structure for XQ Secure Workspaces
-2. Apply design system from FIGMA_DESIGN_STRATEGY.md (tokens, components, typography, color)
-3. Design all 18 screens with correct navigation flows
-4. Build clickable prototype connecting all Phase 1 screens
-5. Validate interaction patterns against animation requirements
-6. Deliver prototype link for stakeholder review
-
-**Figma MCP**: Configured at project level. Token: `figd_2_2CvbgEBp7BNk--vt49opjhzN5cAeP6EiaOPqeM`
+Design iteration continues in the HTML prototype (`prototype/index.html`).
