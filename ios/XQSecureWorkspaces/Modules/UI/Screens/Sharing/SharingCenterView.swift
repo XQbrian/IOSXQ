@@ -25,16 +25,28 @@ struct SharingCenterView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
             }
-            .navigationTitle("Sharing Center")
+            .navigationTitle("Sharing")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showCreateShare = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(brandBlue)
+                    HStack(spacing: 8) {
+                        Button {
+                            showCreateShare = true
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundColor(brandBlue)
+                        }
+                        Button {
+                            coordinator.presentProfile()
+                        } label: {
+                            ZStack {
+                                Circle().fill(brandBlue).frame(width: 28, height: 28)
+                                Text("BW")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
                     }
                 }
             }

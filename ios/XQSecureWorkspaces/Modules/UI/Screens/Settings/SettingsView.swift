@@ -12,8 +12,10 @@ struct SettingsView: View {
     @State private var phiDetectionBanners = true
     @State private var policyPanels = true
     @State private var aiIntelPanels = true
+    @State private var notifDisplayMode: NotifDisplayMode = .minimized
     @State private var showSignOutConfirm = false
-    @State private var showWorkspaces = false
+
+    enum NotifDisplayMode: String, CaseIterable { case expanded = "Expanded"; case minimized = "Minimized" }
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
     private let green = Color(red: 0.204, green: 0.780, blue: 0.349)
@@ -91,78 +93,124 @@ struct SettingsView: View {
                     Text("Security")
                 }
 
-                // MARK: Notifications Section
-                Section {
-                    HStack {
-                        Label("Phishing Alerts", systemImage: "exclamationmark.triangle.fill")
-                        Spacer()
-                        Toggle("", isOn: $phishingAlerts).labelsHidden().tint(green)
-                    }
-                    HStack {
-                        Label("PHI Detection Banners", systemImage: "cross.fill")
-                        Spacer()
-                        Toggle("", isOn: $phiDetectionBanners).labelsHidden().tint(green)
-                    }
-                    HStack {
-                        Label("Policy & Compliance Panels", systemImage: "doc.badge.gearshape")
-                        Spacer()
-                        Toggle("", isOn: $policyPanels).labelsHidden().tint(green)
-                    }
-                    HStack {
-                        Label("AI Intelligence Panels", systemImage: "brain")
-                        Spacer()
-                        Toggle("", isOn: $aiIntelPanels).labelsHidden().tint(green)
-                    }
-                } header: {
-                    Text("Notifications")
-                }
-
                 // MARK: Enterprise Admin Section
                 Section {
-                    Button {
-                        showWorkspaces = true
-                    } label: {
-                        HStack {
-                            Label("My Workspaces", systemImage: "person.3.fill")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundColor(Color(.tertiaryLabel))
-                        }
-                    }
-
-                    // Push AdminPolicyView onto SettingsView's NavigationStack
-                    // so the user gets a system back button. Avoids the previous
-                    // `coordinator.navigate(to: .adminPolicy)` which replaced the
-                    // entire root view and trapped the user.
                     NavigationLink(destination: AdminPolicyView()) {
-                        HStack {
-                            Label("Policy Management", systemImage: "doc.badge.gearshape")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundColor(Color(.tertiaryLabel))
+                        HStack(spacing: 11) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(red: 0.910, green: 0.918, blue: 0.992))
+                                    .frame(width: 38, height: 38)
+                                Image(systemName: "shield.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(brandBlue)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Policy Management")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("PHI rules · Share controls · AI gates")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.secondary)
+                            }
                         }
+                        .padding(.vertical, 2)
                     }
 
                     HStack {
-                        Label("Cloud AI Processing", systemImage: "brain")
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Cloud AI (globally off)")
+                                .font(.system(size: 13, weight: .medium))
+                            Text("CUI/PHI always local-only")
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                        }
                         Spacer()
                         Toggle("", isOn: $cloudAIEnabled).labelsHidden().tint(green)
                     }
 
                     HStack {
-                        Label("Enterprise Tenants", systemImage: "building.2")
+                        Text("Tenant Users").font(.system(size: 13))
                         Spacer()
-                        Text("142").foregroundColor(.secondary)
+                        Text("142").font(.system(size: 13, weight: .semibold))
                     }
                 } header: {
                     Text("Enterprise Admin")
-                } footer: {
-                    Text("You have enterprise administrator privileges for this organization.")
-                        .font(.system(size: 12))
+                }
+
+                // MARK: Notification Display Section
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Display Mode")
+                            .font(.system(size: 13, weight: .medium))
+                        Text("Minimized collapses all security banners and AI panels to compact pills. Tap any pill to expand it inline.")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                        Picker("Display Mode", selection: $notifDisplayMode) {
+                            ForEach(NotifDisplayMode.allCases, id: \.self) { mode in
+                                Text(mode.rawValue).tag(mode)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.top, 2)
+                    }
+                    .padding(.vertical, 4)
+                } header: {
+                    Text("Notification Display")
+                }
+
+                // MARK: Notifications Section
+                Section {
+                    HStack {
+                        Label {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("Phishing Alerts")
+                                Text("Risk banners on email threads").font(.system(size: 11)).foregroundColor(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.orange)
+                        }
+                        Spacer()
+                        Toggle("", isOn: $phishingAlerts).labelsHidden().tint(green)
+                    }
+                    HStack {
+                        Label {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("PHI Detection Banners")
+                                Text("Classification alerts on documents").font(.system(size: 11)).foregroundColor(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "shield.lefthalf.filled.badge.checkmark").foregroundColor(.red)
+                        }
+                        Spacer()
+                        Toggle("", isOn: $phiDetectionBanners).labelsHidden().tint(green)
+                    }
+                    HStack {
+                        Label {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("Policy & Compliance Panels")
+                                Text("Cited controls on files and email").font(.system(size: 11)).foregroundColor(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "doc.badge.gearshape").foregroundColor(brandBlue)
+                        }
+                        Spacer()
+                        Toggle("", isOn: $policyPanels).labelsHidden().tint(green)
+                    }
+                    HStack {
+                        Label {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("AI Intelligence Panels")
+                                Text("Content analysis panels on files & email").font(.system(size: 11)).foregroundColor(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "cpu.fill").foregroundColor(brandBlue)
+                        }
+                        Spacer()
+                        Toggle("", isOn: $aiIntelPanels).labelsHidden().tint(green)
+                    }
+                } header: {
+                    Text("Notifications")
                 }
 
                 // MARK: Appearance Section
@@ -238,7 +286,6 @@ struct SettingsView: View {
             } message: {
                 Text("You will be signed out of your enterprise account.")
             }
-            .sheet(isPresented: $showWorkspaces) { WorkspacesGroupsView() }
         }
     }
 }

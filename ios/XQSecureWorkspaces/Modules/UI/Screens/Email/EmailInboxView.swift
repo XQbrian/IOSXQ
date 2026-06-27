@@ -8,6 +8,7 @@ struct EmailInboxView: View {
     @StateObject private var vm: EmailInboxViewModel
     @State private var showCompose = false
     @State private var showAISearch = false
+    @State private var showNotifications = false
 
     private let brandBlue = Color(red: 0.239, green: 0.353, blue: 0.996)
 
@@ -77,26 +78,31 @@ struct EmailInboxView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 12) {
-                        Button {
-                            showCompose = true
-                        } label: {
+                    HStack(spacing: 10) {
+                        Button { showNotifications = true } label: {
+                            ZStack(alignment: .topTrailing) {
+                                Image(systemName: "bell.fill")
+                                    .font(.system(size: 17))
+                                    .foregroundColor(.primary)
+                                Circle()
+                                    .fill(Color(red: 1, green: 0.231, blue: 0.188))
+                                    .frame(width: 8, height: 8)
+                                    .offset(x: 2, y: -2)
+                            }
+                        }
+                        Button { showCompose = true } label: {
                             Image(systemName: "square.and.pencil")
                                 .font(.system(size: 17))
                                 .foregroundColor(brandBlue)
                         }
-                        Button {
-                            Task { await vm.runAITriage(policy: defaultPolicy()) }
-                        } label: {
-                            if vm.isTriaging {
-                                ProgressView().scaleEffect(0.8)
-                            } else {
-                                Label("Triage", systemImage: "sparkles")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(brandBlue)
+                        Button { coordinator.presentProfile() } label: {
+                            ZStack {
+                                Circle().fill(brandBlue).frame(width: 28, height: 28)
+                                Text("BW")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.white)
                             }
                         }
-                        .disabled(vm.isTriaging || vm.emails.isEmpty)
                     }
                 }
             }
@@ -104,6 +110,9 @@ struct EmailInboxView: View {
             .sheet(isPresented: $showAISearch) {
                 SemanticSearchView()
                     .environmentObject(coordinator)
+            }
+            .sheet(isPresented: $showNotifications) {
+                NavigationStack { NotificationCenterView() }
             }
         }
         .task {

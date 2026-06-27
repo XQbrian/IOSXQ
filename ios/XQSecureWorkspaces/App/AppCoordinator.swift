@@ -25,7 +25,7 @@ final class AppCoordinator: ObservableObject {
     }
 
     enum AppTab: String, Hashable {
-        case files, messages, alerts, ai, settings
+        case home, files, email, sharing, settings
     }
 
     @Published var route: AppRoute = .splash
@@ -101,7 +101,7 @@ final class AppCoordinator: ObservableObject {
             await vault.setSession(session)
         }
 
-        selectedTab = .files
+        selectedTab = .home
         let hasOnboarded = UserDefaults.standard.bool(forKey: Self.onboardingKey)
         route = hasOnboarded ? .home : .onboarding
     }
@@ -139,7 +139,7 @@ final class AppCoordinator: ObservableObject {
             await vault.setSession(session)
         }
 
-        selectedTab = .files
+        selectedTab = .home
         let hasOnboarded = UserDefaults.standard.bool(forKey: Self.onboardingKey)
         route = hasOnboarded ? .home : .onboarding
     }

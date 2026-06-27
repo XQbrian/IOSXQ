@@ -59,14 +59,22 @@ struct FileBrowserView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 4) {
-                        Button { showSemanticSearch = true } label: {
-                            Image(systemName: AppIcon.semanticSearch)
-                                .font(.system(size: 17)).foregroundColor(brandBlue)
-                        }
+                    HStack(spacing: 6) {
                         Button { showAIImport = true } label: {
-                            Image(systemName: AppIcon.add)
+                            Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 17, weight: .semibold)).foregroundColor(brandBlue)
+                        }
+                        Button { showRiskDashboard = true } label: {
+                            Image(systemName: "shield.lefthalf.filled.badge.checkmark")
+                                .font(.system(size: 16)).foregroundColor(.secondary)
+                        }
+                        Button { coordinator.presentProfile() } label: {
+                            ZStack {
+                                Circle().fill(brandBlue).frame(width: 28, height: 28)
+                                Text("BW")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
                         }
                     }
                 }

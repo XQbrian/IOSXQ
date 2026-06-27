@@ -66,7 +66,7 @@ struct WelcomeView: View {
                             EnterpriseLoginView()
                                 .navigationBarBackButtonHidden(false)
                         } label: {
-                            Text("Connect Enterprise Workspace")
+                            Text("Workspace Login")
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
@@ -76,6 +76,21 @@ struct WelcomeView: View {
                                         .stroke(.white.opacity(0.3), lineWidth: 1.5)
                                 )
                         }
+
+                        NavigationLink {
+                            EnterpriseCreateView()
+                        } label: {
+                            Text("Create Enterprise Workspace")
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.6))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(.white.opacity(0.15), lineWidth: 1)
+                                )
+                        }
+                        .padding(.top, 2)
                     }
                     .padding(.horizontal, 28)
 

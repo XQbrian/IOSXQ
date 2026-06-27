@@ -1002,7 +1002,7 @@ struct AppNotification: Identifiable {
         switch category {
         case .security: return .files
         case .sharing:  return .files
-        case .email:    return .messages
+        case .email:    return .email
         case .system:   return nil
         }
     }
